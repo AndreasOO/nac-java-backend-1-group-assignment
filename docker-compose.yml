@@ -1,0 +1,40 @@
+services:
+
+  db:
+    container_name: backend-1-db
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    ports:
+      - "7777:3306"
+    networks:
+      - backend-1
+    environment:
+      - MYSQL_ROOT_PASSWORD=test1234
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptest1234" ]
+      interval: 10s
+      timeout: 5s
+      retries: 100
+
+  spring:
+    container_name: backend-1-spring
+    build:
+      context: .
+      dockerfile: Dockerfile.spring
+    ports:
+      - "8080:8080"
+    networks:
+      - backend-1
+    environment:
+      - DB_PASSWORD=test1234
+      - DB_USERNAME=root
+      - DB_PORT=3306
+      - DB_HOSTNAME=db
+      - DB_SCHEMA=backend_db
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  backend-1:
