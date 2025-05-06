@@ -13,7 +13,7 @@ services:
       - MYSQL_ROOT_PASSWORD=test1234
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptest1234" ]
-      interval: 10s
+      interval: 5s
       timeout: 5s
       retries: 100
 
