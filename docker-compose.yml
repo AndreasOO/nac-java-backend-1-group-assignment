@@ -1,0 +1,31 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: images/Dockerfile.db
+    image: spring-app-db
+    ports:
+      - "3307:3306"
+    networks:
+      - spring-app-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptest1234" ]
+      interval: 5s
+      timeout: 5s
+      retries: 100
+
+  app:
+    build:
+      context: .
+      dockerfile: images/Dockerfile.be
+    image: spring-app
+    ports:
+      - "8080:8080"
+    networks:
+      - spring-app-network
+    depends_on:
+      db:
+        condition: service_healthy
+
+networks:
+  spring-app-network:
