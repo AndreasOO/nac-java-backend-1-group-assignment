@@ -1,9 +1,10 @@
 services:
   db:
+    container_name: spring-db-container
     build:
       context: .
       dockerfile: images/Dockerfile.db
-    image: spring-app-db
+    image: spring-db-image
     ports:
       - "3307:3306"
     networks:
@@ -15,10 +16,11 @@ services:
       retries: 100
 
   app:
+    container_name: spring-app-container
     build:
       context: .
       dockerfile: images/Dockerfile.be
-    image: spring-app
+    image: spring-app-image
     ports:
       - "8080:8080"
     networks:
