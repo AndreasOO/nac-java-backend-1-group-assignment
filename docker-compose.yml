@@ -7,7 +7,14 @@ services:
     volumes:
       - ./db-scripts/db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
     environment:
-      - MYSQL_ROOT_PASSWORD=test123
+      - MYSQL_ROOT_PASSWORD=test1234
+
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptest1234" ]
+      interval: 5s
+      timeout: 5s
+      retries: 100
+
     ports:
     - "3308:3306"
     networks:
@@ -26,7 +33,9 @@ services:
       - DB_PORT=3306
       - DB_HOSTNAME=db
       - DB_SCHEMA=backend_db
-
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - "8080:8080"
 
