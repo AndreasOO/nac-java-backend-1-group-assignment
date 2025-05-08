@@ -1,0 +1,40 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.db
+    container_name: backend-db
+    volumes:
+      - ./db-scripts/db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=test123
+    ports:
+    - "3308:3306"
+    networks:
+    - spring
+
+  backend:
+    container_name: backend-spring
+    build:
+      context: .
+      dockerfile: Dockerfile.spring
+    networks:
+      spring:
+    environment:
+      - DB_PASSWORD=test1234
+      - DB_USERNAME=backend_app
+      - DB_PORT=3306
+      - DB_HOSTNAME=db
+      - DB_SCHEMA=backend_db
+
+    ports:
+      - "8080:8080"
+
+
+networks:
+  spring:
+
+
+
+
+
