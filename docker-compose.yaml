@@ -10,11 +10,10 @@ services:
       - MYSQL_ROOT_PASSWORD=test1234
 
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptest1234" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "backend_app", "-ptest1234" ]
       interval: 5s
       timeout: 5s
       retries: 100
-
     ports:
     - "3308:3306"
     networks:
@@ -28,11 +27,12 @@ services:
     networks:
       spring:
     environment:
-      - DB_PASSWORD=test1234
-      - DB_USERNAME=backend_app
-      - DB_PORT=3306
-      - DB_HOSTNAME=db
-      - DB_SCHEMA=backend_db
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PORT: ${DB_PORT}
+      DB_HOSTNAME: ${DB_HOSTNAME}
+      DB_SCHEMA: ${DB_SCHEMA}
+      DB_ROLE: ${DB_ROLE}
     depends_on:
       db:
         condition: service_healthy
