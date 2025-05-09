@@ -7,7 +7,7 @@ services:
     volumes:
       - ./db-scripts/db-init.sql:/docker-entrypoint-initdb.d/db-init.sql
     environment:
-      - MYSQL_ROOT_PASSWORD=test1234
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
 
     healthcheck:
       test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "backend_app", "-ptest1234" ]
@@ -15,9 +15,10 @@ services:
       timeout: 5s
       retries: 100
     ports:
-    - "3308:3306"
+    - ${DB_PORT}:3306
     networks:
     - spring
+
 
   backend:
     container_name: backend-spring
@@ -25,14 +26,9 @@ services:
       context: .
       dockerfile: Dockerfile.spring
     networks:
-      spring:
-    environment:
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_USERNAME: ${DB_USERNAME}
-      DB_PORT: ${DB_PORT}
-      DB_HOSTNAME: ${DB_HOSTNAME}
-      DB_SCHEMA: ${DB_SCHEMA}
-      DB_ROLE: ${DB_ROLE}
+      - spring
+    env_file:
+        - .env
     depends_on:
       db:
         condition: service_healthy
