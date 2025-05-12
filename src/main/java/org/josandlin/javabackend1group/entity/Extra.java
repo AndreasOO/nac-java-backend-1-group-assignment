@@ -22,7 +22,7 @@ public class Extra implements Serializable {
     private Bookable bookable;
 
     @ManyToOne
-    @JoinColumn(name = "extraType_id")
+    @JoinColumn(name = "extra_type_id")
     private ExtraType extraType;
 
     public Extra() {

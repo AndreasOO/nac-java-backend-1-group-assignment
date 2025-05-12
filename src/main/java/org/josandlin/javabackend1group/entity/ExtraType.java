@@ -16,8 +16,8 @@ public class ExtraType implements Serializable {
     private int cost;
 
     @OneToMany
-    @JoinColumn(name = "extra_id")
-    private List<Extra> extra;
+    @JoinColumn(name = "extras_id")
+    private List<Extra> extras;
 
     public ExtraType() {
 
@@ -41,7 +41,7 @@ public class ExtraType implements Serializable {
 
     public void setCost(int cost) { this.cost = cost; }
 
-    public List<Extra> getExtra() { return extra; }
+    public List<Extra> getExtras() { return extras; }
 
-    public void setExtra(List<Extra> extra) { this.extra = extra; }
+    public void setExtras(List<Extra> extras) { this.extras = extras; }
 }

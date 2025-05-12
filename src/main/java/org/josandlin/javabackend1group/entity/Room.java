@@ -17,7 +17,7 @@ public class Room extends Bookable implements Serializable {
     private Long extrasAvailable;
 
     @ManyToOne
-    @JoinColumn(name = "roomType_id")
+    @JoinColumn(name = "room_type_id")
     private RoomType roomType;
 
     public Room() {

@@ -21,10 +21,9 @@ public class Booking implements Serializable {
     @JoinColumn(name="customer_id")
     private Customer customer;
 
-
     @OneToMany
-    @JoinColumn(name = "bookable_id")
-    private List<Bookable> bookable;
+    @JoinColumn(name = "bookables_id")
+    private List<Bookable> bookables;
 
     @OneToMany
     @JoinColumn(name = "extra_id")
@@ -56,9 +55,9 @@ public class Booking implements Serializable {
 
     public void setCustomer(Customer customer) { this.customer = customer; }
 
-    public List<Bookable> getBookable() { return bookable; }
+    public List<Bookable> getBookables() { return bookables; }
 
-    public void setBookable(List<Bookable> bookable) { this.bookable = bookable; }
+    public void setBookables(List<Bookable> bookables) { this.bookables = bookables; }
 
     public List<Extra> getExtras() { return extras; }
 
