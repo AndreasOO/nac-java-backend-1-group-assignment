@@ -2,10 +2,18 @@ package org.josandlin.javabackend1group.entity;
 
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.List;
 
+@Setter
+@Getter
+@Data
+@NoArgsConstructor
 @Entity
 public class Customer implements Serializable {
 
@@ -19,10 +27,6 @@ public class Customer implements Serializable {
     @JoinColumn(name = "bookings_id")
     private List<Booking> bookings;
 
-
-    public Customer() {
-
-    }
     public Customer(Long id, String name, List<Booking> bookings) {
         this.id = id;
         this.name = name;
@@ -30,15 +34,4 @@ public class Customer implements Serializable {
     }
 
 
-    public Long getId() { return id; }
-
-    public void setId(Long id) { this.id = id; }
-
-    public String getName() { return name; }
-
-    public void setName(String name) { this.name = name; }
-
-    public List<Booking> getBookings() { return bookings; }
-
-    public void setBookings(List<Booking> bookings) { this.bookings = bookings; }
 }

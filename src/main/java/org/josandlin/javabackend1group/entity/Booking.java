@@ -1,12 +1,20 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+@Setter
+@Getter
+@Data
+@NoArgsConstructor
 @Entity
 public class Booking implements Serializable {
 
@@ -29,37 +37,10 @@ public class Booking implements Serializable {
     @JoinColumn(name = "extra_id")
     private List<Extra> extras;
 
-    public Booking() {
-
-    }
-
     public Booking(Long id, Date startDate, Date endDate) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public Long getId() { return id; }
-
-    public void setId(Long id) { this.id = id; }
-
-    public Date getStartDate() { return startDate; }
-
-    public void setStartDate(Date startDate) { this.startDate = startDate; }
-
-    public Date getEndDate() { return endDate; }
-
-    public void setEndDate(Date endDate) { this.endDate = endDate; }
-
-    public Customer getCustomer() { return customer; }
-
-    public void setCustomer(Customer customer) { this.customer = customer; }
-
-    public List<Bookable> getBookables() { return bookables; }
-
-    public void setBookables(List<Bookable> bookables) { this.bookables = bookables; }
-
-    public List<Extra> getExtras() { return extras; }
-
-    public void setExtras(List<Extra> extras) { this.extras = extras; }
 }
