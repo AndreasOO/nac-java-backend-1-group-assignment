@@ -1,10 +1,7 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,9 +10,9 @@ import java.util.List;
 @Getter
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class ExtraType implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -24,13 +21,7 @@ public class ExtraType implements Serializable {
     private int cost;
 
     @OneToMany
-    @JoinColumn(name = "extras_id")
+    @JoinColumn(name = "extra_id")
     private List<Extra> extras;
-
-    public ExtraType(Long id, String name, int cost) {
-        this.id = id;
-        this.name = name;
-        this.cost = cost;
-    }
 
 }

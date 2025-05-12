@@ -1,10 +1,7 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
@@ -13,23 +10,18 @@ import java.util.List;
 @Getter
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class RoomType implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     private String name;
+    private int cost;
 
     @OneToMany
-    @JoinColumn(name = "rooms_id")
+    @JoinColumn(name = "room_id")
     private List<Room> rooms;
-
-    public RoomType(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
 
 }
