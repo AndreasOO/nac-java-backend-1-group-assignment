@@ -4,12 +4,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @Controller
 @RequestMapping("bookings")
 public class BookingController {
 
-    @GetMapping("rooms")
-    public String showAvailableRooms(Model model) {
+    @GetMapping("rooms/{startDate}-{endDate}")
+    public String showAvailableRooms(Model model, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
         return "rooms";
     }
 

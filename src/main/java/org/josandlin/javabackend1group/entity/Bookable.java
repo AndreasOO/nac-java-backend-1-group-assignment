@@ -20,7 +20,7 @@ abstract class Bookable implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "booking_id")
-    private Booking bookings;
+    private Booking booking;
 
     @OneToMany
     @JoinColumn(name = "extra_id")
