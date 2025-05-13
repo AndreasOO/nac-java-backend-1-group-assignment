@@ -1,13 +1,18 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
 
+@Setter
+@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Extra implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -25,29 +30,4 @@ public class Extra implements Serializable {
     @JoinColumn(name = "extra_type_id")
     private ExtraType extraType;
 
-    public Extra() {
-
-    }
-
-    public Extra(Long id, Booking booking, Bookable bookable) {
-        this.id = id;
-        this.booking = booking;
-        this.bookable = bookable;
-    }
-
-    public Long getId() { return id; }
-
-    public void setId(Long id) { this.id = id; }
-
-    public Booking getBooking() { return booking; }
-
-    public void setBooking(Booking booking) { this.booking = booking; }
-
-    public Bookable getBookable() { return bookable; }
-
-    public void setBookable(Bookable bookable) { this.bookable = bookable; }
-
-    public ExtraType getExtraType() { return extraType; }
-
-    public void setExtraType(ExtraType extraType) { this.extraType = extraType; }
 }
