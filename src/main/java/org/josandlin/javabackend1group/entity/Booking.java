@@ -19,19 +19,13 @@ public class Booking implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    private Date startDate;
-    private Date endDate;
+    @OneToMany(mappedBy = "booking")
+    private List<BookedRoom> bookedRoom;
 
     @ManyToOne
     @JoinColumn(name="customer_id")
     private Customer customer;
 
-    @OneToMany
-    @JoinColumn(name = "bookable_id")
-    private List<Bookable> bookables;
-
-    @OneToMany
-    @JoinColumn(name = "extra_id")
-    private List<Extra> extras;
-
+    private Date startDate;
+    private Date endDate;
 }
