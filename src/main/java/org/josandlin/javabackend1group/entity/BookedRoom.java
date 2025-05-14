@@ -3,7 +3,6 @@ package org.josandlin.javabackend1group.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Setter
@@ -12,18 +11,19 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-abstract class Bookable implements Serializable {
+public class BookedRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name="room_id")
+    private Room room;
+
     @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private Booking bookings;
+    @JoinColumn(name="booking_id")
+    private Booking booking;
 
-    @OneToMany
-    @JoinColumn(name = "extra_id")
+    @OneToMany(mappedBy = "bookedRoom")
     private List<Extra> extras;
-
 }

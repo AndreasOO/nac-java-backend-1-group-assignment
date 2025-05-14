@@ -17,17 +17,11 @@ public class Extra implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-
-    @ManyToOne
-    @JoinColumn(name = "booking_id")
-    private Booking booking;
-
-    @ManyToOne
-    @JoinColumn(name = "bookable_id")
-    private Bookable bookable;
-
     @ManyToOne
     @JoinColumn(name = "extra_type_id")
     private ExtraType extraType;
 
+    @ManyToOne
+    @JoinColumn(name="booked_room_id")
+    private BookedRoom bookedRoom;
 }
