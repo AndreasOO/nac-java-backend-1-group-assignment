@@ -25,5 +25,11 @@ public class BookedRoom {
     private Booking booking;
 
     @OneToMany(mappedBy = "bookedRoom")
-    private List<Extra> extras;
+    private List<AddedExtra> addedExtras;
+
+    public BookedRoom(Room room, Booking booking, List<AddedExtra> addedExtras) {
+        this.room = room;
+        this.booking = booking;
+        this.addedExtras = addedExtras;
+    }
 }

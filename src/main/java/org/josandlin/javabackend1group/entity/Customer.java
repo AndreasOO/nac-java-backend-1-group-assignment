@@ -22,4 +22,9 @@ public class Customer implements Serializable {
 
     @OneToMany(mappedBy = "customer")
     private List<Booking> bookings;
+
+    public Customer(String name, List<Booking> bookings) {
+        this.name = name;
+        this.bookings = bookings;
+    }
 }

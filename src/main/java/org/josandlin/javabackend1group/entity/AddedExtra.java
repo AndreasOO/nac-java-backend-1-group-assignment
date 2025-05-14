@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Setter
 @Getter
@@ -12,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Extra implements Serializable {
+public class AddedExtra implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -24,4 +23,12 @@ public class Extra implements Serializable {
     @ManyToOne
     @JoinColumn(name="booked_room_id")
     private BookedRoom bookedRoom;
+
+    private int quantity;
+
+    public AddedExtra(ExtraType extraType, BookedRoom bookedRoom, int quantity) {
+        this.extraType = extraType;
+        this.bookedRoom = bookedRoom;
+        this.quantity = quantity;
+    }
 }

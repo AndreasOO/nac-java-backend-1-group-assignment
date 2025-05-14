@@ -28,4 +28,11 @@ public class Booking implements Serializable {
 
     private Date startDate;
     private Date endDate;
+
+    public Booking(List<BookedRoom> bookedRoom, Customer customer, Date startDate, Date endDate) {
+        this.bookedRoom = bookedRoom;
+        this.customer = customer;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
 }

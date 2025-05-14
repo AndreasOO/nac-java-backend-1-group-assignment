@@ -25,4 +25,11 @@ public class Room implements Serializable {
     @ManyToOne
     @JoinColumn(name = "room_type_id")
     private RoomType roomType;
+
+    public Room(String name, Long roomCapacity, Long extrasAvailable, RoomType roomType) {
+        this.name = name;
+        this.roomCapacity = roomCapacity;
+        this.extrasAvailable = extrasAvailable;
+        this.roomType = roomType;
+    }
 }
