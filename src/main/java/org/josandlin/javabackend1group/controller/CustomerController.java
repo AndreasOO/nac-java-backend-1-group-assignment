@@ -37,8 +37,10 @@ public class CustomerController {
     }
 
     @PutMapping("register/{id}")
-    public String editCustomer(Model model, @PathVariable String id) {
-        System.out.println("registering customer " + id);
+    public String editCustomer(Model model, @PathVariable Long id, @RequestParam String newName) {
+        customerDao.updateCustomer(newName, id);
+        model.addAttribute("customer", customerDao.findByName(newName));
+        System.out.println("New name on customer registered " + id + " " + newName);
         //TODO use service here
         return "registration";
     }
@@ -58,7 +60,7 @@ public class CustomerController {
                 model.addAttribute("message", "Customer not found.");
             }
         model.addAttribute("customer", optionalCustomer);
-        System.out.println("deleting customer " + id);
+        System.out.println("deleting customer " + id + " " + optionalCustomer);
         //TODO use service here
         return "registration";
     }
