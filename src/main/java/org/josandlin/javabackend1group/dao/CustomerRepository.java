@@ -14,25 +14,6 @@ import java.util.List;
 
 
 public interface CustomerRepository extends JpaRepository <Customer, Long> {
-    Customer findByName(String name);
-
-    @Query("SELECT b FROM Booking b WHERE b.customer = ?1")
-    List<Booking> findBookingsByCustomer(Customer customer);
-
-    @Query("SELECT c FROM Customer c JOIN c.bookings b WHERE b.startDate >= :startDate AND b.endDate <= :endDate")
-    List<Customer> findCustomersBookingsAfter(@Param("startDate") LocalDate startDate,
-                                              @Param("endDate") LocalDate endDate);
-
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Customer c WHERE c.id = :id AND c.bookings IS EMPTY")
-    void deleteIfNoBookings(@Param("id") Long id);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE Customer c SET c.name = :newName WHERE c.name = :name")
-    void updateCustomer(@Param("newName") String newName, long id);
 
 
 }
