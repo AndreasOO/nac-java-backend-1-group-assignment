@@ -22,4 +22,10 @@ public class RoomType implements Serializable {
 
     @OneToMany(mappedBy = "roomType")
     private List<Room> rooms;
+
+    public RoomType(String name, int cost, List<Room> rooms) {
+        this.name = name;
+        this.cost = cost;
+        this.rooms = rooms;
+    }
 }
