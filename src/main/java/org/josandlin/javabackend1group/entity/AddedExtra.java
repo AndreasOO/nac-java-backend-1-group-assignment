@@ -17,11 +17,11 @@ public class AddedExtra implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "extra_type_id")
+    @JoinColumn
     private ExtraType extraType;
 
     @ManyToOne
-    @JoinColumn(name="booked_room_id")
+    @JoinColumn
     private BookedRoom bookedRoom;
 
     private int quantity;
