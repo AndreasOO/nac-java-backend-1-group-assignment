@@ -14,7 +14,7 @@ public class BookingController {
     }
 
     @GetMapping("rooms/{id}")
-    public String showSelectedRoom(Model model) {
+    public String showSelectedRoom(Model model, @PathVariable String id) {
 
         return "selectedRoom";
     }
@@ -36,7 +36,5 @@ public class BookingController {
         System.out.println("cancelled room " + id);
         return "selectedRoom";
     }
-
-
 
 }
