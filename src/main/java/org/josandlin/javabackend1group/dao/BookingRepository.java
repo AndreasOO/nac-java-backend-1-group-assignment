@@ -1,4 +1,7 @@
 package org.josandlin.javabackend1group.dao;
 
-public interface BookingRepository {
+import org.josandlin.javabackend1group.entity.Booking;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 }
