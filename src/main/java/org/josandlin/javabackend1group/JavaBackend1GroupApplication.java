@@ -64,12 +64,14 @@ public class JavaBackend1GroupApplication {
             Room roomThree = new Room("Honeymoon suite", 2, 4, doubleRoom);
             Room roomFour = new Room("Nice room", 2, 2, singleRoom);
             Room roomFive = new Room("Ok room", 4, 0, quadRoom);
+            Room roomSix = new Room("Unbooked room", 1, 1, singleRoom);
 
             roomRepository.save(roomOne);
             roomRepository.save(roomTwo);
             roomRepository.save(roomThree);
             roomRepository.save(roomFour);
             roomRepository.save(roomFive);
+            roomRepository.save(roomSix);
 
             BookedRoom firstRoomInOlasBooking = new BookedRoom(roomTwo, olasBooking);
             BookedRoom secondRoomInOlasBooking = new BookedRoom(roomFive, olasBooking);

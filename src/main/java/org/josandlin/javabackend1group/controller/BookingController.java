@@ -1,22 +1,29 @@
 package org.josandlin.javabackend1group.controller;
 
+import org.josandlin.javabackend1group.dao.RoomRepository;
+import org.josandlin.javabackend1group.entity.Room;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequestMapping("bookings")
 public class BookingController {
 
+    @Autowired
+    RoomRepository roomRepository;
+
     @GetMapping("rooms")
-    public String showAvailableRooms(Model model) {
-        return "rooms";
+    public List<Room> showAvailableRooms(Model model) {
+        return roomRepository.findAvailableRooms();
     }
 
     @GetMapping("rooms/{id}")
-    public String showSelectedRoom(Model model, @PathVariable String id) {
-
-        return "selectedRoom";
+    public Room showSelectedRoom(Model model, @PathVariable Long id) {
+        return roomRepository.findRoomById(id);
     }
 
     @PostMapping("rooms/{id}")
