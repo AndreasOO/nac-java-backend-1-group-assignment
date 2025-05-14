@@ -17,14 +17,9 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-
     private String name;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Booking> bookings;
-
-    public Customer(String name, List<Booking> bookings) {
+    public Customer(String name) {
         this.name = name;
-        this.bookings = bookings;
     }
 }

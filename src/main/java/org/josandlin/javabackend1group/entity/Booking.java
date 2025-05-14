@@ -5,6 +5,7 @@ import lombok.*;
 
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -19,18 +20,14 @@ public class Booking implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToMany(mappedBy = "booking")
-    private List<BookedRoom> bookedRoom;
-
     @ManyToOne
-    @JoinColumn(name="customer_id")
+    @JoinColumn
     private Customer customer;
 
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
-    public Booking(List<BookedRoom> bookedRoom, Customer customer, Date startDate, Date endDate) {
-        this.bookedRoom = bookedRoom;
+    public Booking(Customer customer, LocalDate startDate, LocalDate endDate) {
         this.customer = customer;
         this.startDate = startDate;
         this.endDate = endDate;
