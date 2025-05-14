@@ -20,8 +20,12 @@ public class RoomType implements Serializable {
     private String name;
     private int cost;
 
-    @OneToMany
-    @JoinColumn(name = "room_id")
+    @OneToMany(mappedBy = "roomType")
     private List<Room> rooms;
 
+    public RoomType(String name, int cost, List<Room> rooms) {
+        this.name = name;
+        this.cost = cost;
+        this.rooms = rooms;
+    }
 }

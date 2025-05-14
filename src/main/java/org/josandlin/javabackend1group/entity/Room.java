@@ -12,8 +12,13 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Room extends Bookable implements Serializable {
+public class Room implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
     private Long roomCapacity;
     private Long extrasAvailable;
 
@@ -21,5 +26,10 @@ public class Room extends Bookable implements Serializable {
     @JoinColumn(name = "room_type_id")
     private RoomType roomType;
 
-
+    public Room(String name, Long roomCapacity, Long extrasAvailable, RoomType roomType) {
+        this.name = name;
+        this.roomCapacity = roomCapacity;
+        this.extrasAvailable = extrasAvailable;
+        this.roomType = roomType;
+    }
 }

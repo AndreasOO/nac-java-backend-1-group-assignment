@@ -20,9 +20,11 @@ public class Customer implements Serializable {
 
     private String name;
 
-    @OneToMany
-    @JoinColumn(name = "booking_id")
+    @OneToMany(mappedBy = "customer")
     private List<Booking> bookings;
 
-
+    public Customer(String name, List<Booking> bookings) {
+        this.name = name;
+        this.bookings = bookings;
+    }
 }

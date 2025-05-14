@@ -20,8 +20,8 @@ public class ExtraType implements Serializable {
     private String name;
     private int cost;
 
-    @OneToMany
-    @JoinColumn(name = "extra_id")
-    private List<Extra> extras;
-
+    public ExtraType(String name, int cost) {
+        this.name = name;
+        this.cost = cost;
+    }
 }
