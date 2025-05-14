@@ -13,16 +13,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
-@RequestMapping("customers")
+@RequestMapping("/customers")
 public class CustomerController {
 
-    CustomerRepository customerDao;
-
-    public CustomerController(CustomerRepository customerDao) {
-        this.customerDao = customerDao;
-    }
+    @Autowired
+    private CustomerRepository customerDao;
 
     @GetMapping("register")
     public String showCustomerRegistrationForm(Model model) {
@@ -31,6 +29,8 @@ public class CustomerController {
 
     @PostMapping("register")
     public String registerCustomer(Model model) {
+        Customer customer = new Customer();
+        customerDao.save(customer);
         System.out.println("registering customer");
         //TODO use service here
         return "registration";
@@ -44,34 +44,42 @@ public class CustomerController {
     }
 
     @DeleteMapping("register/{id}")
-    public String deleteCustomer(Model model, @PathVariable String id) {
+    public String deleteCustomer(Model model, @PathVariable Long id) {
+            Optional<Customer> optionalCustomer = customerDao.findById(id);
+            if (optionalCustomer.isPresent()) {
+                Customer customer = optionalCustomer.get();
+                if (customer.getBookings() == null || customer.getBookings().isEmpty()) {
+                    customerDao.deleteIfNoBookings(id);
+                    model.addAttribute("message", "Customer removed successfully.");
+                } else {
+                    model.addAttribute("message", "Customer has reservations, cannot be removed.");
+                }
+            } else {
+                model.addAttribute("message", "Customer not found.");
+            }
+        model.addAttribute("customer", optionalCustomer);
         System.out.println("deleting customer " + id);
         //TODO use service here
         return "registration";
     }
 
-    @GetMapping("bookings/{id}")
-    public List<Booking> findBookingsByCustomer(String name){
+//    @GetMapping("bookings/{id}")
+//    public List<Booking> findBookingsByCustomer(String name){
+//        Customer customer = customerDao.findByName(name);
+//        return customerDao.findBookingsByCustomer(customer);
+//    }
+
+
+    @GetMapping("customer/name/{name}")
+    public String findCustomerByName(Model model, @PathVariable String name) {
         Customer customer = customerDao.findByName(name);
-        return customerDao.findBookingsByCustomer(customer);
+        model.addAttribute("customer", customer);
+        return "customer-details";
     }
 
-    @GetMapping("customer/{name}")
-    public Customer findCustomerByName(Model model, @PathVariable String name) {
-        model.addAttribute("customer", customerDao.findByName(name));
-        return customerDao.findByName(name);
+    @GetMapping("/customer/id/{id}")
+    public Optional<Customer> findCustomerById(@PathVariable Long id) {
+        return customerDao.findById(id);
     }
-
-//    @GetMapping("customere/{name}")
-//    @ResponseBody
-//    public Customer findCustomerByNamee(@PathVariable String name) {
-//        return customerDao.findByName(name);
-//    }
-
-
-//    @GetMapping("customer/{id}")
-//    public Customer findCustomerById(@PathVariable Long id) {
-//        return customer.find
-//    }
 
 }
