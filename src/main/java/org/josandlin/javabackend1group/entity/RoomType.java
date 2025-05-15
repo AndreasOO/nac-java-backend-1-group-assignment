@@ -8,7 +8,6 @@ import java.io.Serializable;
 @Setter
 @Getter
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 public class RoomType implements Serializable {
@@ -18,6 +17,10 @@ public class RoomType implements Serializable {
 
     private String name;
     private int costPerNight;
+
+    public RoomType(){
+
+    }
 
     public RoomType(String name, int costPerNight) {
         this.name = name;

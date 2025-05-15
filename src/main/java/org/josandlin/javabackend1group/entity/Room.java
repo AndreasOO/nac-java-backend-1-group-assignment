@@ -6,8 +6,6 @@ import lombok.*;
 
 import java.io.Serializable;
 
-@Setter
-@Getter
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +20,7 @@ public class Room implements Serializable {
     private int maxCapacity;
     private int extraBedsAvailable;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
     private RoomType roomType;
 
