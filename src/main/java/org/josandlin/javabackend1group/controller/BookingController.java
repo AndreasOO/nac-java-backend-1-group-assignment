@@ -18,13 +18,13 @@ public class BookingController {
     RoomRepository roomRepository;
 
     @GetMapping("rooms/{startDate}/{endDate}")
-    public List<Room> showAvailableRooms(Model model, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
-        return roomRepository.findAvailableRoomsBetween(startDate, endDate);
+    public String showAvailableRooms(Model model, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
+        return "available rooms";
     }
 
     @GetMapping("rooms/{id}")
-    public Room showSelectedRoom(Model model, @PathVariable Long id) {
-        return roomRepository.findRoomById(id);
+    public String showSelectedRoom(Model model, @PathVariable Long id) {
+        return "one room";
     }
 
     @PostMapping("rooms/{id}")

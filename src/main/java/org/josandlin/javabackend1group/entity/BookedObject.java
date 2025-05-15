@@ -3,6 +3,7 @@ package org.josandlin.javabackend1group.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Setter
@@ -11,8 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class BookedRoom {
-    // döp om till bookedObject
+public class BookedObject {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -23,14 +23,20 @@ public class BookedRoom {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name="booked_room_id")
-    List<AddedExtra> extras;
+    private List<AddedExtra> extras;
 
     @ManyToOne
     @JoinColumn
     private Booking booking;
 
-    public BookedRoom(Room room, Booking booking) {
+    private LocalDate startDate;
+    private LocalDate endDate;
+
+    public BookedObject(Room room, List<AddedExtra> extras, Booking booking, LocalDate startDate, LocalDate endDate) {
         this.room = room;
+        this.extras = extras;
         this.booking = booking;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 }

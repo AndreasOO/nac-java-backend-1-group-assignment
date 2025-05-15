@@ -8,8 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 @SpringBootApplication
@@ -38,11 +36,11 @@ public class JavaBackend1GroupApplication {
             customerRepository.save(linn);
             customerRepository.save(josefin);
 
-            Booking olasBooking = new Booking(ola, LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
-            Booking millysBooking = new Booking(milly, LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
-            Booking andreasBooking = new Booking(andreas, LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
-            Booking linnsBooking = new Booking(linn, LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
-            Booking josefinsBooking = new Booking(josefin, LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+            Booking olasBooking = new Booking(ola);
+            Booking millysBooking = new Booking(milly);
+            Booking andreasBooking = new Booking(andreas);
+            Booking linnsBooking = new Booking(linn);
+            Booking josefinsBooking = new Booking(josefin);
 
             bookingRepository.save(olasBooking);
             bookingRepository.save(millysBooking);
@@ -72,11 +70,11 @@ public class JavaBackend1GroupApplication {
             extraTypeRepository.save(extraPillows);
             extraTypeRepository.save(extraBabyCrib);
 
-            AddedExtra olasExtra = new AddedExtra(extraSnacks, 5);
-            AddedExtra andreasFirstExtra = new AddedExtra(extraBed, 1);
-            AddedExtra andreasSecondExtra = new AddedExtra(extraBabyCrib,1);
-            AddedExtra millysExtra = new AddedExtra(extraPillows, 2);
-            AddedExtra linnsExtra = new AddedExtra(extraSnacks,2);
+            AddedExtra olasExtra = new AddedExtra(extraSnacks);
+            AddedExtra andreasFirstExtra = new AddedExtra(extraBed);
+            AddedExtra andreasSecondExtra = new AddedExtra(extraBabyCrib);
+            AddedExtra millysExtra = new AddedExtra(extraPillows);
+            AddedExtra linnsExtra = new AddedExtra(extraSnacks);
 
             addedExtraRepository.save(olasExtra);
             addedExtraRepository.save(andreasFirstExtra);
@@ -98,18 +96,17 @@ public class JavaBackend1GroupApplication {
             roomRepository.save(roomFive);
             roomRepository.save(roomSix);
 
-            BookedRoom firstRoomInOlasBooking = new BookedRoom(roomTwo, olasBooking);
-            BookedRoom secondRoomInOlasBooking = new BookedRoom(roomFive, olasBooking);
-            BookedRoom roomInMillysBooking = new BookedRoom(roomOne, millysBooking);
-            BookedRoom roomInAndreasBooking = new BookedRoom(roomOne, andreasBooking);
-            BookedRoom roomInLinnsBooking = new BookedRoom(roomThree, linnsBooking);
-            BookedRoom roomInJosefinsBooking = new BookedRoom(roomFour, josefinsBooking);
+            BookedObject firstRoomInOlasBooking = new BookedObject(roomTwo, List.of(olasExtra), olasBooking, LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
+            BookedObject secondRoomInOlasBooking = new BookedObject(roomFive, List.of(), olasBooking, LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 17));
+            BookedObject roomInMillysBooking = new BookedObject(roomOne, List.of(millysExtra), millysBooking, LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
+            BookedObject roomInAndreasBooking = new BookedObject(roomOne, List.of(andreasFirstExtra, andreasSecondExtra), andreasBooking, LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
+            BookedObject roomInLinnsBooking = new BookedObject(roomThree, List.of(linnsExtra), linnsBooking, LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
+            BookedObject roomInJosefinsBooking = new BookedObject(roomFour, List.of(), josefinsBooking, LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
 
-            firstRoomInOlasBooking.setExtras(List.of(olasExtra));
-            roomInMillysBooking.setExtras(List.of(millysExtra));
-            roomInAndreasBooking.setExtras(List.of(andreasFirstExtra, andreasSecondExtra));
-            roomInLinnsBooking.setExtras(List.of(linnsExtra));
-
+//            firstRoomInOlasBooking.setExtras(List.of(olasExtra));
+//            roomInMillysBooking.setExtras(List.of(millysExtra));
+//            roomInAndreasBooking.setExtras(List.of(andreasFirstExtra, andreasSecondExtra));
+//            roomInLinnsBooking.setExtras(List.of(linnsExtra));
 
             bookedRoomRepository.save(firstRoomInOlasBooking);
             bookedRoomRepository.save(secondRoomInOlasBooking);
@@ -117,9 +114,6 @@ public class JavaBackend1GroupApplication {
             bookedRoomRepository.save(roomInAndreasBooking);
             bookedRoomRepository.save(roomInLinnsBooking);
             bookedRoomRepository.save(roomInJosefinsBooking);
-
-
-
         };
     }
 

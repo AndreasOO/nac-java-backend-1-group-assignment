@@ -24,13 +24,7 @@ public class Booking implements Serializable {
     @JoinColumn
     private Customer customer;
 
-    // flytta till bookedroom
-    private LocalDate startDate;
-    private LocalDate endDate;
-
-    public Booking(Customer customer, LocalDate startDate, LocalDate endDate) {
+    public Booking(Customer customer) {
         this.customer = customer;
-        this.startDate = startDate;
-        this.endDate = endDate;
     }
 }
