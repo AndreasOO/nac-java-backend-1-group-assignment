@@ -5,41 +5,6 @@
   <title>Customer Details</title>
 </head>
 <body>
-<h1>Kunddetaljer</h1>
 
-<div>
-  <h2 th:text="'Välkommen ' + ${customer.name}">Välkommen</h2>
-  <p>Kundinformation:</p>
-  <ul>
-    <li th:text="'ID: ' + ${customer.id}">ID: 1</li>
-    <li th:text="'Namn: ' + ${customer.name}">Namn: Ola</li>
-    <!-- Lägg till fler kunddetaljer här om de finns -->
-  </ul>
-</div>
-
-<!-- Om du vill visa kundens bokningar -->
-<div th:if="${customer.bookings != null and not #lists.isEmpty(customer.bookings)}">
-  <h3>Bokningar:</h3>
-  <table border="1">
-    <thead>
-    <tr>
-      <th>Boknings-ID</th>
-      <th>Datum</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="booking : ${customer.bookings}">
-      <td th:text="${booking.id}">123</td>
-      <td th:text="${#temporals.format(booking.date, 'yyyy-MM-dd')}">2025-05-13</td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-
-<div th:if="${customer.bookings == null or #lists.isEmpty(customer.bookings)}">
-  <p>Kunden har inga bokningar.</p>
-</div>
-
-<p><a href="/customers">Tillbaka till kundlistan</a></p>
 </body>
 </html>

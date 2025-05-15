@@ -30,12 +30,14 @@ public class JavaBackend1GroupApplication {
             Customer andreas = new Customer("Andreas");
             Customer linn = new Customer("Linn");
             Customer josefin = new Customer("Josefin");
+            Customer Sigge = new Customer("Sigge");
 
             customerRepository.save(ola);
             customerRepository.save(milly);
             customerRepository.save(andreas);
             customerRepository.save(linn);
             customerRepository.save(josefin);
+            customerRepository.save(Sigge);
 
             Booking olasBooking = new Booking(ola, LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
             Booking millysBooking = new Booking(milly, LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
