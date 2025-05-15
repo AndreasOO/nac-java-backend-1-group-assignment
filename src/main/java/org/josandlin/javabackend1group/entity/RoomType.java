@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.List;
 
 @Setter
 @Getter
@@ -18,14 +17,10 @@ public class RoomType implements Serializable {
     private Long id;
 
     private String name;
-    private int cost;
+    private int costPerNight;
 
-    @OneToMany(mappedBy = "roomType")
-    private List<Room> rooms;
-
-    public RoomType(String name, int cost, List<Room> rooms) {
+    public RoomType(String name, int costPerNight) {
         this.name = name;
-        this.cost = cost;
-        this.rooms = rooms;
+        this.costPerNight = costPerNight;
     }
 }

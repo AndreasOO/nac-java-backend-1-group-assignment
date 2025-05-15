@@ -16,20 +16,16 @@ public class BookedRoom {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name="room_id")
+    @ManyToOne
+    @JoinColumn
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name="booking_id")
+    @JoinColumn
     private Booking booking;
 
-    @OneToMany(mappedBy = "bookedRoom")
-    private List<AddedExtra> addedExtras;
-
-    public BookedRoom(Room room, Booking booking, List<AddedExtra> addedExtras) {
+    public BookedRoom(Room room, Booking booking) {
         this.room = room;
         this.booking = booking;
-        this.addedExtras = addedExtras;
     }
 }

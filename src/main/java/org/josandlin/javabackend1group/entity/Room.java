@@ -19,14 +19,14 @@ public class Room implements Serializable {
     private Long id;
 
     private String name;
-    private Long roomCapacity;
-    private Long extrasAvailable;
+    private int roomCapacity;
+    private int extrasAvailable;
 
     @ManyToOne
-    @JoinColumn(name = "room_type_id")
+    @JoinColumn
     private RoomType roomType;
 
-    public Room(String name, Long roomCapacity, Long extrasAvailable, RoomType roomType) {
+    public Room(String name, int roomCapacity, int extrasAvailable, RoomType roomType) {
         this.name = name;
         this.roomCapacity = roomCapacity;
         this.extrasAvailable = extrasAvailable;
