@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 @SpringBootApplication
 public class JavaBackend1GroupApplication {
@@ -59,6 +60,30 @@ public class JavaBackend1GroupApplication {
             roomTypeRepository.save(twinRoom);
             roomTypeRepository.save(quadRoom);
 
+            ExtraType extraBed = new ExtraType("single bed", 200);
+            ExtraType extraSnacks = new ExtraType("snacks", 85);
+            ExtraType extraTowels = new ExtraType("towels", 50);
+            ExtraType extraPillows = new ExtraType("pillows", 50);
+            ExtraType extraBabyCrib = new ExtraType("baby crib", 120);
+
+            extraTypeRepository.save(extraBed);
+            extraTypeRepository.save(extraSnacks);
+            extraTypeRepository.save(extraTowels);
+            extraTypeRepository.save(extraPillows);
+            extraTypeRepository.save(extraBabyCrib);
+
+            AddedExtra olasExtra = new AddedExtra(extraSnacks, 5);
+            AddedExtra andreasFirstExtra = new AddedExtra(extraBed, 1);
+            AddedExtra andreasSecondExtra = new AddedExtra(extraBabyCrib,1);
+            AddedExtra millysExtra = new AddedExtra(extraPillows, 2);
+            AddedExtra linnsExtra = new AddedExtra(extraSnacks,2);
+
+            addedExtraRepository.save(olasExtra);
+            addedExtraRepository.save(andreasFirstExtra);
+            addedExtraRepository.save(andreasSecondExtra);
+            addedExtraRepository.save(millysExtra);
+            addedExtraRepository.save(linnsExtra);
+
             Room roomOne = new Room("Sea view room", 3, 3, doubleRoom);
             Room roomTwo = new Room("Dumpster room", 2, 1, twinRoom);
             Room roomThree = new Room("Honeymoon suite", 2, 4, doubleRoom);
@@ -80,6 +105,12 @@ public class JavaBackend1GroupApplication {
             BookedRoom roomInLinnsBooking = new BookedRoom(roomThree, linnsBooking);
             BookedRoom roomInJosefinsBooking = new BookedRoom(roomFour, josefinsBooking);
 
+            firstRoomInOlasBooking.setExtras(List.of(olasExtra));
+            roomInMillysBooking.setExtras(List.of(millysExtra));
+            roomInAndreasBooking.setExtras(List.of(andreasFirstExtra, andreasSecondExtra));
+            roomInLinnsBooking.setExtras(List.of(linnsExtra));
+
+
             bookedRoomRepository.save(firstRoomInOlasBooking);
             bookedRoomRepository.save(secondRoomInOlasBooking);
             bookedRoomRepository.save(roomInMillysBooking);
@@ -87,29 +118,7 @@ public class JavaBackend1GroupApplication {
             bookedRoomRepository.save(roomInLinnsBooking);
             bookedRoomRepository.save(roomInJosefinsBooking);
 
-            ExtraType extraBed = new ExtraType("single bed", 200);
-            ExtraType extraSnacks = new ExtraType("snacks", 85);
-            ExtraType extraTowels = new ExtraType("towels", 50);
-            ExtraType extraPillows = new ExtraType("pillows", 50);
-            ExtraType extraBabyCrib = new ExtraType("baby crib", 120);
 
-            extraTypeRepository.save(extraBed);
-            extraTypeRepository.save(extraSnacks);
-            extraTypeRepository.save(extraTowels);
-            extraTypeRepository.save(extraPillows);
-            extraTypeRepository.save(extraBabyCrib);
-
-            AddedExtra olasExtra = new AddedExtra(extraSnacks, firstRoomInOlasBooking, 5);
-            AddedExtra andreasFirstExtra = new AddedExtra(extraBed, roomInAndreasBooking, 1);
-            AddedExtra andreasSecondExtra = new AddedExtra(extraBabyCrib, roomInAndreasBooking, 1);
-            AddedExtra millysExtra = new AddedExtra(extraPillows, roomInMillysBooking, 2);
-            AddedExtra linnsExtra = new AddedExtra(extraSnacks, roomInLinnsBooking, 2);
-
-            addedExtraRepository.save(olasExtra);
-            addedExtraRepository.save(andreasFirstExtra);
-            addedExtraRepository.save(andreasSecondExtra);
-            addedExtraRepository.save(millysExtra);
-            addedExtraRepository.save(linnsExtra);
 
         };
     }

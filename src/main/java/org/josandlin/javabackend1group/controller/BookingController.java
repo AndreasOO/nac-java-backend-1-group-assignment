@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -16,9 +17,9 @@ public class BookingController {
     @Autowired
     RoomRepository roomRepository;
 
-    @GetMapping("rooms")
-    public List<Room> showAvailableRooms(Model model) {
-        return roomRepository.findAvailableRooms();
+    @GetMapping("rooms/{startDate}/{endDate}")
+    public List<Room> showAvailableRooms(Model model, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
+        return roomRepository.findAvailableRoomsBetween(startDate, endDate);
     }
 
     @GetMapping("rooms/{id}")

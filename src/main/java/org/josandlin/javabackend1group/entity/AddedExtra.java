@@ -20,15 +20,15 @@ public class AddedExtra implements Serializable {
     @JoinColumn
     private ExtraType extraType;
 
-    @ManyToOne
-    @JoinColumn
-    private BookedRoom bookedRoom;
+//    @ManyToOne
+//    @JoinColumn
+//    private BookedRoom bookedRoom;
 
+    // radera quantity
     private int quantity;
 
-    public AddedExtra(ExtraType extraType, BookedRoom bookedRoom, int quantity) {
+    public AddedExtra(ExtraType extraType, int quantity) {
         this.extraType = extraType;
-        this.bookedRoom = bookedRoom;
         this.quantity = quantity;
     }
 }

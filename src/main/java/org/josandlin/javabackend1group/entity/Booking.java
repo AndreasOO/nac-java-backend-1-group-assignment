@@ -24,6 +24,7 @@ public class Booking implements Serializable {
     @JoinColumn
     private Customer customer;
 
+    // flytta till bookedroom
     private LocalDate startDate;
     private LocalDate endDate;
 

@@ -12,6 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 public class BookedRoom {
+    // döp om till bookedObject
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
@@ -19,6 +20,10 @@ public class BookedRoom {
     @ManyToOne
     @JoinColumn
     private Room room;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name="booked_room_id")
+    List<AddedExtra> extras;
 
     @ManyToOne
     @JoinColumn

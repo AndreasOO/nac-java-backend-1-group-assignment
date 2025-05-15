@@ -20,16 +20,16 @@ public class Room implements Serializable {
 
     private String name;
     private int roomCapacity;
-    private int extrasAvailable;
+    private int extraBedsAvailable;
 
     @ManyToOne
     @JoinColumn
     private RoomType roomType;
 
-    public Room(String name, int roomCapacity, int extrasAvailable, RoomType roomType) {
+    public Room(String name, int roomCapacity, int extraBedsAvailable, RoomType roomType) {
         this.name = name;
         this.roomCapacity = roomCapacity;
-        this.extrasAvailable = extrasAvailable;
+        this.extraBedsAvailable = extraBedsAvailable;
         this.roomType = roomType;
     }
 }
