@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Registration</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body>
+<div class="container min-vh-100 d-flex justify-content-center align-items-center">
+  <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 600px;">
+    <table class="table">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Room id</th>
+        <th scope="col">Room type</th>
+        <th scope="col">Cost per night</th>
+        <th scope="col">From date</th>
+        <th scope="col">To date</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="bookedRoom, iterStat : ${bookedRooms}">
+        <th scope="row" th:text="${iterStat.index + 1}">1</th>
+        <td th:text="${bookedRoom.getRoom().getId()}">Room id</td>
+        <td th:text="${bookedRoom.getRoom().getRoomType().getName()}">Room type</td>
+        <td th:text="${bookedRoom.getRoom().getRoomType().getCostPerNight()}">Cost per night</td>
+        <td th:text="${bookedRoom.getStartDate()}">Booked from</td>
+        <td th:text="${bookedRoom.getEndDate()}">Booked to</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>

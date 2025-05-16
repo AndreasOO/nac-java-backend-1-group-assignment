@@ -82,12 +82,26 @@ public class BookingServiceImpl implements BookingService {
                                                  .toList();
     }
 
+    public List<BookedObject> getBookedRoomsByBookingId(Long bookingId){
+        return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId)).toList();
+    }
+
     @Override
     public List<Room> getAvailableRoomsBetweenDates(LocalDate startDate, LocalDate endDate) {
         return bookedObjectDao.findAll().stream().filter(bookedObj -> bookedObj.getStartDate().isAfter(endDate)
                                                                                || bookedObj.getEndDate().isBefore(startDate))
                                                  .map(BookedObject::getRoom)
                                                  .toList();
+    }
+
+    @Override
+    public List<Booking> getAllBookings(){
+        return bookingDao.findAll();
+    }
+
+    @Override
+    public List<Room> getAllRooms(){
+        return roomDao.findAll();
     }
 
 

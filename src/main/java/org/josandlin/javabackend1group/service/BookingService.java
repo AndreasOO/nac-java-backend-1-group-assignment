@@ -32,5 +32,10 @@ public interface BookingService {
 
     List<Room> getAvailableRoomsBetweenDates(LocalDate startDate, LocalDate endDate);
 
+    List<Booking> getAllBookings();
+
+    List<BookedObject> getBookedRoomsByBookingId(Long bookingId);
+
+    List<Room> getAllRooms();
 
 }
