@@ -29,12 +29,14 @@ public class JavaBackend1GroupApplication {
             Customer andreas = new Customer("Andreas");
             Customer linn = new Customer("Linn");
             Customer josefin = new Customer("Josefin");
+            Customer Sigge = new Customer("Sigge");
 
             customerDao.save(ola);
             customerDao.save(milly);
             customerDao.save(andreas);
             customerDao.save(linn);
             customerDao.save(josefin);
+            customerDao.save(Sigge);
 
             Booking olasBooking = new Booking(ola);
             Booking millysBooking = new Booking(milly);
