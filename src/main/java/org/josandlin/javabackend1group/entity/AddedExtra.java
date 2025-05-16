@@ -5,11 +5,6 @@ import lombok.*;
 
 import java.io.Serializable;
 
-@Setter
-@Getter
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class AddedExtra implements Serializable {
     @Id
@@ -20,9 +15,32 @@ public class AddedExtra implements Serializable {
     @JoinColumn
     private ExtraType extraType;
 
+    public AddedExtra(Long id, ExtraType extraType) {
+        this.id = id;
+        this.extraType = extraType;
+    }
+
     public AddedExtra(ExtraType extraType) {
         this.extraType = extraType;
     }
 
+    public AddedExtra(){
 
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ExtraType getExtraType() {
+        return extraType;
+    }
+
+    public void setExtraType(ExtraType extraType) {
+        this.extraType = extraType;
+    }
 }

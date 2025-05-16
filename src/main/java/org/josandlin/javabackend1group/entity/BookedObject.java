@@ -6,11 +6,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@Setter
-@Getter
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class BookedObject {
     @Id
@@ -32,11 +27,72 @@ public class BookedObject {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    public BookedObject(Long id, Room room, List<AddedExtra> extras, Booking booking, LocalDate startDate, LocalDate endDate) {
+        this.id = id;
+        this.room = room;
+        this.extras = extras;
+        this.booking = booking;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
     public BookedObject(Room room, List<AddedExtra> extras, Booking booking, LocalDate startDate, LocalDate endDate) {
         this.room = room;
         this.extras = extras;
         this.booking = booking;
         this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public BookedObject(){
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public List<AddedExtra> getExtras() {
+        return extras;
+    }
+
+    public void setExtras(List<AddedExtra> extras) {
+        this.extras = extras;
+    }
+
+    public Booking getBooking() {
+        return booking;
+    }
+
+    public void setBooking(Booking booking) {
+        this.booking = booking;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 }

@@ -6,9 +6,7 @@ import lombok.*;
 
 import java.io.Serializable;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
+
 @Entity
 public class Room implements Serializable {
 
@@ -24,10 +22,62 @@ public class Room implements Serializable {
     @JoinColumn
     private RoomType roomType;
 
+    public Room(Long id, String name, int maxCapacity, int extraBedsAvailable, RoomType roomType) {
+        this.id = id;
+        this.name = name;
+        this.maxCapacity = maxCapacity;
+        this.extraBedsAvailable = extraBedsAvailable;
+        this.roomType = roomType;
+    }
+
     public Room(String name, int maxCapacity, int extraBedsAvailable, RoomType roomType) {
         this.name = name;
         this.maxCapacity = maxCapacity;
         this.extraBedsAvailable = extraBedsAvailable;
+        this.roomType = roomType;
+    }
+
+    public Room(){
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
+    }
+
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
+    }
+
+    public int getExtraBedsAvailable() {
+        return extraBedsAvailable;
+    }
+
+    public void setExtraBedsAvailable(int extraBedsAvailable) {
+        this.extraBedsAvailable = extraBedsAvailable;
+    }
+
+    public RoomType getRoomType() {
+        return roomType;
+    }
+
+    public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
     }
 }

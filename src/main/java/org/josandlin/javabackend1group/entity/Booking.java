@@ -9,11 +9,6 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-@Setter
-@Getter
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Booking implements Serializable {
     @Id
@@ -24,7 +19,32 @@ public class Booking implements Serializable {
     @JoinColumn
     private Customer customer;
 
+    public Booking(Long id, Customer customer) {
+        this.id = id;
+        this.customer = customer;
+    }
+
     public Booking(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Booking(){
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
 }
