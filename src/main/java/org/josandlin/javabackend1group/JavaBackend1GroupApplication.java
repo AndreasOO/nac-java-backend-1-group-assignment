@@ -18,10 +18,10 @@ public class JavaBackend1GroupApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(BookingRepository bookingRepository, CustomerRepository customerRepository,
-                                  RoomTypeRepository roomTypeRepository, RoomRepository roomRepository,
-                                  BookedRoomRepository bookedRoomRepository, ExtraTypeRepository extraTypeRepository,
-                                  AddedExtraRepository addedExtraRepository) {
+    public CommandLineRunner demo(BookingDao bookingDao, CustomerDao customerDao,
+                                  RoomTypeDao roomTypeDao, RoomDao roomDao,
+                                  BookedObjectDao bookedRoomDao, ExtraTypeDao extraTypeDao,
+                                  AddedExtraDao addedExtraDao) {
         return (args) -> {
 
             Customer ola = new Customer("Ola");
@@ -30,11 +30,11 @@ public class JavaBackend1GroupApplication {
             Customer linn = new Customer("Linn");
             Customer josefin = new Customer("Josefin");
 
-            customerRepository.save(ola);
-            customerRepository.save(milly);
-            customerRepository.save(andreas);
-            customerRepository.save(linn);
-            customerRepository.save(josefin);
+            customerDao.save(ola);
+            customerDao.save(milly);
+            customerDao.save(andreas);
+            customerDao.save(linn);
+            customerDao.save(josefin);
 
             Booking olasBooking = new Booking(ola);
             Booking millysBooking = new Booking(milly);
@@ -42,21 +42,21 @@ public class JavaBackend1GroupApplication {
             Booking linnsBooking = new Booking(linn);
             Booking josefinsBooking = new Booking(josefin);
 
-            bookingRepository.save(olasBooking);
-            bookingRepository.save(millysBooking);
-            bookingRepository.save(andreasBooking);
-            bookingRepository.save(linnsBooking);
-            bookingRepository.save(josefinsBooking);
+            bookingDao.save(olasBooking);
+            bookingDao.save(millysBooking);
+            bookingDao.save(andreasBooking);
+            bookingDao.save(linnsBooking);
+            bookingDao.save(josefinsBooking);
 
             RoomType singleRoom = new RoomType("Single room", 1000);
             RoomType doubleRoom = new RoomType("Double room", 2000);
             RoomType twinRoom = new RoomType("Twin room", 1900);
             RoomType quadRoom = new RoomType("Quad room", 3200);
 
-            roomTypeRepository.save(singleRoom);
-            roomTypeRepository.save(doubleRoom);
-            roomTypeRepository.save(twinRoom);
-            roomTypeRepository.save(quadRoom);
+            roomTypeDao.save(singleRoom);
+            roomTypeDao.save(doubleRoom);
+            roomTypeDao.save(twinRoom);
+            roomTypeDao.save(quadRoom);
 
             ExtraType extraBed = new ExtraType("single bed", 200);
             ExtraType extraSnacks = new ExtraType("snacks", 85);
@@ -64,11 +64,11 @@ public class JavaBackend1GroupApplication {
             ExtraType extraPillows = new ExtraType("pillows", 50);
             ExtraType extraBabyCrib = new ExtraType("baby crib", 120);
 
-            extraTypeRepository.save(extraBed);
-            extraTypeRepository.save(extraSnacks);
-            extraTypeRepository.save(extraTowels);
-            extraTypeRepository.save(extraPillows);
-            extraTypeRepository.save(extraBabyCrib);
+            extraTypeDao.save(extraBed);
+            extraTypeDao.save(extraSnacks);
+            extraTypeDao.save(extraTowels);
+            extraTypeDao.save(extraPillows);
+            extraTypeDao.save(extraBabyCrib);
 
             AddedExtra olasExtra = new AddedExtra(extraSnacks);
             AddedExtra andreasFirstExtra = new AddedExtra(extraBed);
@@ -76,11 +76,11 @@ public class JavaBackend1GroupApplication {
             AddedExtra millysExtra = new AddedExtra(extraPillows);
             AddedExtra linnsExtra = new AddedExtra(extraSnacks);
 
-            addedExtraRepository.save(olasExtra);
-            addedExtraRepository.save(andreasFirstExtra);
-            addedExtraRepository.save(andreasSecondExtra);
-            addedExtraRepository.save(millysExtra);
-            addedExtraRepository.save(linnsExtra);
+            addedExtraDao.save(olasExtra);
+            addedExtraDao.save(andreasFirstExtra);
+            addedExtraDao.save(andreasSecondExtra);
+            addedExtraDao.save(millysExtra);
+            addedExtraDao.save(linnsExtra);
 
             Room roomOne = new Room("Sea view room", 3, 3, doubleRoom);
             Room roomTwo = new Room("Dumpster room", 2, 1, twinRoom);
@@ -89,12 +89,12 @@ public class JavaBackend1GroupApplication {
             Room roomFive = new Room("Ok room", 4, 0, quadRoom);
             Room roomSix = new Room("Unbooked room", 1, 1, singleRoom);
 
-            roomRepository.save(roomOne);
-            roomRepository.save(roomTwo);
-            roomRepository.save(roomThree);
-            roomRepository.save(roomFour);
-            roomRepository.save(roomFive);
-            roomRepository.save(roomSix);
+            roomDao.save(roomOne);
+            roomDao.save(roomTwo);
+            roomDao.save(roomThree);
+            roomDao.save(roomFour);
+            roomDao.save(roomFive);
+            roomDao.save(roomSix);
 
             BookedObject firstRoomInOlasBooking = new BookedObject(roomTwo, List.of(olasExtra), olasBooking, LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
             BookedObject secondRoomInOlasBooking = new BookedObject(roomFive, List.of(), olasBooking, LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 17));
@@ -108,12 +108,12 @@ public class JavaBackend1GroupApplication {
 //            roomInAndreasBooking.setExtras(List.of(andreasFirstExtra, andreasSecondExtra));
 //            roomInLinnsBooking.setExtras(List.of(linnsExtra));
 
-            bookedRoomRepository.save(firstRoomInOlasBooking);
-            bookedRoomRepository.save(secondRoomInOlasBooking);
-            bookedRoomRepository.save(roomInMillysBooking);
-            bookedRoomRepository.save(roomInAndreasBooking);
-            bookedRoomRepository.save(roomInLinnsBooking);
-            bookedRoomRepository.save(roomInJosefinsBooking);
+            bookedRoomDao.save(firstRoomInOlasBooking);
+            bookedRoomDao.save(secondRoomInOlasBooking);
+            bookedRoomDao.save(roomInMillysBooking);
+            bookedRoomDao.save(roomInAndreasBooking);
+            bookedRoomDao.save(roomInLinnsBooking);
+            bookedRoomDao.save(roomInJosefinsBooking);
         };
     }
 

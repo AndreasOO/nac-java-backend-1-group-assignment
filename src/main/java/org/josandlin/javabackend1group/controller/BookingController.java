@@ -1,11 +1,10 @@
 package org.josandlin.javabackend1group.controller;
 
-import org.josandlin.javabackend1group.dao.RoomRepository;
-import org.josandlin.javabackend1group.dao.RoomTypeRepository;
+import org.josandlin.javabackend1group.dao.RoomDao;
+import org.josandlin.javabackend1group.dao.RoomTypeDao;
 import org.josandlin.javabackend1group.entity.Room;
 import org.josandlin.javabackend1group.entity.RoomType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,30 +16,30 @@ import java.util.List;
 public class BookingController {
 
     @Autowired
-    RoomRepository roomRepository;
+    RoomDao roomDao;
 
     @Autowired
-    RoomTypeRepository roomTypeRepository;
+    RoomTypeDao roomTypeDao;
 
     @GetMapping("rooms/{startDate}/{endDate}")
     public List<Room> showAvailableRooms(Model model, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
-        return roomRepository.findAvailableRoomsBetween(startDate, endDate);
+        return roomDao.findAvailableRoomsBetween(startDate, endDate);
     }
 
     @GetMapping("rooms/byType/{roomTypeId}")
     public List<Room> showRoomsAfterRoomType(Model model, @PathVariable Long roomTypeId) {
-        RoomType roomType = roomTypeRepository.findById(roomTypeId).orElse(null);
-        return roomRepository.findAllByRoomType(roomType);
+        RoomType roomType = roomTypeDao.findById(roomTypeId).orElse(null);
+        return roomDao.findAllByRoomType(roomType);
     }
 
     @GetMapping("rooms/byCapacity/{maxCapacity}")
     public List<Room> showRoomAfterMaxCapacity(Model model, @PathVariable int maxCapacity) {
-        return roomRepository.findAllByMaxCapacity(maxCapacity);
+        return roomDao.findAllByMaxCapacity(maxCapacity);
     }
 
     @GetMapping("rooms/{id}")
     public Room showSelectedRoom(Model model, @PathVariable Long id) {
-        return roomRepository.findRoomById(id);
+        return roomDao.findRoomById(id);
     }
 
     @PostMapping("rooms/{id}")
