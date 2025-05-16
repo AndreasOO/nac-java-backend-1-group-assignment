@@ -9,16 +9,5 @@ import java.util.List;
 
 
 public interface CustomerService {
-    List<Room> getRoomsByBookingId(Long bookingId);
 
-    List<Room> getAvailableRoomsBetweenDates(Date startDate, Date endDate);
-
-    @Transactional
-    BookedObject addBookedObjectToBooking(BookedObject bookedObject, Long bookingId);
-
-    @Transactional
-    void removeBookedObject(Long bookedObjectId);
-
-    @Transactional
-    BookedObject editBookedObject(BookedObject bookedObject);
 }
