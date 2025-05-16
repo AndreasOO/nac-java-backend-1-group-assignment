@@ -1,6 +1,6 @@
 package org.josandlin.javabackend1group.controller;
 
-import org.josandlin.javabackend1group.dao.CustomerRepository;
+import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +14,7 @@ import java.util.Optional;
 public class CustomerController {
 
     @Autowired
-    private CustomerRepository customerDao;
+    private CustomerDao customerDao;
 
     @GetMapping("register")
     public String showCustomerRegistrationForm(Model model) {

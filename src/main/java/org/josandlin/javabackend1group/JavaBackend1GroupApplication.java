@@ -8,8 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.List;
 
 @SpringBootApplication
 public class JavaBackend1GroupApplication {
@@ -19,10 +18,10 @@ public class JavaBackend1GroupApplication {
     }
 
     @Bean
-    public CommandLineRunner demo(BookingRepository bookingRepository, CustomerRepository customerRepository,
-                                  RoomTypeRepository roomTypeRepository, RoomRepository roomRepository,
-                                  BookedRoomRepository bookedRoomRepository, ExtraTypeRepository extraTypeRepository,
-                                  AddedExtraRepository addedExtraRepository) {
+    public CommandLineRunner demo(BookingDao bookingDao, CustomerDao customerDao,
+                                  RoomTypeDao roomTypeDao, RoomDao roomDao,
+                                  BookedObjectDao bookedRoomDao, ExtraTypeDao extraTypeDao,
+                                  AddedExtraDao addedExtraDao) {
         return (args) -> {
 
             Customer ola = new Customer("Ola");
@@ -32,60 +31,34 @@ public class JavaBackend1GroupApplication {
             Customer josefin = new Customer("Josefin");
             Customer Sigge = new Customer("Sigge");
 
-            customerRepository.save(ola);
-            customerRepository.save(milly);
-            customerRepository.save(andreas);
-            customerRepository.save(linn);
-            customerRepository.save(josefin);
-            customerRepository.save(Sigge);
+            customerDao.save(ola);
+            customerDao.save(milly);
+            customerDao.save(andreas);
+            customerDao.save(linn);
+            customerDao.save(josefin);
+            customerDao.save(Sigge);
 
-            Booking olasBooking = new Booking(ola, LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
-            Booking millysBooking = new Booking(milly, LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
-            Booking andreasBooking = new Booking(andreas, LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
-            Booking linnsBooking = new Booking(linn, LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
-            Booking josefinsBooking = new Booking(josefin, LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+            Booking olasBooking = new Booking(ola);
+            Booking millysBooking = new Booking(milly);
+            Booking andreasBooking = new Booking(andreas);
+            Booking linnsBooking = new Booking(linn);
+            Booking josefinsBooking = new Booking(josefin);
 
-            bookingRepository.save(olasBooking);
-            bookingRepository.save(millysBooking);
-            bookingRepository.save(andreasBooking);
-            bookingRepository.save(linnsBooking);
-            bookingRepository.save(josefinsBooking);
+            bookingDao.save(olasBooking);
+            bookingDao.save(millysBooking);
+            bookingDao.save(andreasBooking);
+            bookingDao.save(linnsBooking);
+            bookingDao.save(josefinsBooking);
 
             RoomType singleRoom = new RoomType("Single room", 1000);
             RoomType doubleRoom = new RoomType("Double room", 2000);
             RoomType twinRoom = new RoomType("Twin room", 1900);
             RoomType quadRoom = new RoomType("Quad room", 3200);
 
-            roomTypeRepository.save(singleRoom);
-            roomTypeRepository.save(doubleRoom);
-            roomTypeRepository.save(twinRoom);
-            roomTypeRepository.save(quadRoom);
-
-            Room roomOne = new Room("Sea view room", 3, 3, doubleRoom);
-            Room roomTwo = new Room("Dumpster room", 2, 1, twinRoom);
-            Room roomThree = new Room("Honeymoon suite", 2, 4, doubleRoom);
-            Room roomFour = new Room("Nice room", 2, 2, singleRoom);
-            Room roomFive = new Room("Ok room", 4, 0, quadRoom);
-
-            roomRepository.save(roomOne);
-            roomRepository.save(roomTwo);
-            roomRepository.save(roomThree);
-            roomRepository.save(roomFour);
-            roomRepository.save(roomFive);
-
-            BookedRoom firstRoomInOlasBooking = new BookedRoom(roomTwo, olasBooking);
-            BookedRoom secondRoomInOlasBooking = new BookedRoom(roomFive, olasBooking);
-            BookedRoom roomInMillysBooking = new BookedRoom(roomOne, millysBooking);
-            BookedRoom roomInAndreasBooking = new BookedRoom(roomOne, andreasBooking);
-            BookedRoom roomInLinnsBooking = new BookedRoom(roomThree, linnsBooking);
-            BookedRoom roomInJosefinsBooking = new BookedRoom(roomFour, josefinsBooking);
-
-            bookedRoomRepository.save(firstRoomInOlasBooking);
-            bookedRoomRepository.save(secondRoomInOlasBooking);
-            bookedRoomRepository.save(roomInMillysBooking);
-            bookedRoomRepository.save(roomInAndreasBooking);
-            bookedRoomRepository.save(roomInLinnsBooking);
-            bookedRoomRepository.save(roomInJosefinsBooking);
+            roomTypeDao.save(singleRoom);
+            roomTypeDao.save(doubleRoom);
+            roomTypeDao.save(twinRoom);
+            roomTypeDao.save(quadRoom);
 
             ExtraType extraBed = new ExtraType("single bed", 200);
             ExtraType extraSnacks = new ExtraType("snacks", 85);
@@ -93,24 +66,56 @@ public class JavaBackend1GroupApplication {
             ExtraType extraPillows = new ExtraType("pillows", 50);
             ExtraType extraBabyCrib = new ExtraType("baby crib", 120);
 
-            extraTypeRepository.save(extraBed);
-            extraTypeRepository.save(extraSnacks);
-            extraTypeRepository.save(extraTowels);
-            extraTypeRepository.save(extraPillows);
-            extraTypeRepository.save(extraBabyCrib);
+            extraTypeDao.save(extraBed);
+            extraTypeDao.save(extraSnacks);
+            extraTypeDao.save(extraTowels);
+            extraTypeDao.save(extraPillows);
+            extraTypeDao.save(extraBabyCrib);
 
-            AddedExtra olasExtra = new AddedExtra(extraSnacks, firstRoomInOlasBooking, 5);
-            AddedExtra andreasFirstExtra = new AddedExtra(extraBed, roomInAndreasBooking, 1);
-            AddedExtra andreasSecondExtra = new AddedExtra(extraBabyCrib, roomInAndreasBooking, 1);
-            AddedExtra millysExtra = new AddedExtra(extraPillows, roomInMillysBooking, 2);
-            AddedExtra linnsExtra = new AddedExtra(extraSnacks, roomInLinnsBooking, 2);
+            AddedExtra olasExtra = new AddedExtra(extraSnacks);
+            AddedExtra andreasFirstExtra = new AddedExtra(extraBed);
+            AddedExtra andreasSecondExtra = new AddedExtra(extraBabyCrib);
+            AddedExtra millysExtra = new AddedExtra(extraPillows);
+            AddedExtra linnsExtra = new AddedExtra(extraSnacks);
 
-            addedExtraRepository.save(olasExtra);
-            addedExtraRepository.save(andreasFirstExtra);
-            addedExtraRepository.save(andreasSecondExtra);
-            addedExtraRepository.save(millysExtra);
-            addedExtraRepository.save(linnsExtra);
+            addedExtraDao.save(olasExtra);
+            addedExtraDao.save(andreasFirstExtra);
+            addedExtraDao.save(andreasSecondExtra);
+            addedExtraDao.save(millysExtra);
+            addedExtraDao.save(linnsExtra);
 
+            Room roomOne = new Room("Sea view room", 3, 3, doubleRoom);
+            Room roomTwo = new Room("Dumpster room", 2, 1, twinRoom);
+            Room roomThree = new Room("Honeymoon suite", 2, 4, doubleRoom);
+            Room roomFour = new Room("Nice room", 2, 2, singleRoom);
+            Room roomFive = new Room("Ok room", 4, 0, quadRoom);
+            Room roomSix = new Room("Unbooked room", 1, 1, singleRoom);
+
+            roomDao.save(roomOne);
+            roomDao.save(roomTwo);
+            roomDao.save(roomThree);
+            roomDao.save(roomFour);
+            roomDao.save(roomFive);
+            roomDao.save(roomSix);
+
+            BookedObject firstRoomInOlasBooking = new BookedObject(roomTwo, List.of(olasExtra), olasBooking, LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
+            BookedObject secondRoomInOlasBooking = new BookedObject(roomFive, List.of(), olasBooking, LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 17));
+            BookedObject roomInMillysBooking = new BookedObject(roomOne, List.of(millysExtra), millysBooking, LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
+            BookedObject roomInAndreasBooking = new BookedObject(roomOne, List.of(andreasFirstExtra, andreasSecondExtra), andreasBooking, LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
+            BookedObject roomInLinnsBooking = new BookedObject(roomThree, List.of(linnsExtra), linnsBooking, LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
+            BookedObject roomInJosefinsBooking = new BookedObject(roomFour, List.of(), josefinsBooking, LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+
+//            firstRoomInOlasBooking.setExtras(List.of(olasExtra));
+//            roomInMillysBooking.setExtras(List.of(millysExtra));
+//            roomInAndreasBooking.setExtras(List.of(andreasFirstExtra, andreasSecondExtra));
+//            roomInLinnsBooking.setExtras(List.of(linnsExtra));
+
+            bookedRoomDao.save(firstRoomInOlasBooking);
+            bookedRoomDao.save(secondRoomInOlasBooking);
+            bookedRoomDao.save(roomInMillysBooking);
+            bookedRoomDao.save(roomInAndreasBooking);
+            bookedRoomDao.save(roomInLinnsBooking);
+            bookedRoomDao.save(roomInJosefinsBooking);
         };
     }
 

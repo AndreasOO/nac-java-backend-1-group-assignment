@@ -1,7 +1,6 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 
 import java.io.Serializable;
@@ -9,11 +8,6 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
-@Setter
-@Getter
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class Booking implements Serializable {
     @Id
@@ -24,12 +18,32 @@ public class Booking implements Serializable {
     @JoinColumn
     private Customer customer;
 
-    private LocalDate startDate;
-    private LocalDate endDate;
-
-    public Booking(Customer customer, LocalDate startDate, LocalDate endDate) {
+    public Booking(Long id, Customer customer) {
+        this.id = id;
         this.customer = customer;
-        this.startDate = startDate;
-        this.endDate = endDate;
+    }
+
+    public Booking(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Booking(){
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 }

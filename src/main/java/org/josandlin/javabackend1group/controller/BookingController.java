@@ -1,22 +1,45 @@
 package org.josandlin.javabackend1group.controller;
 
-import org.springframework.stereotype.Controller;
+import org.josandlin.javabackend1group.dao.RoomDao;
+import org.josandlin.javabackend1group.dao.RoomTypeDao;
+import org.josandlin.javabackend1group.entity.Room;
+import org.josandlin.javabackend1group.entity.RoomType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.time.LocalDate;
+import java.util.List;
+
+@RestController
 @RequestMapping("bookings")
 public class BookingController {
 
-    @GetMapping("rooms")
-    public String showAvailableRooms(Model model) {
-        return "rooms";
+    @Autowired
+    RoomDao roomDao;
+
+    @Autowired
+    RoomTypeDao roomTypeDao;
+
+    @GetMapping("rooms/{startDate}/{endDate}")
+    public List<Room> showAvailableRooms(Model model, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
+        return roomDao.findAvailableRoomsBetween(startDate, endDate);
+    }
+
+    @GetMapping("rooms/byType/{roomTypeId}")
+    public List<Room> showRoomsAfterRoomType(Model model, @PathVariable Long roomTypeId) {
+        RoomType roomType = roomTypeDao.findById(roomTypeId).orElse(null);
+        return roomDao.findAllByRoomType(roomType);
+    }
+
+    @GetMapping("rooms/byCapacity/{maxCapacity}")
+    public List<Room> showRoomAfterMaxCapacity(Model model, @PathVariable int maxCapacity) {
+        return roomDao.findAllByMaxCapacity(maxCapacity);
     }
 
     @GetMapping("rooms/{id}")
-    public String showSelectedRoom(Model model) {
-
-        return "selectedRoom";
+    public Room showSelectedRoom(Model model, @PathVariable Long id) {
+        return roomDao.findRoomById(id);
     }
 
     @PostMapping("rooms/{id}")
@@ -36,7 +59,5 @@ public class BookingController {
         System.out.println("cancelled room " + id);
         return "selectedRoom";
     }
-
-
 
 }

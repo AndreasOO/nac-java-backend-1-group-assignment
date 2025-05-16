@@ -1,15 +1,9 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.io.Serializable;
 
-@Setter
-@Getter
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class AddedExtra implements Serializable {
     @Id
@@ -20,15 +14,32 @@ public class AddedExtra implements Serializable {
     @JoinColumn
     private ExtraType extraType;
 
-    @ManyToOne
-    @JoinColumn
-    private BookedRoom bookedRoom;
-
-    private int quantity;
-
-    public AddedExtra(ExtraType extraType, BookedRoom bookedRoom, int quantity) {
+    public AddedExtra(Long id, ExtraType extraType) {
+        this.id = id;
         this.extraType = extraType;
-        this.bookedRoom = bookedRoom;
-        this.quantity = quantity;
+    }
+
+    public AddedExtra(ExtraType extraType) {
+        this.extraType = extraType;
+    }
+
+    public AddedExtra(){
+
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public ExtraType getExtraType() {
+        return extraType;
+    }
+
+    public void setExtraType(ExtraType extraType) {
+        this.extraType = extraType;
     }
 }
