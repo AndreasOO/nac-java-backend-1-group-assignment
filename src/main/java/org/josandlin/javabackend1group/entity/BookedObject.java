@@ -1,7 +1,7 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
+
 
 import java.time.LocalDate;
 import java.util.List;

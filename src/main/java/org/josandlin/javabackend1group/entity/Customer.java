@@ -2,7 +2,6 @@ package org.josandlin.javabackend1group.entity;
 
 
 import jakarta.persistence.*;
-import lombok.*;
 
 import java.io.Serializable;
 import java.util.List;
