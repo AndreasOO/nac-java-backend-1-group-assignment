@@ -22,4 +22,15 @@ public interface CustomerService {
 //    Customer logIn(String name);
 
 
+    @Transactional
+    Customer registerCustomer(Customer customer);
+
+    @Transactional
+    Customer editCustomer(Customer customer);
+
+    @Transactional
+    void deleteCustomer(Customer customer);
+
+
+
 }
