@@ -4,6 +4,7 @@ import org.josandlin.javabackend1group.dao.RoomDao;
 import org.josandlin.javabackend1group.dao.RoomTypeDao;
 import org.josandlin.javabackend1group.entity.Room;
 import org.josandlin.javabackend1group.entity.RoomType;
+import org.josandlin.javabackend1group.service.BookingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,15 +16,23 @@ import java.util.List;
 @RequestMapping("bookings")
 public class BookingController {
 
-    @Autowired
-    RoomDao roomDao;
+    private final BookingService bookingService;
+    private final RoomDao roomDao;
+    private final RoomTypeDao roomTypeDao;
 
     @Autowired
-    RoomTypeDao roomTypeDao;
+    public BookingController(BookingService bookingService, RoomDao roomDao, RoomTypeDao roomTypeDao) {
+        this.bookingService = bookingService;
+        this.roomDao = roomDao;
+        this.roomTypeDao = roomTypeDao;
+    }
+
 
     @GetMapping("rooms/{startDate}/{endDate}")
     public List<Room> showAvailableRooms(Model model, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
-        return roomDao.findAvailableRoomsBetween(startDate, endDate);
+        int testInt = 1;
+        return bookingService.getAvailableRoomsBetweenDatesAndWithinMaxCapacity(startDate, endDate, testInt);
+//        return roomDao.findAvailableRoomsBetween(startDate, endDate);
     }
 
     @GetMapping("rooms/byType/{roomTypeId}")
