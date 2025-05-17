@@ -83,10 +83,11 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Room> getAvailableRoomsBetweenDates(LocalDate startDate, LocalDate endDate) {
+    public List<Room> getAvailableRoomsBetweenDatesAndWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int numOfResidents) {
         return bookedObjectDao.findAll().stream().filter(bookedObj -> bookedObj.getStartDate().isAfter(endDate)
                                                                                || bookedObj.getEndDate().isBefore(startDate))
                                                  .map(BookedObject::getRoom)
+                                                 .filter(room -> room.getMaxCapacity() >= numOfResidents)
                                                  .toList();
     }
 

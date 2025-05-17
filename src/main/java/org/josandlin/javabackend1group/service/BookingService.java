@@ -6,7 +6,6 @@ import org.josandlin.javabackend1group.entity.Room;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ public interface BookingService {
 
     List<Room> getRoomsByBookingId(Long bookingId);
 
-    List<Room> getAvailableRoomsBetweenDates(LocalDate startDate, LocalDate endDate);
+    List<Room> getAvailableRoomsBetweenDatesAndWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int numOfResidents);
 
 
 }

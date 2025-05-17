@@ -30,7 +30,8 @@ public class BookingController {
 
     @GetMapping("rooms/{startDate}/{endDate}")
     public List<Room> showAvailableRooms(Model model, @PathVariable LocalDate startDate, @PathVariable LocalDate endDate) {
-        return bookingService.getAvailableRoomsBetweenDates(startDate, endDate);
+        int testInt = 1;
+        return bookingService.getAvailableRoomsBetweenDatesAndWithinMaxCapacity(startDate, endDate, testInt);
 //        return roomDao.findAvailableRoomsBetween(startDate, endDate);
     }
 
