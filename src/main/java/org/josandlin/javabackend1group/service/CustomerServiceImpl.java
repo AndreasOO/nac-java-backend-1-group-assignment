@@ -4,9 +4,8 @@ import org.josandlin.javabackend1group.dao.BookingDao;
 import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.josandlin.javabackend1group.dao.CustomerDao;
-import org.josandlin.javabackend1group.entity.Customer;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -71,5 +70,10 @@ public class CustomerServiceImpl implements CustomerService {
             customerDao.delete(customer);
         }
 
+    }
+
+    @Override
+    public Customer findById(Long id){
+        return customerDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
     }
 }

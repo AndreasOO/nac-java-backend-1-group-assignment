@@ -5,6 +5,38 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
+
+<!--Modal för välja kund-->
+<div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="bookingModalLabel">New Booking</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+        <form th:action="@{/bookings/booking}" method="post" class="mb-4">
+          <div class="form-group">
+            <label for="customer">Choose customer:</label>
+            <select id="customer" name="customerId" class="form-control" required>
+              <option value="" disabled selected>-- Choose customer --</option>
+              <option th:each="customer : ${customers}"
+                      th:value="${customer.id}"
+                      th:text="${customer.name}">
+              </option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-dark w-100">Next</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="container min-vh-100 d-flex justify-content-center align-items-center">
   <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 600px;">
     <table class="table">
@@ -26,10 +58,12 @@
       </tbody>
     </table>
     <div class="d-flex flex-column align-items-center">
-      <a th:href="@{/bookings/booking-form}" class="btn btn-dark w-100">Make new booking</a>
+      <a href="#" class="btn btn-dark w-100" data-toggle="modal" data-target="#bookingModal">Make new booking</a>
     </div>
   </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>

@@ -9,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,14 +41,15 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Optional<Booking> getBookingById(Long id) {
-        return bookingDao.findById(id);
+    public Booking getBookingById(Long id) {
+        return bookingDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
     }
 
     @Override
     public Booking createBooking(Booking booking) {
         return bookingDao.save(booking);
     }
+
 
     @Override
     public BookedObject addBookedObjectToBooking(BookedObject bookedObject, Long bookingId) {
@@ -109,6 +107,31 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public int getRoomMaxCapacity(){
         return roomDao.findAll().stream().map(Room::getMaxCapacity).max(Comparator.naturalOrder()).orElse(1);
+    }
+
+    @Override
+    public Set<Room> getBookedRoomsBetweenDates(LocalDate startDate, LocalDate endDate){
+        return bookedObjectDao.findAll()
+                .stream().filter(bookedRoom -> !bookedRoom.getEndDate().isBefore(startDate)
+                        && !bookedRoom.getStartDate().isAfter(endDate))
+                .map(BookedObject::getRoom).collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<Room> getAvailableRoomsWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int quests){
+        Set<Room> bookedRooms = getBookedRoomsBetweenDates(startDate, endDate);
+        return roomDao.findAll().stream()
+                .filter(room -> !bookedRooms.contains(room)).filter(room -> room.getMaxCapacity() >= quests).toList();
+    }
+
+    @Override
+    public Room getRoomById(Long id){
+        return roomDao.findRoomById(id);
+    }
+
+    @Override
+    public void saveBookedObject(BookedObject bookedObject){
+        bookedObjectDao.save(bookedObject);
     }
 
 
