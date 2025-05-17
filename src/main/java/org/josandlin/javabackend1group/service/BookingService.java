@@ -38,4 +38,6 @@ public interface BookingService {
 
     List<Room> getAllRooms();
 
+    int getRoomMaxCapacity();
+
 }

@@ -4,6 +4,7 @@ import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.entity.Customer;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,6 +23,11 @@ public class CustomerServiceImpl implements CustomerService {
         }
         customerDao.save(customer);
         return customer;
+    }
+
+    @Override
+    public List<Customer> getAllCustomers(){
+        return customerDao.findAll();
     }
 
 //    @Override

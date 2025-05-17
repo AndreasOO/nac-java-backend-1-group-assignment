@@ -1,20 +1,20 @@
 package org.josandlin.javabackend1group.controller;
 
+import org.josandlin.javabackend1group.dao.BookingDao;
 import org.josandlin.javabackend1group.dao.RoomDao;
 import org.josandlin.javabackend1group.dao.RoomTypeDao;
-import org.josandlin.javabackend1group.entity.BookedObject;
-import org.josandlin.javabackend1group.entity.Booking;
-import org.josandlin.javabackend1group.entity.Room;
-import org.josandlin.javabackend1group.entity.RoomType;
+import org.josandlin.javabackend1group.entity.*;
 import org.josandlin.javabackend1group.service.BookingService;
+import org.josandlin.javabackend1group.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("bookings")
@@ -23,15 +23,17 @@ public class BookingController {
     private final BookingService bookingService;
     private final RoomDao roomDao;
     private final RoomTypeDao roomTypeDao;
+    private final CustomerService customerService;
 
     @Autowired
-    public BookingController(BookingService bookingService, RoomDao roomDao, RoomTypeDao roomTypeDao) {
+    public BookingController(BookingService bookingService, RoomDao roomDao, RoomTypeDao roomTypeDao, CustomerService customerService) {
         this.bookingService = bookingService;
         this.roomDao = roomDao;
         this.roomTypeDao = roomTypeDao;
+        this.customerService = customerService;
     }
 
-    @GetMapping("/allBookings")
+    @GetMapping("/all")
     public String showBookings(Model model) {
         List<Booking> bookings = bookingService.getAllBookings();
         model.addAttribute("bookings", bookings);
@@ -45,9 +47,14 @@ public class BookingController {
         return "booking";
     }
 
-    @GetMapping("/choose-dates")
-    public String chooseDateForm(Model model) {
-        return "choose-dates";
+    @GetMapping("/booking-form")
+    public String showBookingForm(Model model) {
+        List<Customer> customers = customerService.getAllCustomers();
+        List<Integer> capacityOptions = IntStream.rangeClosed(1, bookingService.getRoomMaxCapacity()).boxed().toList();
+
+        model.addAttribute("customers", customers);
+        model.addAttribute("capacityOptions", capacityOptions);
+        return "booking-form";
     }
 
     @GetMapping("/rooms")

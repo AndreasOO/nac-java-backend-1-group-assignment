@@ -17,6 +17,8 @@ public interface CustomerService {
     @Transactional
     Customer createAccount(Customer customer);
 
+    List<Customer> getAllCustomers();
+
 //    Customer logIn(String name);
 
 
