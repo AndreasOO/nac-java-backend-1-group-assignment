@@ -51,25 +51,15 @@ public class BookingController {
         return "booking";
     }
 
-    // Tom extras lista än så länge
-    @PostMapping("/add-room")
-    public String addRoomToBooking(@RequestParam Long roomId, @RequestParam Long bookingId, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate){
-        Room chosenRoom = bookingService.getRoomById(roomId);
-        Booking currentBooking = bookingService.getBookingById(bookingId);
-        BookedObject bookedObject = new BookedObject(chosenRoom, List.of(), currentBooking, startDate, endDate);
-        bookingService.saveBookedObject(bookedObject);
-        return "redirect:/bookings/booking/" + bookingId;
-    }
-
     @PostMapping("/booking")
     public String createBooking(@RequestParam("customerId") Long customerId) {
         Customer customer = customerService.findById(customerId);
         Booking booking = new Booking(customer);
         booking = bookingService.createBooking(booking);
-        return "redirect:/bookings/booking/" + booking.getId();
+        return "redirect:/bookings/booking?bookingId=" + booking.getId();
     }
 
-    @GetMapping("/rooms")
+    @GetMapping("/booking/add-room")
     public String showRooms(Model model, @RequestParam("bookingId") Long bookingId, @RequestParam("questCount") int questCount, @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
         List<Room> availableRooms = bookingService.getAvailableRoomsWithinMaxCapacity(startDate, endDate, questCount);
         model.addAttribute("rooms", availableRooms);
@@ -77,6 +67,16 @@ public class BookingController {
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
         return "rooms";
+    }
+
+    // Tom extras lista än så länge
+    @PostMapping("/booking/add-room")
+    public String addRoomToBooking(@RequestParam Long roomId, @RequestParam Long bookingId, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate){
+        Room chosenRoom = bookingService.getRoomById(roomId);
+        Booking currentBooking = bookingService.getBookingById(bookingId);
+        BookedObject bookedObject = new BookedObject(chosenRoom, List.of(), currentBooking, startDate, endDate);
+        bookingService.saveBookedObject(bookedObject);
+        return "redirect:/bookings/booking?bookingId=" + bookingId;
     }
 
     // Ska kunna uppdatera extras

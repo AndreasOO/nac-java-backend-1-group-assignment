@@ -18,7 +18,7 @@
       </div>
       <div class="modal-body">
 
-        <form th:action="@{/bookings/rooms}" method="get" class="mb-4">
+        <form th:action="@{/bookings/booking/add-room}" method="get" class="mb-4">
           <input type="hidden" name="bookingId" th:value="${bookingId}" />
           <div class="form-group">
             <label for="questCount">Amount of quests:</label>
