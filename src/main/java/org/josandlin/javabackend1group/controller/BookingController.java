@@ -27,25 +27,31 @@ public class BookingController {
         this.customerService = customerService;
     }
 
+    // Behöver snygga upp alla endpoints
+    // Använder mig än så länge av RequestParams, snyggare med PathVariable?
+    // Behöver få in extras
+
     @GetMapping("/all")
     public String showBookings(Model model) {
         List<Booking> bookings = bookingService.getAllBookings();
         List<Customer> customers = customerService.getAllCustomers();
         model.addAttribute("bookings", bookings);
         model.addAttribute("customers", customers);
-        return "bookings"; // namnet på din Thymeleaf-sida
+        return "bookings";
     }
 
-    @GetMapping("/booking/{id}")
-    public String showBooking(@PathVariable Long id, Model model) {
-        List<BookedObject> bookedRooms = bookingService.getBookedRoomsByBookingId(id);
+    @GetMapping("/booking")
+    public String showBooking(@RequestParam Long bookingId, Model model) {
+        List<BookedObject> bookedRooms = bookingService.getBookedRoomsByBookingId(bookingId);
         List<Integer> capacityOptions = IntStream.rangeClosed(1, bookingService.getRoomMaxCapacity()).boxed().toList();
-        model.addAttribute("bookingId", id);
+        model.addAttribute("customer", bookingService.getCustomerByBookingId(bookingId));
+        model.addAttribute("bookingId", bookingId);
         model.addAttribute("capacityOptions", capacityOptions);
         model.addAttribute("bookedRooms", bookedRooms);
         return "booking";
     }
 
+    // Tom extras lista än så länge
     @PostMapping("/add-room")
     public String addRoomToBooking(@RequestParam Long roomId, @RequestParam Long bookingId, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate){
         Room chosenRoom = bookingService.getRoomById(roomId);
@@ -63,18 +69,6 @@ public class BookingController {
         return "redirect:/bookings/booking/" + booking.getId();
     }
 
-
-    @GetMapping("/booking-form")
-    public String showBookingForm(@RequestParam("customer") Long customerId, Model model) {
-        Customer customer = customerService.findById(customerId);
-        Booking newBooking = new Booking(customer);
-
-        List<Integer> capacityOptions = IntStream.rangeClosed(1, bookingService.getRoomMaxCapacity()).boxed().toList();
-        model.addAttribute("capacityOptions", capacityOptions);
-        model.addAttribute("booking", newBooking);
-        return "booking-form";
-    }
-
     @GetMapping("/rooms")
     public String showRooms(Model model, @RequestParam("bookingId") Long bookingId, @RequestParam("questCount") int questCount, @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
         List<Room> availableRooms = bookingService.getAvailableRoomsWithinMaxCapacity(startDate, endDate, questCount);
@@ -84,6 +78,30 @@ public class BookingController {
         model.addAttribute("endDate", endDate);
         return "rooms";
     }
+
+    // Ska kunna uppdatera extras
+    @PostMapping("/booking/edit-room")
+    public String editRoom(Model model){
+        return "redirect:/bookings/";
+    }
+
+    // Ska gå att ta bort rum ur bokning
+    @PostMapping("/booking/delete-room")
+    public String deleteRoom(Model model){
+        return "redirect:/bookings/";
+    }
+
+
+//    @GetMapping("/booking-form")
+//    public String showBookingForm(@RequestParam("customer") Long customerId, Model model) {
+//        Customer customer = customerService.findById(customerId);
+//        Booking newBooking = new Booking(customer);
+//
+//        List<Integer> capacityOptions = IntStream.rangeClosed(1, bookingService.getRoomMaxCapacity()).boxed().toList();
+//        model.addAttribute("capacityOptions", capacityOptions);
+//        model.addAttribute("booking", newBooking);
+//        return "booking-form";
+//    }
 
 //    @ResponseBody
 //    @GetMapping("rooms/byType/{roomTypeId}")

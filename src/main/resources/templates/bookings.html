@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<!--Modal för välja kund-->
+<!-- Modal för välja kund för ny booking -->
 <div class="modal fade" id="bookingModal" tabindex="-1" role="dialog" aria-labelledby="bookingModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -37,28 +37,35 @@
   </div>
 </div>
 
-<div class="container min-vh-100 d-flex justify-content-center align-items-center">
-  <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 600px;">
-    <table class="table">
+<!-- Sidan med alla bookings -->
+<div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
+  <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 50%;">
+    <table class="table table-hover">
       <thead>
       <tr>
         <th scope="col">#</th>
         <th scope="col">Booking id</th>
-        <th scope="col">Customer name</th>
         <th scope="col">Customer id</th>
+        <th scope="col">Customer name</th>
       </tr>
       </thead>
       <tbody>
-      <tr th:each="booking, iterStat : ${bookings}" th:onclick="'window.location.href=\'/bookings/booking/\' + ' + ${booking.id}" style="cursor: pointer;">
+      <!-- Gör hela raden klickbar, skapa ett th attribut med ett namn (data-url) och ge det url för specifik bokning, onclick hamna där -->
+      <tr th:each="booking, iterStat : ${bookings}" th:attr="data-url=@{/bookings/booking(bookingId=${booking.getId()})}"
+          onclick="window.location = this.getAttribute('data-url')"
+          style="cursor: pointer;">
         <th scope="row" th:text="${iterStat.index + 1}">1</th>
         <td th:text="${booking.getId()}">Booking id</td>
-        <td th:text="${booking.getCustomer().getName()}">Customer name</td>
         <td th:text="${booking.getCustomer().getId()}">Customer id</td>
+        <td th:text="${booking.getCustomer().getName()}">Customer name</td>
       </tr>
       </tbody>
     </table>
     <div class="d-flex flex-column align-items-center">
       <a href="#" class="btn btn-dark w-100" data-toggle="modal" data-target="#bookingModal">Make new booking</a>
+      <hr class="w-100 border-0" style="height: 2px; background-color: #dee2e6;">
+      <!-- Länk till startsida -->
+      <a th:href="@{/bookings/all}"  class="btn btn-dark w-100">Go to start-page</a>
     </div>
   </div>
 </div>

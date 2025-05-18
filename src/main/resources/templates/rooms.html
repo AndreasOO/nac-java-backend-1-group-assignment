@@ -16,7 +16,7 @@
                 <th scope="col" style="width: 15%">Extra beds</th>
                 <th scope="col" style="width: 15%">Max Capacity</th>
                 <th scope="col" style="width: 15%">Cost/night</th>
-                <th scope="col" style="width:15%">Add room</th>
+                <th scope="col" style="width:15%"></th>
             </tr>
             </thead>
             <tbody>
@@ -39,7 +39,7 @@
             </tr>
             </tbody>
         </table>
-        <a th:href="@{/bookings/booking/{id}(id=${bookingId})}" class="btn btn-dark w-100">Go to current booking</a>
+        <a th:href="@{/bookings/booking(bookingId=${bookingId})}" class="btn btn-dark w-100">Go to current booking</a>
         <hr class="w-100 border-0" style="height: 2px; background-color: #dee2e6;">
         <a th:href="@{/bookings/all}"  class="btn btn-dark w-100">Go to bookings</a>
     </div>

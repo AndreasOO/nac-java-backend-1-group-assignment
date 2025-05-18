@@ -1,10 +1,7 @@
 package org.josandlin.javabackend1group.service;
 
 import org.josandlin.javabackend1group.dao.*;
-import org.josandlin.javabackend1group.entity.AddedExtra;
-import org.josandlin.javabackend1group.entity.BookedObject;
-import org.josandlin.javabackend1group.entity.Booking;
-import org.josandlin.javabackend1group.entity.Room;
+import org.josandlin.javabackend1group.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -132,6 +129,11 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public void saveBookedObject(BookedObject bookedObject){
         bookedObjectDao.save(bookedObject);
+    }
+
+    @Override
+    public Customer getCustomerByBookingId(Long id){
+        return bookingDao.findById(id).stream().map(Booking::getCustomer).findFirst().orElse(null);
     }
 
 
