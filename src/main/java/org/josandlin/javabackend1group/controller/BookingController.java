@@ -1,7 +1,5 @@
 package org.josandlin.javabackend1group.controller;
 
-import org.josandlin.javabackend1group.dao.RoomDao;
-import org.josandlin.javabackend1group.dao.RoomTypeDao;
 import org.josandlin.javabackend1group.entity.*;
 import org.josandlin.javabackend1group.service.BookingService;
 import org.josandlin.javabackend1group.service.CustomerService;
@@ -66,7 +64,7 @@ public class BookingController {
         model.addAttribute("bookingId", bookingId);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
-        return "rooms";
+        return "available-rooms";
     }
 
     // Tom extras lista än så länge
