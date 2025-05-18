@@ -42,23 +42,6 @@ public class CustomerController {
         }
     }
 
-//    @GetMapping("/login")
-//    public String login(Model model) {
-//        model.addAttribute("customer", new Customer());
-//        return "login";
-//    }
-//
-//    @PostMapping("/login")
-//    public String login(@ModelAttribute("name") String name, Model model) {
-//        try{
-//            Customer customer = customerService.logIn(name);
-//            return "redirect:/customers/customer/{customerId???}";
-//        }catch(IllegalArgumentException e){
-//            model.addAttribute("error", e.getMessage());
-//            return "login";
-//        }
-//    }
-
     @PostMapping("/edit/{id}")
     @ResponseBody
     public String editCustomer(Model model, @PathVariable long id, @RequestParam String newName) {
