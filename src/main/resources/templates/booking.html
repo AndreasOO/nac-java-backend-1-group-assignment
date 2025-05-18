@@ -46,7 +46,7 @@
 
 <!-- Sidan med alla rum för booking -->
 <div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
-  <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 70%;">
+  <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 60%;">
     <div class="card-header bg-light">
       <div class="d-flex justify-content-between">
         <div>
@@ -66,8 +66,8 @@
         <th scope="col" style="width: 10%">Room id</th>
         <th scope="col" style="width: 15%">Room type</th>
         <th scope="col" style="width: 15%">Cost/night</th>
-        <th scope="col" style="width: 15%">From date</th>
-        <th scope="col" style="width: 15%">To date</th>
+        <th scope="col" style="width: 15%">From</th>
+        <th scope="col" style="width: 15%">To</th>
         <th scope="col" style="width: 10%"></th>
         <th scope="col" style="width: 15%"></th>
       </tr>
@@ -78,22 +78,19 @@
         <td th:text="${bookedRoom.getRoom().getId()}">Room id</td>
         <td th:text="${bookedRoom.getRoom().getRoomType().getName()}">Room type</td>
         <td th:text="${bookedRoom.getRoom().getRoomType().getCostPerNight()}">Cost per night</td>
-        <td th:text="${bookedRoom.getStartDate()}">Booked from</td>
-        <td th:text="${bookedRoom.getEndDate()}">Booked to</td>
+        <td th:text="${bookedRoom.getStartDate()}">Start</td>
+        <td th:text="${bookedRoom.getEndDate()}">End</td>
         <td>
-          <form th:action="@{/bookings/booking/edit-room}" method="post">
-            <input type="hidden" name="bookingId" th:value="${bookingId}" />
-            <input type="hidden" name="roomId" th:value="${bookedRoom.getRoom().getId()}" />
-            <input type="hidden" name="startDate" th:value="${bookedRoom.getStartDate()}" />
-            <input type="hidden" name="endDate" th:value="${bookedRoom.getEndDate()}" />
-            <button type="submit" class="btn btn-sm btn-dark">Edit room</button>
+          <form th:action="@{/bookings/booking/booked-room(bookedObjectId=${bookedRoom.getId()})}" method="get">
+            <input type="hidden" name="bookedObjectId" th:value="${bookedRoom.getId()}" />
+            <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Edit</button>
           </form>
         </td>
         <td>
           <form th:action="@{/bookings/booking/delete-room}" method="post">
             <input type="hidden" name="bookingId" th:value="${bookingId}" />
             <input type="hidden" name="roomId" th:value="${bookedRoom.getRoom().getId()}" />
-            <button type="submit" class="btn btn-sm btn-dark">Delete room</button>
+            <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Delete room</button>
           </form>
         </td>
       </tr>

@@ -17,19 +17,21 @@ public class BookingServiceImpl implements BookingService {
     private final AddedExtraDao addedExtraDao;
     private final RoomDao roomDao;
     private final RoomTypeDao roomTypeDao;
+    private final ExtraTypeDao extraTypeDao;
 
     @Autowired
     public BookingServiceImpl(BookingDao bookingDao,
                               BookedObjectDao bookedObjectDao,
                               AddedExtraDao addedExtraDao,
                               RoomDao roomDao,
-                              RoomTypeDao roomTypeDao) {
+                              RoomTypeDao roomTypeDao, ExtraTypeDao extraTypeDao) {
 
         this.bookingDao = bookingDao;
         this.bookedObjectDao = bookedObjectDao;
         this.addedExtraDao = addedExtraDao;
         this.roomDao = roomDao;
         this.roomTypeDao = roomTypeDao;
+        this.extraTypeDao = extraTypeDao;
     }
 
     @Override
@@ -134,6 +136,35 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Customer getCustomerByBookingId(Long id){
         return bookingDao.findById(id).stream().map(Booking::getCustomer).findFirst().orElse(null);
+    }
+
+    @Override
+    public BookedObject getBookedObjectById(Long id){
+        return bookedObjectDao.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteExtraFromBookedObjectById(Long extraId){
+        try{
+            addedExtraDao.deleteById(extraId);
+        }
+        catch (Exception e){
+            throw new IllegalArgumentException("Extra not found");
+        }
+    }
+
+    @Override
+    public List<ExtraType> getAllExtraChoices(){
+        return extraTypeDao.findAll();
+    }
+
+    // mappa om entiteterna för att kunna spara i databasen?
+    // kolla om det är en säng som läggs till, titta i så fall om rummet har kapacitet för det
+    @Override
+    public void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
+        ExtraType extraType = extraTypeDao.findById(extraTypeId).orElse(null);
+        BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElse(null);
+        bookedObject.getExtras().add(new AddedExtra(extraType));
     }
 
 

@@ -77,11 +77,32 @@ public class BookingController {
         return "redirect:/bookings/booking?bookingId=" + bookingId;
     }
 
-    // Ska kunna uppdatera extras
-    @PostMapping("/booking/edit-room")
-    public String editRoom(Model model){
-        return "redirect:/bookings/all";
+    @GetMapping("/booking/booked-room")
+    public String showBookedRoom(Model model, @RequestParam Long bookedObjectId){
+        BookedObject bookedObject = bookingService.getBookedObjectById(bookedObjectId);
+        List<ExtraType> extraChoices = bookingService.getAllExtraChoices();
+        model.addAttribute("bookedObject", bookedObject);
+        model.addAttribute("extraChoices", extraChoices);
+        return "booked-room";
     }
+
+    @PostMapping("/booking/delete-extra")
+    public String deleteExtraFromBookedRoom(Model model, @RequestParam Long bookedObjectId, @RequestParam Long extraId) {
+        bookingService.deleteExtraFromBookedObjectById(extraId);
+        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
+    }
+
+    @PostMapping("/booking/add-extra")
+    public String addExtraToBookedRoom(Model model, @RequestParam Long bookedObjectId, @RequestParam Long extraTypeId) {
+        bookingService.addExtraToBookedObject(bookedObjectId, extraTypeId);
+        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
+    }
+
+//    // Ska kunna uppdatera extras
+//    @PostMapping("/booking/booked-room")
+//    public String editRoom(Model model, @RequestParam Long bookedObjectId){
+//        return "redirect:/bookings/all";
+//    }
 
     // Ska gå att ta bort rum ur bokning
     @PostMapping("/booking/delete-room")
