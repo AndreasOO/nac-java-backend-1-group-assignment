@@ -27,7 +27,7 @@ public class BookingController {
         this.customerService = customerService;
     }
 
-    // Behöver snygga upp alla endpoints
+    // Snygga upp alla endpoints
     // Använder mig än så länge av RequestParams, snyggare med PathVariable?
     // Behöver få in extras
 
@@ -82,13 +82,13 @@ public class BookingController {
     // Ska kunna uppdatera extras
     @PostMapping("/booking/edit-room")
     public String editRoom(Model model){
-        return "redirect:/bookings/";
+        return "redirect:/bookings/all";
     }
 
     // Ska gå att ta bort rum ur bokning
     @PostMapping("/booking/delete-room")
     public String deleteRoom(Model model){
-        return "redirect:/bookings/";
+        return "redirect:/bookings/all";
     }
 
 
