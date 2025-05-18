@@ -1,17 +1,12 @@
 package org.josandlin.javabackend1group.service;
 
 import org.josandlin.javabackend1group.dao.*;
-import org.josandlin.javabackend1group.entity.AddedExtra;
-import org.josandlin.javabackend1group.entity.BookedObject;
-import org.josandlin.javabackend1group.entity.Booking;
-import org.josandlin.javabackend1group.entity.Room;
+import org.josandlin.javabackend1group.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,14 +38,15 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Optional<Booking> getBookingById(Long id) {
-        return bookingDao.findById(id);
+    public Booking getBookingById(Long id) {
+        return bookingDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
     }
 
     @Override
     public Booking createBooking(Booking booking) {
         return bookingDao.save(booking);
     }
+
 
     @Override
     public BookedObject addBookedObjectToBooking(BookedObject bookedObject, Long bookingId) {
@@ -82,6 +78,10 @@ public class BookingServiceImpl implements BookingService {
                                                  .toList();
     }
 
+    public List<BookedObject> getBookedRoomsByBookingId(Long bookingId){
+        return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId)).toList();
+    }
+
     @Override
     public List<Room> getAvailableRoomsBetweenDatesAndWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int numOfResidents) {
         return bookedObjectDao.findAll().stream().filter(bookedObj -> bookedObj.getStartDate().isAfter(endDate)
@@ -89,6 +89,51 @@ public class BookingServiceImpl implements BookingService {
                                                  .map(BookedObject::getRoom)
                                                  .filter(room -> room.getMaxCapacity() >= numOfResidents)
                                                  .toList();
+    }
+
+    @Override
+    public List<Booking> getAllBookings(){
+        return bookingDao.findAll();
+    }
+
+    @Override
+    public List<Room> getAllRooms(){
+        return roomDao.findAll();
+    }
+
+    @Override
+    public int getRoomMaxCapacity(){
+        return roomDao.findAll().stream().map(Room::getMaxCapacity).max(Comparator.naturalOrder()).orElse(1);
+    }
+
+    @Override
+    public Set<Room> getBookedRoomsBetweenDates(LocalDate startDate, LocalDate endDate){
+        return bookedObjectDao.findAll()
+                .stream().filter(bookedRoom -> !bookedRoom.getEndDate().isBefore(startDate)
+                        && !bookedRoom.getStartDate().isAfter(endDate))
+                .map(BookedObject::getRoom).collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<Room> getAvailableRoomsWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int quests){
+        Set<Room> bookedRooms = getBookedRoomsBetweenDates(startDate, endDate);
+        return roomDao.findAll().stream()
+                .filter(room -> !bookedRooms.contains(room)).filter(room -> room.getMaxCapacity() >= quests).toList();
+    }
+
+    @Override
+    public Room getRoomById(Long id){
+        return roomDao.findRoomById(id);
+    }
+
+    @Override
+    public void saveBookedObject(BookedObject bookedObject){
+        bookedObjectDao.save(bookedObject);
+    }
+
+    @Override
+    public Customer getCustomerByBookingId(Long id){
+        return bookingDao.findById(id).stream().map(Booking::getCustomer).findFirst().orElse(null);
     }
 
 

@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 public interface CustomerDao extends JpaRepository <Customer, Long> {
     Customer findByName(String name);
 
+
     @Modifying
     @Transactional
     @Query("DELETE FROM Customer c " +

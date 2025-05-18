@@ -5,6 +5,10 @@ import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.entity.Customer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -20,6 +24,29 @@ public class CustomerServiceImpl implements CustomerService {
         this.bookingDao = bookingDao;
         this.customerDao = customerDao;
     }
+
+    @Override
+    public Customer createAccount(Customer customer) {
+        if (customerDao.findByName(customer.getName()) != null) {
+            throw new IllegalArgumentException("Customer already exists!");
+        }
+        customerDao.save(customer);
+        return customer;
+    }
+
+    @Override
+    public List<Customer> getAllCustomers(){
+        return customerDao.findAll();
+    }
+
+//    @Override
+//    public Customer logIn(String name){
+//        Customer loggedInCustomer = customerDao.findByName(name);
+//        if (loggedInCustomer == null) {
+//            throw new IllegalArgumentException("Customer doesn't exist!");
+//        }
+//        return loggedInCustomer;
+//    }
 
 
 
@@ -43,5 +70,10 @@ public class CustomerServiceImpl implements CustomerService {
             customerDao.delete(customer);
         }
 
+    }
+
+    @Override
+    public Customer findById(Long id){
+        return customerDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
     }
 }

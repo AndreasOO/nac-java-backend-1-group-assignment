@@ -2,6 +2,8 @@ package org.josandlin.javabackend1group.controller;
 
 import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.entity.Customer;
+import org.josandlin.javabackend1group.service.CustomerService;
+import org.josandlin.javabackend1group.service.CustomerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,18 +18,28 @@ public class CustomerController {
     @Autowired
     private CustomerDao customerDao;
 
-    @GetMapping("register")
+    private final CustomerService customerService;
+
+    @Autowired
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+
+    @GetMapping("/register")
     public String showCustomerRegistrationForm(Model model) {
+        model.addAttribute("customer", new Customer());
         return "registration";
     }
 
     @PostMapping("/register")
     public String registerCustomer(@ModelAttribute Customer customer, Model model) {
-        customerDao.save(customer);
-        System.out.println("registering customer: " + customer);
-        model.addAttribute("message", "Customer registered!");
-        // TODO use service here
-        return "registration";
+        try {
+            customerService.createAccount(customer);
+            return "redirect:/customers/login";
+        } catch (IllegalArgumentException e) {
+            model.addAttribute("error", e.getMessage());
+            return "registration";
+        }
     }
 
     @PostMapping("/edit/{id}")
