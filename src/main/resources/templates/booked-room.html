@@ -12,7 +12,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="add-extra-modal-label">New Booking</h5>
+        <h5 class="modal-title" id="add-extra-modal-label">Add extra to booked room</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -22,7 +22,7 @@
         <form th:action="@{/bookings/booking/add-extra}" method="post" class="mb-4">
           <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
           <div class="form-group">
-            <label for="extra-type">Choose extra:</label>
+            <label for="extra-type">Extra choices available:</label>
             <select id="extra-type" name="extraTypeId" class="form-control" required>
               <option value="" disabled selected>-- Choose extra --</option>
               <option th:each="choice : ${extraChoices}"
