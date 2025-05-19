@@ -162,9 +162,13 @@ public class BookingServiceImpl implements BookingService {
     // kolla om det är en säng som läggs till, titta i så fall om rummet har kapacitet för det
     @Override
     public void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
-        ExtraType extraType = extraTypeDao.findById(extraTypeId).orElse(null);
         BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElse(null);
-        bookedObject.getExtras().add(new AddedExtra(extraType));
+        AddedExtra addedExtra = new AddedExtra(extraTypeDao.findById(extraTypeId).orElse(null));
+
+        bookedObject.getExtras().add(addedExtra);
+
+        addedExtraDao.save(addedExtra);
+        bookedObjectDao.save(bookedObject);
     }
 
 
