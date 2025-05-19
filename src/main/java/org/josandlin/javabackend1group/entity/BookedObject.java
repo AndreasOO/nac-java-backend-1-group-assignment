@@ -16,7 +16,7 @@ public class BookedObject {
     @JoinColumn
     private Room room;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name="booked_room_id")
     private List<AddedExtra> extras;
 

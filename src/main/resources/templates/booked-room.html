@@ -41,10 +41,19 @@
 
 
 <div class="container-fluid min-vh-100 d-flex justify-content-center align-items-center">
-  <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 30%;">
+  <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 40%;">
     <div class="card-header bg-light">
       <div class="d-flex justify-content-between">
-        <strong class="h5">BOOKED ROOM</strong>
+        <div>
+          <strong>Booked room:</strong>
+          <span th:text="${bookedObject.getRoom().getName()}">5</span>
+        </div>
+        <div>
+          <strong>Date of booking:</strong>
+          <span th:text="${bookedObject.getStartDate()}">Start date</span>
+          <span> to </span>
+          <span th:text="${bookedObject.getEndDate()}">End date</span>
+        </div>
       </div>
     </div>
     <table class="table">
@@ -61,7 +70,7 @@
         <th scope="row" th:text="${iterStat.index + 1}">1</th>
         <td th:text="${extra.getId()}">Id</td>
         <td th:text="${extra.getExtraType().getName()}">Type</td>
-        <td th:text="${extra.getExtraType().getCost()}">Cost</td>
+        <td th:text="'$' + ${extra.getExtraType().getCost()}">Cost</td>
         <td>
           <form th:action="@{/bookings/booking/delete-extra}" method="post">
             <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
@@ -74,7 +83,7 @@
     </table>
     <a href="#" class="btn btn-dark w-100" data-toggle="modal" data-target="#add-extra-modal">Add extra</a>
     <hr class="w-100 border-0" style="height: 2px; background-color: #dee2e6;">
-    <a th:href="@{/bookings/booking(bookingId=${bookedObject.getBooking().getId()})}" class="btn btn-dark w-100">Go to booked room</a>
+    <a th:href="@{/bookings/booking(bookingId=${bookedObject.getBooking().getId()})}" class="btn btn-dark w-100">Go to booking</a>
   </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

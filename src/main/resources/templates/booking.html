@@ -77,7 +77,7 @@
         <th scope="row" th:text="${iterStat.index + 1}">1</th>
         <td th:text="${bookedRoom.getRoom().getId()}">Room id</td>
         <td th:text="${bookedRoom.getRoom().getRoomType().getName()}">Room type</td>
-        <td th:text="${bookedRoom.getRoom().getRoomType().getCostPerNight()}">Cost per night</td>
+        <td th:text="'$' + ${bookedRoom.getRoom().getRoomType().getCostPerNight()}">Cost per night</td>
         <td th:text="${bookedRoom.getStartDate()}">Start</td>
         <td th:text="${bookedRoom.getEndDate()}">End</td>
         <td>
@@ -89,7 +89,7 @@
         <td>
           <form th:action="@{/bookings/booking/delete-room}" method="post">
             <input type="hidden" name="bookingId" th:value="${bookingId}" />
-            <input type="hidden" name="roomId" th:value="${bookedRoom.getRoom().getId()}" />
+            <input type="hidden" name="bookedObjectId" th:value="${bookedRoom.getId()}" />
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Delete room</button>
           </form>
         </td>

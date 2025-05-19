@@ -31,7 +31,7 @@
                 <td th:text="${room.getRoomType().getName()}">Room type</td>
                 <td th:text="${room.getExtraBedsAvailable()}">Extra beds available</td>
                 <td th:text="${room.getMaxCapacity()}">Max capacity</td>
-                <td th:text="${room.getRoomType().getCostPerNight()}">Cost per night</td>
+                <td th:text="'$' + ${room.getRoomType().getCostPerNight()}">Cost per night</td>
                 <td>
                     <form th:action="@{/bookings/booking/add-room}" method="post">
                         <input type="hidden" name="bookingId" th:value="${bookingId}" />

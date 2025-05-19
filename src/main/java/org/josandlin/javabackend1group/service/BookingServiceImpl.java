@@ -80,6 +80,7 @@ public class BookingServiceImpl implements BookingService {
                                                  .toList();
     }
 
+    @Override
     public List<BookedObject> getBookedRoomsByBookingId(Long bookingId){
         return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId)).toList();
     }
@@ -154,12 +155,18 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<ExtraType> getAllExtraChoices(){
+    public List<ExtraType> getAllExtraChoicesAvailable(Long bookedObjectId){
+
+        BookedObject bookedObject = getBookedObjectById(bookedObjectId);
+        long currentExtraBedsAdded = bookedObject.getExtras().stream().filter(extra -> extra.getExtraType().getName().equals("bed")).count();
+
+        if(bookedObject.getRoom().getRoomType().getName().equals("Single room") || currentExtraBedsAdded >= bookedObject.getRoom().getExtraBedsAvailable()){
+            return extraTypeDao.findAll().stream().filter(extraType -> !extraType.getName().equals("bed")).collect(Collectors.toList());
+        }
         return extraTypeDao.findAll();
     }
 
-    // mappa om entiteterna för att kunna spara i databasen?
-    // kolla om det är en säng som läggs till, titta i så fall om rummet har kapacitet för det
+
     @Override
     public void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
         BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElse(null);
@@ -167,7 +174,6 @@ public class BookingServiceImpl implements BookingService {
 
         bookedObject.getExtras().add(addedExtra);
 
-        addedExtraDao.save(addedExtra);
         bookedObjectDao.save(bookedObject);
     }
 

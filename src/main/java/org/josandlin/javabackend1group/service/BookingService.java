@@ -46,7 +46,6 @@ public interface BookingService {
     Room getRoomById(Long id);
 
     void saveBookedObject(BookedObject bookedObject);
-    // lägg till metod som sparar bookedobject
 
     Customer getCustomerByBookingId(Long id);
 
@@ -54,7 +53,8 @@ public interface BookingService {
 
     void deleteExtraFromBookedObjectById(Long extraId);
 
-    List<ExtraType> getAllExtraChoices();
+    List<ExtraType> getAllExtraChoicesAvailable(Long bookedObjectId);
 
     void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId);
+
 }
