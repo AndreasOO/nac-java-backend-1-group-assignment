@@ -57,8 +57,9 @@ public class BookingController {
     }
 
     @GetMapping("/booking/add-room")
-    public String showRooms(Model model, @RequestParam("bookingId") Long bookingId, @RequestParam("questCount") int questCount, @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
-        List<Room> availableRooms = bookingService.getAvailableRoomsWithinMaxCapacity(startDate, endDate, questCount);
+    public String showAvailableRooms(Model model, @RequestParam("bookingId") Long bookingId, @RequestParam("guestCount") int guestCount, @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
+        List<Room> availableRooms = bookingService.getAvailableRoomsWithinMaxCapacity(startDate, endDate, guestCount);
+        model.addAttribute("guests", guestCount);
         model.addAttribute("rooms", availableRooms);
         model.addAttribute("bookingId", bookingId);
         model.addAttribute("startDate", startDate);

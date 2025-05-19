@@ -118,10 +118,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Room> getAvailableRoomsWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int quests){
+    public List<Room> getAvailableRoomsWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int guests){
         Set<Room> bookedRooms = getBookedRoomsBetweenDates(startDate, endDate);
         return roomDao.findAll().stream()
-                .filter(room -> !bookedRooms.contains(room)).filter(room -> room.getMaxCapacity() >= quests).toList();
+                .filter(room -> !bookedRooms.contains(room)).filter(room -> room.getMaxCapacity() >= guests).toList();
     }
 
     @Override
@@ -169,11 +169,18 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
+
         BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElse(null);
-        AddedExtra addedExtra = new AddedExtra(extraTypeDao.findById(extraTypeId).orElse(null));
+        ExtraType chosenExtraType = extraTypeDao.findById(extraTypeId).orElse(null);
+        long extraBedsAlreadyAdded = bookedObject.getExtras().stream().filter(extra -> extra.getExtraType().getName().equals("bed")).count();
 
+        if(chosenExtraType.getName().equals("bed")) {
+            if (bookedObject.getRoom().getRoomType().getName().equals("Single room") || extraBedsAlreadyAdded >= bookedObject.getRoom().getExtraBedsAvailable()) {
+                throw new IllegalArgumentException("Bed can't be added to this room");
+            }
+        }
+        AddedExtra addedExtra = new AddedExtra(chosenExtraType);
         bookedObject.getExtras().add(addedExtra);
-
         bookedObjectDao.save(bookedObject);
     }
 

@@ -21,9 +21,9 @@
         <form th:action="@{/bookings/booking/add-room}" method="get" class="mb-4">
           <input type="hidden" name="bookingId" th:value="${bookingId}" />
           <div class="form-group">
-            <label for="questCount">Amount of quests:</label>
-            <select id="questCount" name="questCount" class="form-control">
-              <option value="" disabled selected>-- Choose quest count --</option>
+            <label for="guestCount">Amount of guests:</label>
+            <select id="guestCount" name="guestCount" class="form-control">
+              <option value="" disabled selected>-- Choose guests --</option>
               <option th:each="capacity : ${capacityOptions}" th:value="${capacity}" th:text="${capacity}">
             </select>
           </div>
