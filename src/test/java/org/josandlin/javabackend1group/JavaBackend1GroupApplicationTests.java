@@ -23,6 +23,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.Network;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class JavaBackend1GroupApplicationTests {
@@ -32,10 +33,19 @@ class JavaBackend1GroupApplicationTests {
 
 
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.4.4")
+
             .withDatabaseName("backend_db")
-            .withUsername("backend_db")
-            .withPassword("test1234");
-            ;
+            .withUsername("backend_app")
+            .withPassword("test1234")
+            .withInitScript("db/init.sql");
+
+
+    @DynamicPropertySource
+    static void configureProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", () -> "jdbc:mysql://localhost:3306/backend_db");
+        registry.add("spring.datasource.username", () -> "backend_app");
+        registry.add("spring.datasource.password", () -> "test1234");
+    }
 
     @BeforeAll
     static void beforeAll() {
@@ -46,13 +56,6 @@ class JavaBackend1GroupApplicationTests {
     static void afterAll() {
         mysql.stop();
     }
-
-//    @DynamicPropertySource
-//    static void configureProperties(DynamicPropertyRegistry registry) {
-//        registry.add("spring.datasource.url", mysql::getJdbcUrl);
-//        registry.add("spring.datasource.username", mysql::getUsername);
-//        registry.add("spring.datasource.password", mysql::getPassword);
-//    }
 
 
     @Autowired
@@ -71,14 +74,9 @@ class JavaBackend1GroupApplicationTests {
     }
 
     @Test
-    void shouldCreateBooking() {
+    void shouldRegisterCustomer() {
         Customer customer = new Customer(1L,"Test1");
-        Booking booking = new Booking(2L, customer);
-
-//        when(customerService.registerCustomer(customer)).thenReturn(customer);
-
         Customer registeredCustomer = customerService.registerCustomer(customer);
-
         assertThat(registeredCustomer.getId()).isEqualTo(1L);
 
     }
