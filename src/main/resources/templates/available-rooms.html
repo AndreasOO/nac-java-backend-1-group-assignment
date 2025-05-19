@@ -9,7 +9,16 @@
     <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 50%;">
         <div class="card-header bg-light">
             <div class="d-flex justify-content-between">
-                <strong class="h5">AVAILABLE ROOMS</strong>
+                <div>
+                    <strong>Guest capacity:</strong>
+                    <span th:text="${guests}">Guest capacity</span>
+                </div>
+                <div>
+                    <strong>Rooms available during:</strong>
+                    <span th:text="${startDate}">Start date</span>
+                    <span class="fst-italic">  to  </span>
+                    <span th:text="${endDate}">End date</span>
+                </div>
             </div>
         </div>
         <table class="table">
