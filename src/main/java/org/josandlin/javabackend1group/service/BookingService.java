@@ -1,9 +1,6 @@
 package org.josandlin.javabackend1group.service;
 
-import org.josandlin.javabackend1group.entity.BookedObject;
-import org.josandlin.javabackend1group.entity.Booking;
-import org.josandlin.javabackend1group.entity.Customer;
-import org.josandlin.javabackend1group.entity.Room;
+import org.josandlin.javabackend1group.entity.*;
 import org.springframework.cglib.core.Local;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,7 +46,15 @@ public interface BookingService {
     Room getRoomById(Long id);
 
     void saveBookedObject(BookedObject bookedObject);
-    // lägg till metod som sparar bookedobject
 
     Customer getCustomerByBookingId(Long id);
+
+    BookedObject getBookedObjectById(Long id);
+
+    void deleteExtraFromBookedObjectById(Long extraId);
+
+    List<ExtraType> getAllExtraChoicesAvailable(Long bookedObjectId);
+
+    void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId);
+
 }

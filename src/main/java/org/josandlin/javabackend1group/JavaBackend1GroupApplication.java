@@ -50,17 +50,17 @@ public class JavaBackend1GroupApplication {
             bookingDao.save(linnsBooking);
             bookingDao.save(josefinsBooking);
 
-            RoomType singleRoom = new RoomType("Single room", 1000);
+            RoomType singleRoom1 = new RoomType("Single room", 1000);
             RoomType doubleRoom = new RoomType("Double room", 2000);
             RoomType twinRoom = new RoomType("Twin room", 1900);
-            RoomType quadRoom = new RoomType("Quad room", 3200);
+            RoomType singleRoom2 = new RoomType("Single room", 3200);
 
-            roomTypeDao.save(singleRoom);
+            roomTypeDao.save(singleRoom1);
             roomTypeDao.save(doubleRoom);
             roomTypeDao.save(twinRoom);
-            roomTypeDao.save(quadRoom);
+            roomTypeDao.save(singleRoom2);
 
-            ExtraType extraBed = new ExtraType("single bed", 200);
+            ExtraType extraBed = new ExtraType("bed", 200);
             ExtraType extraSnacks = new ExtraType("snacks", 85);
             ExtraType extraTowels = new ExtraType("towels", 50);
             ExtraType extraPillows = new ExtraType("pillows", 50);
@@ -78,18 +78,18 @@ public class JavaBackend1GroupApplication {
             AddedExtra millysExtra = new AddedExtra(extraPillows);
             AddedExtra linnsExtra = new AddedExtra(extraSnacks);
 
-            addedExtraDao.save(olasExtra);
-            addedExtraDao.save(andreasFirstExtra);
-            addedExtraDao.save(andreasSecondExtra);
-            addedExtraDao.save(millysExtra);
-            addedExtraDao.save(linnsExtra);
+//            addedExtraDao.save(olasExtra);
+//            addedExtraDao.save(andreasFirstExtra);
+//            addedExtraDao.save(andreasSecondExtra);
+//            addedExtraDao.save(millysExtra);
+//            addedExtraDao.save(linnsExtra);
 
-            Room roomOne = new Room("Sea view room", 3, 3, doubleRoom);
-            Room roomTwo = new Room("Dumpster room", 2, 1, twinRoom);
-            Room roomThree = new Room("Honeymoon suite", 2, 4, doubleRoom);
-            Room roomFour = new Room("Nice room", 2, 2, singleRoom);
-            Room roomFive = new Room("Ok room", 4, 0, quadRoom);
-            Room roomSix = new Room("Unbooked room", 1, 1, singleRoom);
+            Room roomOne = new Room("Sea view room", 3, 1, doubleRoom); // millys bokning + andreas bokning (lagt till en extra bed)
+            Room roomTwo = new Room("Dumpster room", 2, 0, twinRoom); // olas bokning
+            Room roomThree = new Room("Honeymoon suite", 4, 2, doubleRoom); // linns bokning
+            Room roomFour = new Room("Nice room", 1, 0, singleRoom1); // josefins bokning
+            Room roomFive = new Room("Ok room", 1, 0, singleRoom2); //olas bokning
+            Room roomSix = new Room("Unbooked room", 1, 1, singleRoom1);
 
             roomDao.save(roomOne);
             roomDao.save(roomTwo);
@@ -104,11 +104,6 @@ public class JavaBackend1GroupApplication {
             BookedObject roomInAndreasBooking = new BookedObject(roomOne, List.of(andreasFirstExtra, andreasSecondExtra), andreasBooking, LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
             BookedObject roomInLinnsBooking = new BookedObject(roomThree, List.of(linnsExtra), linnsBooking, LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
             BookedObject roomInJosefinsBooking = new BookedObject(roomFour, List.of(), josefinsBooking, LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
-
-//            firstRoomInOlasBooking.setExtras(List.of(olasExtra));
-//            roomInMillysBooking.setExtras(List.of(millysExtra));
-//            roomInAndreasBooking.setExtras(List.of(andreasFirstExtra, andreasSecondExtra));
-//            roomInLinnsBooking.setExtras(List.of(linnsExtra));
 
             bookedRoomDao.save(firstRoomInOlasBooking);
             bookedRoomDao.save(secondRoomInOlasBooking);

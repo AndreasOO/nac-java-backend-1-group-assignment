@@ -27,7 +27,6 @@ public class BookingController {
 
     // Snygga upp alla endpoints
     // Använder mig än så länge av RequestParams, snyggare med PathVariable?
-    // Behöver få in extras
 
     @GetMapping("/all")
     public String showBookings(Model model) {
@@ -67,7 +66,6 @@ public class BookingController {
         return "available-rooms";
     }
 
-    // Tom extras lista än så länge
     @PostMapping("/booking/add-room")
     public String addRoomToBooking(@RequestParam Long roomId, @RequestParam Long bookingId, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate){
         Room chosenRoom = bookingService.getRoomById(roomId);
@@ -77,65 +75,32 @@ public class BookingController {
         return "redirect:/bookings/booking?bookingId=" + bookingId;
     }
 
-    // Ska kunna uppdatera extras
-    @PostMapping("/booking/edit-room")
-    public String editRoom(Model model){
-        return "redirect:/bookings/all";
+    @GetMapping("/booking/booked-room")
+    public String showBookedRoom(Model model, @RequestParam Long bookedObjectId){
+        BookedObject bookedObject = bookingService.getBookedObjectById(bookedObjectId);
+        List<ExtraType> extraChoices = bookingService.getAllExtraChoicesAvailable(bookedObjectId);
+        model.addAttribute("bookedObject", bookedObject);
+        model.addAttribute("extraChoices", extraChoices);
+        return "booked-room";
     }
 
-    // Ska gå att ta bort rum ur bokning
+    @PostMapping("/booking/delete-extra")
+    public String deleteExtraFromBookedRoom(Model model, @RequestParam Long bookedObjectId, @RequestParam Long extraId) {
+        bookingService.deleteExtraFromBookedObjectById(extraId);
+        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
+    }
+
+    @PostMapping("/booking/add-extra")
+    public String addExtraToBookedRoom(Model model, @RequestParam Long bookedObjectId, @RequestParam Long extraTypeId) {
+        bookingService.addExtraToBookedObject(bookedObjectId, extraTypeId);
+        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
+    }
+
     @PostMapping("/booking/delete-room")
-    public String deleteRoom(Model model){
-        return "redirect:/bookings/all";
+    public String deleteRoom(Model model, @RequestParam Long bookedObjectId, @RequestParam Long bookingId) {
+        bookingService.removeBookedObject(bookedObjectId);
+        return "redirect:/bookings/booking?bookingId=" + bookingId;
     }
 
-
-//    @GetMapping("/booking-form")
-//    public String showBookingForm(@RequestParam("customer") Long customerId, Model model) {
-//        Customer customer = customerService.findById(customerId);
-//        Booking newBooking = new Booking(customer);
-//
-//        List<Integer> capacityOptions = IntStream.rangeClosed(1, bookingService.getRoomMaxCapacity()).boxed().toList();
-//        model.addAttribute("capacityOptions", capacityOptions);
-//        model.addAttribute("booking", newBooking);
-//        return "booking-form";
-//    }
-
-//    @ResponseBody
-//    @GetMapping("rooms/byType/{roomTypeId}")
-//    public List<Room> showRoomsAfterRoomType(Model model, @PathVariable Long roomTypeId) {
-//        RoomType roomType = roomTypeDao.findById(roomTypeId).orElse(null);
-//        return roomDao.findAllByRoomType(roomType);
-//    }
-//
-//    @ResponseBody
-//    @GetMapping("rooms/byCapacity/{maxCapacity}")
-//    public List<Room> showRoomAfterMaxCapacity(Model model, @PathVariable int maxCapacity) {
-//        return roomDao.findAllByMaxCapacity(maxCapacity);
-//    }
-//
-//    @ResponseBody
-//    @GetMapping("rooms/{id}")
-//    public Room showSelectedRoom(Model model, @PathVariable Long id) {
-//        return roomDao.findRoomById(id);
-//    }
-//
-//    @PostMapping("rooms/{id}")
-//    public String bookRoom(Model model, @PathVariable String id) {
-//        System.out.println("booked room " + id);
-//        return "selectedRoom";
-//    }
-//
-//    @PutMapping("rooms/{id}")
-//    public String editBookedRoom(Model model, @PathVariable String id) {
-//        System.out.println("edited room " + id);
-//        return "selectedRoom";
-//    }
-//
-//    @DeleteMapping("rooms/{id}")
-//    public String cancelBookedRoom(Model model, @PathVariable String id) {
-//        System.out.println("cancelled room " + id);
-//        return "selectedRoom";
-//    }
 
 }

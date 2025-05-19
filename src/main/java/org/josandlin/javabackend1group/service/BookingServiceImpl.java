@@ -17,19 +17,21 @@ public class BookingServiceImpl implements BookingService {
     private final AddedExtraDao addedExtraDao;
     private final RoomDao roomDao;
     private final RoomTypeDao roomTypeDao;
+    private final ExtraTypeDao extraTypeDao;
 
     @Autowired
     public BookingServiceImpl(BookingDao bookingDao,
                               BookedObjectDao bookedObjectDao,
                               AddedExtraDao addedExtraDao,
                               RoomDao roomDao,
-                              RoomTypeDao roomTypeDao) {
+                              RoomTypeDao roomTypeDao, ExtraTypeDao extraTypeDao) {
 
         this.bookingDao = bookingDao;
         this.bookedObjectDao = bookedObjectDao;
         this.addedExtraDao = addedExtraDao;
         this.roomDao = roomDao;
         this.roomTypeDao = roomTypeDao;
+        this.extraTypeDao = extraTypeDao;
     }
 
     @Override
@@ -78,6 +80,7 @@ public class BookingServiceImpl implements BookingService {
                                                  .toList();
     }
 
+    @Override
     public List<BookedObject> getBookedRoomsByBookingId(Long bookingId){
         return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId)).toList();
     }
@@ -134,6 +137,44 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Customer getCustomerByBookingId(Long id){
         return bookingDao.findById(id).stream().map(Booking::getCustomer).findFirst().orElse(null);
+    }
+
+    @Override
+    public BookedObject getBookedObjectById(Long id){
+        return bookedObjectDao.findById(id).orElse(null);
+    }
+
+    @Override
+    public void deleteExtraFromBookedObjectById(Long extraId){
+        try{
+            addedExtraDao.deleteById(extraId);
+        }
+        catch (Exception e){
+            throw new IllegalArgumentException("Extra not found");
+        }
+    }
+
+    @Override
+    public List<ExtraType> getAllExtraChoicesAvailable(Long bookedObjectId){
+
+        BookedObject bookedObject = getBookedObjectById(bookedObjectId);
+        long currentExtraBedsAdded = bookedObject.getExtras().stream().filter(extra -> extra.getExtraType().getName().equals("bed")).count();
+
+        if(bookedObject.getRoom().getRoomType().getName().equals("Single room") || currentExtraBedsAdded >= bookedObject.getRoom().getExtraBedsAvailable()){
+            return extraTypeDao.findAll().stream().filter(extraType -> !extraType.getName().equals("bed")).collect(Collectors.toList());
+        }
+        return extraTypeDao.findAll();
+    }
+
+
+    @Override
+    public void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
+        BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElse(null);
+        AddedExtra addedExtra = new AddedExtra(extraTypeDao.findById(extraTypeId).orElse(null));
+
+        bookedObject.getExtras().add(addedExtra);
+
+        bookedObjectDao.save(bookedObject);
     }
 
 
