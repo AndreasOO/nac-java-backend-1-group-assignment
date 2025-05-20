@@ -1,5 +1,6 @@
 package org.josandlin.javabackend1group;
 
+import org.josandlin.javabackend1group.dao.*;
 import org.josandlin.javabackend1group.entity.Booking;
 import org.josandlin.javabackend1group.entity.Customer;
 import org.josandlin.javabackend1group.service.BookingService;
@@ -64,9 +65,39 @@ class JavaBackend1GroupApplicationTests {
     @Autowired
     CustomerService customerService;
 
+    @Autowired
+    CustomerDao customerDao;
+
+    @Autowired
+    BookingDao bookingDao;
+
+    @Autowired
+    AddedExtraDao addedExtraDao;
+
+    @Autowired
+    BookedObjectDao bookedObjectDao;
+
+    @Autowired
+    RoomDao roomDao;
+
+    @Autowired
+    RoomTypeDao roomTypeDao;
+
+    @Autowired
+    ExtraTypeDao extraTypeDao;
+
+
     @BeforeEach
     void setUp() {
         RestAssured.baseURI = "http://localhost:" + port;
+        bookedObjectDao.deleteAll();
+        extraTypeDao.deleteAll();
+        roomDao.deleteAll();
+        roomTypeDao.deleteAll();
+        bookingDao.deleteAll();
+        addedExtraDao.deleteAll();
+        customerDao.deleteAll();
+
     }
 
     @Test
@@ -75,9 +106,15 @@ class JavaBackend1GroupApplicationTests {
 
     @Test
     void shouldRegisterCustomer() {
-        Customer customer = new Customer(1L,"Test1");
-        Customer registeredCustomer = customerService.registerCustomer(customer);
-        assertThat(registeredCustomer.getId()).isEqualTo(1L);
+        Customer customer1 = new Customer("Test1");
+        Customer customer2 = new Customer("Test2");
+        Customer customer3 = new Customer("Test3");
+        Customer registeredCustomer1 = customerService.registerCustomer(customer1);
+        Customer registeredCustomer2 = customerService.registerCustomer(customer2);
+        Customer registeredCustomer3 = customerService.registerCustomer(customer3);
+        assertThat(registeredCustomer1.getId()).isEqualTo(customer1.getId());
+        assertThat(registeredCustomer2.getId()).isEqualTo(customer2.getId());
+        assertThat(registeredCustomer3.getId()).isEqualTo(customer3.getId());
 
     }
 
