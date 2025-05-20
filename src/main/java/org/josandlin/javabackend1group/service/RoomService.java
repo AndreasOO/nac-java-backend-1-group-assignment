@@ -1,5 +1,6 @@
 package org.josandlin.javabackend1group.service;
 
+import org.josandlin.javabackend1group.dto.RoomDTO;
 import org.josandlin.javabackend1group.entity.Room;
 
 import java.time.LocalDate;
@@ -8,11 +9,11 @@ import java.util.Set;
 
 public interface RoomService {
 
-    List<Room> getAllRooms();
+    List<RoomDTO> getAllRooms();
 
-    int getRoomMaxCapacity();
+    List<Integer> getCapacityOptions();
 
-    Room getRoomById(Long id);
+    RoomDTO getRoomById(Long id);
 
-    List<Room> getAvailableRoomsBetweenDatesWithinCapacity(LocalDate startDate, LocalDate endDate, int quests);
+    List<RoomDTO> getAvailableRoomsBetweenDatesWithinCapacity(LocalDate startDate, LocalDate endDate, int quests);
 }

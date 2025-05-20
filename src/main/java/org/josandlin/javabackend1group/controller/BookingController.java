@@ -7,6 +7,7 @@ import org.josandlin.javabackend1group.dto.RoomDTO;
 import org.josandlin.javabackend1group.entity.*;
 import org.josandlin.javabackend1group.service.BookingService;
 import org.josandlin.javabackend1group.service.CustomerService;
+import org.josandlin.javabackend1group.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,11 +23,13 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final CustomerService customerService;
+    private final RoomService roomService;
 
     @Autowired
-    public BookingController(BookingService bookingService, CustomerService customerService) {
+    public BookingController(BookingService bookingService, CustomerService customerService, RoomService roomService) {
         this.bookingService = bookingService;
         this.customerService = customerService;
+        this.roomService = roomService;
     }
 
     @GetMapping("/all")
@@ -39,7 +42,7 @@ public class BookingController {
     @GetMapping("/booking/add-room")
     public String showAvailableRooms(Model model, @RequestParam("bookingId") Long bookingId, @RequestParam("guestCount") int guestCount, @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
         model.addAttribute("guests", guestCount);
-        model.addAttribute("rooms", bookingService.getAvailableRoomsBetweenDatesWithinCapacity(startDate, endDate, guestCount));
+        model.addAttribute("rooms", roomService.getAvailableRoomsBetweenDatesWithinCapacity(startDate, endDate, guestCount));
         model.addAttribute("bookingId", bookingId);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
@@ -50,7 +53,7 @@ public class BookingController {
     public String showBooking(@RequestParam Long bookingId, Model model) {
         model.addAttribute("customer", bookingService.getCustomerByBookingId(bookingId));
         model.addAttribute("bookingId", bookingId);
-        model.addAttribute("capacityOptions", bookingService.getRoomSizeOptions());
+        model.addAttribute("capacityOptions", roomService.getCapacityOptions());
         model.addAttribute("bookedRooms", bookingService.getBookedRoomsByBookingId(bookingId));
         return "booking";
     }
@@ -58,7 +61,7 @@ public class BookingController {
     @GetMapping("/booking/booked-room")
     public String showBookedRoom(Model model, @RequestParam Long bookedObjectId){
         model.addAttribute("bookedObject", bookingService.getBookedObjectById(bookedObjectId));
-        model.addAttribute("extraChoices", bookingService.getAllExtraChoicesAvailable(bookedObjectId));
+        model.addAttribute("extraChoices", bookingService.getExtraOptionsAvailable(bookedObjectId));
         return "booked-room";
     }
 
@@ -70,7 +73,7 @@ public class BookingController {
 
     @PostMapping("/booking/add-room")
     public String addRoomToBooking(@RequestParam Long roomId, @RequestParam Long bookingId, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate){
-        bookingService.saveBookedObject(roomId, bookingId, startDate, endDate);
+        bookingService.saveBookedObject(roomService.getRoomById(roomId), bookingId, startDate, endDate);
         return "redirect:/bookings/booking?bookingId=" + bookingId;
     }
 

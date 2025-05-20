@@ -19,7 +19,6 @@ public class BookingServiceImpl implements BookingService {
     private final BookingDao bookingDao;
     private final BookedObjectDao bookedObjectDao;
     private final AddedExtraDao addedExtraDao;
-    private final RoomDao roomDao;
     private final ExtraTypeDao extraTypeDao;
     private final CustomerDao customerDao;
 
@@ -29,13 +28,12 @@ public class BookingServiceImpl implements BookingService {
     private final BookedObjectMapper bookedObjectMapper;
     private final ExtraTypeMapper extraTypeMapper;
 
-
-
     @Autowired
     public BookingServiceImpl(BookingDao bookingDao,
                               BookedObjectDao bookedObjectDao,
                               AddedExtraDao addedExtraDao,
-                              RoomDao roomDao, ExtraTypeDao extraTypeDao, CustomerDao customerDao,
+                              ExtraTypeDao extraTypeDao,
+                              CustomerDao customerDao,
                               BookingMapper bookingMapper,
                               CustomerMapper customerMapper,
                               RoomMapper roomMapper,
@@ -45,7 +43,6 @@ public class BookingServiceImpl implements BookingService {
         this.bookingDao = bookingDao;
         this.bookedObjectDao = bookedObjectDao;
         this.addedExtraDao = addedExtraDao;
-        this.roomDao = roomDao;
         this.extraTypeDao = extraTypeDao;
         this.customerDao = customerDao;
 
@@ -103,37 +100,12 @@ public class BookingServiceImpl implements BookingService {
         return bookingDao.findAll().stream().map(bookingMapper::toDTO).toList();
     }
 
-    @Override
-    public List<Integer> getRoomSizeOptions(){
-        int max = roomDao.findAll().stream().map(Room::getMaxCapacity).max(Comparator.naturalOrder()).orElse(1);
-        return IntStream.rangeClosed(1, max).boxed().toList();
-    }
-
-    @Override
-    public List<RoomDTO> getAvailableRoomsBetweenDatesWithinCapacity(LocalDate startDate, LocalDate endDate, int guests){
-        Set<Room> bookedRoomsBetweenDates = bookedObjectDao.findAll()
-                .stream().filter(bookedRoom -> !bookedRoom.getEndDate().isBefore(startDate)
-                        && !bookedRoom.getStartDate().isAfter(endDate))
-                .map(BookedObject::getRoom).collect(Collectors.toSet());
-
-        return roomDao.findAll().stream()
-                .filter(room -> !bookedRoomsBetweenDates.contains(room))
-                .filter(room -> room.getMaxCapacity() >= guests)
-                .map(roomMapper::toDTO).toList();
-    }
-
-    @Override
-    public RoomDTO getRoomById(Long id){
-        return roomMapper.toDTO(roomDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Room not found")));
-    }
-
 
     @Transactional
     @Override
-    public void saveBookedObject(Long roomId, Long bookingId, LocalDate startDate, LocalDate endDate){
-        Room chosenRoom = roomMapper.toEntity(getRoomById(roomId));
+    public void saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
         Booking currentBooking = bookingMapper.toEntity(getBookingById(bookingId));
-        BookedObject bookedObject = new BookedObject(chosenRoom, List.of(), currentBooking, startDate, endDate);
+        BookedObject bookedObject = new BookedObject(roomMapper.toEntity(room), List.of(), currentBooking, startDate, endDate);
         bookedObjectDao.save(bookedObject);
     }
 
@@ -161,7 +133,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<ExtraTypeDTO> getAllExtraChoicesAvailable(Long bookedObjectId){
+    public List<ExtraTypeDTO> getExtraOptionsAvailable(Long bookedObjectId){
 
         BookedObjectDTO bookedObject = getBookedObjectById(bookedObjectId);
         long currentExtraBedsAdded = bookedObject.getExtras().stream().filter(extra -> extra.getExtraType().getName().equals("bed")).count();
