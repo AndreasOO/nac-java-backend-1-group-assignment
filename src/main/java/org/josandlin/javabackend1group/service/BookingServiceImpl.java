@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -52,6 +50,7 @@ public class BookingServiceImpl implements BookingService {
         this.bookedObjectMapper = bookedObjectMapper;
         this.extraTypeMapper = extraTypeMapper;
     }
+
 
     @Override
     public CustomerDTO findCustomerById(Long id){
