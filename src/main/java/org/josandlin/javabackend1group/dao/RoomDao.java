@@ -10,15 +10,4 @@ import java.util.List;
 
 public interface RoomDao extends JpaRepository<Room, Long> {
 
-    Room findRoomById(Long id);
-
-    List<Room> findAll();
-
-    List<Room> findAllByRoomType(RoomType roomType);
-
-    List<Room> findAllByMaxCapacity(int roomCapacity);
-
-    // Välj de rum där rummet inte återfinns bland bokade rum, där datumen överlappar med de datum användaren skriver in
-    @Query("SELECT room FROM Room room where room.id NOT IN(SELECT booked_room.room.id FROM BookedObject booked_room WHERE booked_room.startDate <= :endDate AND booked_room.endDate >= :startDate)")
-    List<Room> findAvailableRoomsBetween(LocalDate startDate, LocalDate endDate);
 }

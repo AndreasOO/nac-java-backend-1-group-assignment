@@ -1,60 +1,67 @@
 package org.josandlin.javabackend1group.service;
 
+import org.josandlin.javabackend1group.dto.*;
 import org.josandlin.javabackend1group.entity.*;
-import org.springframework.cglib.core.Local;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 
 public interface BookingService {
-    List<Booking> getBookingsByCustomerId(Long customerId);
 
-    Booking getBookingById(Long id);
+    // Metoder som ska vara i customer service
+    CustomerDTO findCustomerById(Long id);
+
+    List<CustomerDTO> getAllCustomers();
+
+    //
+
+    List<BookingDTO> getBookingsByCustomerId(Long customerId);
+
+    BookingDTO getBookingById(Long id);
 
     @Transactional
-    Booking createBooking(Booking booking);
-
-    @Transactional
-    BookedObject addBookedObjectToBooking(BookedObject bookedObject, Long bookingId);
+    BookingDTO createBooking(Long customerId);
 
     @Transactional
     void removeBookedObject(Long bookedObjectId);
 
+    List<RoomDTO> getAvailableRoomsBetweenDatesWithinCapacity(LocalDate startDate, LocalDate endDate, int numOfResidents);
+
+    List<BookingDTO> getAllBookings();
+
+    List<BookedObjectDTO> getBookedRoomsByBookingId(Long bookingId);
+
+    List<Integer> getRoomSizeOptions();
+
+    RoomDTO getRoomById(Long id);
+
     @Transactional
-    BookedObject editBookedObject(BookedObject bookedObject);
+    void saveBookedObject(Long roomId, Long bookingId, LocalDate startDate, LocalDate endDate);
 
-    List<Room> getRoomsByBookingId(Long bookingId);
+    CustomerDTO getCustomerByBookingId(Long id);
 
-    List<Room> getAvailableRoomsBetweenDatesAndWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int numOfResidents);
+    BookedObjectDTO getBookedObjectById(Long id);
 
-    List<Booking> getAllBookings();
-
-    List<BookedObject> getBookedRoomsByBookingId(Long bookingId);
-
-    List<Room> getAllRooms();
-
-    int getRoomMaxCapacity();
-
-    Set<Room> getBookedRoomsBetweenDates(LocalDate startDate, LocalDate endDate);
-
-    List<Room> getAvailableRoomsWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int quests);
-
-    Room getRoomById(Long id);
-
-    void saveBookedObject(BookedObject bookedObject);
-
-    Customer getCustomerByBookingId(Long id);
-
-    BookedObject getBookedObjectById(Long id);
-
+    @Transactional
     void deleteExtraFromBookedObjectById(Long extraId);
 
-    List<ExtraType> getAllExtraChoicesAvailable(Long bookedObjectId);
+    List<ExtraTypeDTO> getAllExtraChoicesAvailable(Long bookedObjectId);
 
+    @Transactional
     void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId);
+
+//    @Transactional
+//    BookedObject addBookedObjectToBooking(BookedObject bookedObject, Long bookingId);
+//
+//    @Transactional
+//    void removeBookedObject(Long bookedObjectId);
+//
+//    @Transactional
+//    BookedObject editBookedObject(BookedObject bookedObject);
+//
+//    List<Room> getRoomsByBookingId(Long bookingId);
 
 }

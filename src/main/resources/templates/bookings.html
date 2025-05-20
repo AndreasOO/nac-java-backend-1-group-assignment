@@ -20,12 +20,12 @@
 
         <form th:action="@{/bookings/booking}" method="post" class="mb-4">
           <div class="form-group">
-            <label for="customer">Choose customer:</label>
-            <select id="customer" name="customerId" class="form-control" required>
+            <label for="customerDTO">Choose customerDTO:</label>
+            <select id="customerDTO" name="customerId" class="form-control" required>
               <option value="" disabled selected>-- Choose customer --</option>
               <option th:each="customer : ${customers}"
-                      th:value="${customer.id}"
-                      th:text="${customer.name}">
+                      th:value="${customer.getId()}"
+                      th:text="${customer.getName()}">
               </option>
             </select>
           </div>

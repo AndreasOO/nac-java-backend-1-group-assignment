@@ -1,13 +1,17 @@
 package org.josandlin.javabackend1group.service;
 
 import org.josandlin.javabackend1group.dao.*;
+import org.josandlin.javabackend1group.dto.*;
 import org.josandlin.javabackend1group.entity.*;
+import org.josandlin.javabackend1group.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -16,52 +20,73 @@ public class BookingServiceImpl implements BookingService {
     private final BookedObjectDao bookedObjectDao;
     private final AddedExtraDao addedExtraDao;
     private final RoomDao roomDao;
-    private final RoomTypeDao roomTypeDao;
     private final ExtraTypeDao extraTypeDao;
+    private final CustomerDao customerDao;
+
+    private final BookingMapper bookingMapper;
+    private final CustomerMapper customerMapper;
+    private final RoomMapper roomMapper;
+    private final BookedObjectMapper bookedObjectMapper;
+    private final ExtraTypeMapper extraTypeMapper;
+
+
 
     @Autowired
     public BookingServiceImpl(BookingDao bookingDao,
                               BookedObjectDao bookedObjectDao,
                               AddedExtraDao addedExtraDao,
-                              RoomDao roomDao,
-                              RoomTypeDao roomTypeDao, ExtraTypeDao extraTypeDao) {
+                              RoomDao roomDao, ExtraTypeDao extraTypeDao, CustomerDao customerDao,
+                              BookingMapper bookingMapper,
+                              CustomerMapper customerMapper,
+                              RoomMapper roomMapper,
+                              BookedObjectMapper bookedObjectMapper,
+                              ExtraTypeMapper extraTypeMapper) {
 
         this.bookingDao = bookingDao;
         this.bookedObjectDao = bookedObjectDao;
         this.addedExtraDao = addedExtraDao;
         this.roomDao = roomDao;
-        this.roomTypeDao = roomTypeDao;
         this.extraTypeDao = extraTypeDao;
+        this.customerDao = customerDao;
+
+        this.bookingMapper = bookingMapper;
+        this.customerMapper = customerMapper;
+        this.roomMapper = roomMapper;
+        this.bookedObjectMapper = bookedObjectMapper;
+        this.extraTypeMapper = extraTypeMapper;
     }
 
     @Override
-    public List<Booking> getBookingsByCustomerId(Long customerId) {
-        return bookingDao.findAll().stream().filter(booking -> booking.getCustomer().getId().equals(customerId)).toList();
+    public CustomerDTO findCustomerById(Long id){
+        return customerMapper.toDTO(customerDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found")));
     }
 
     @Override
-    public Booking getBookingById(Long id) {
-        return bookingDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+    public List<CustomerDTO> getAllCustomers(){
+        return customerDao.findAll().stream().map(customerMapper::toDTO).toList();
     }
 
     @Override
-    public Booking createBooking(Booking booking) {
-        return bookingDao.save(booking);
+    public List<BookingDTO> getBookingsByCustomerId(Long customerId) {
+        return bookingDao.findAll().stream().map(bookingMapper::toDTO).filter(booking -> booking.getCustomer().getId().equals(customerId)).toList();
     }
 
 
     @Override
-    public BookedObject addBookedObjectToBooking(BookedObject bookedObject, Long bookingId) {
-        Booking booking = bookingDao.findById(bookingId).orElse(null);
-        if (booking == null) {
-            //TODO implement return Optional.None?
-            throw new IllegalArgumentException("Booking not found");
-        }
-        bookedObject.setBooking(booking);
-        //TODO implement return Optional.BookedObject?
-        return bookedObjectDao.save(bookedObject);
+    public BookingDTO getBookingById(Long id) {
+        return bookingMapper.toDTO(bookingDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found")));
     }
 
+    @Transactional
+    @Override
+    public BookingDTO createBooking(Long customerId) {
+        Customer customer = customerMapper.toEntity(findCustomerById(customerId));
+        Booking newBooking = new Booking(customer);
+        bookingDao.save(newBooking);
+        return bookingMapper.toDTO(newBooking);
+    }
+
+    @Transactional
     @Override
     public void removeBookedObject(Long bookedObjectId) {
         bookedObjectDao.deleteById(bookedObjectId);
@@ -69,81 +94,62 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookedObject editBookedObject(BookedObject bookedObject) {
-        return bookedObjectDao.save(bookedObject);
+    public List<BookedObjectDTO> getBookedRoomsByBookingId(Long bookingId){
+        return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId)).map(bookedObjectMapper::toDTO).toList();
     }
 
     @Override
-    public List<Room> getRoomsByBookingId(Long bookingId) {
-        return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId))
-                                                 .map(BookedObject::getRoom)
-                                                 .toList();
+    public List<BookingDTO> getAllBookings(){
+        return bookingDao.findAll().stream().map(bookingMapper::toDTO).toList();
     }
 
     @Override
-    public List<BookedObject> getBookedRoomsByBookingId(Long bookingId){
-        return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId)).toList();
+    public List<Integer> getRoomSizeOptions(){
+        int max = roomDao.findAll().stream().map(Room::getMaxCapacity).max(Comparator.naturalOrder()).orElse(1);
+        return IntStream.rangeClosed(1, max).boxed().toList();
     }
 
     @Override
-    public List<Room> getAvailableRoomsBetweenDatesAndWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int numOfResidents) {
-        return bookedObjectDao.findAll().stream().filter(bookedObj -> bookedObj.getStartDate().isAfter(endDate)
-                                                                               || bookedObj.getEndDate().isBefore(startDate))
-                                                 .map(BookedObject::getRoom)
-                                                 .filter(room -> room.getMaxCapacity() >= numOfResidents)
-                                                 .toList();
-    }
-
-    @Override
-    public List<Booking> getAllBookings(){
-        return bookingDao.findAll();
-    }
-
-    @Override
-    public List<Room> getAllRooms(){
-        return roomDao.findAll();
-    }
-
-    @Override
-    public int getRoomMaxCapacity(){
-        return roomDao.findAll().stream().map(Room::getMaxCapacity).max(Comparator.naturalOrder()).orElse(1);
-    }
-
-    @Override
-    public Set<Room> getBookedRoomsBetweenDates(LocalDate startDate, LocalDate endDate){
-        return bookedObjectDao.findAll()
+    public List<RoomDTO> getAvailableRoomsBetweenDatesWithinCapacity(LocalDate startDate, LocalDate endDate, int guests){
+        Set<Room> bookedRoomsBetweenDates = bookedObjectDao.findAll()
                 .stream().filter(bookedRoom -> !bookedRoom.getEndDate().isBefore(startDate)
                         && !bookedRoom.getStartDate().isAfter(endDate))
                 .map(BookedObject::getRoom).collect(Collectors.toSet());
-    }
 
-    @Override
-    public List<Room> getAvailableRoomsWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int guests){
-        Set<Room> bookedRooms = getBookedRoomsBetweenDates(startDate, endDate);
         return roomDao.findAll().stream()
-                .filter(room -> !bookedRooms.contains(room)).filter(room -> room.getMaxCapacity() >= guests).toList();
+                .filter(room -> !bookedRoomsBetweenDates.contains(room))
+                .filter(room -> room.getMaxCapacity() >= guests)
+                .map(roomMapper::toDTO).toList();
     }
 
     @Override
-    public Room getRoomById(Long id){
-        return roomDao.findRoomById(id);
+    public RoomDTO getRoomById(Long id){
+        return roomMapper.toDTO(roomDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Room not found")));
     }
 
+
+    @Transactional
     @Override
-    public void saveBookedObject(BookedObject bookedObject){
+    public void saveBookedObject(Long roomId, Long bookingId, LocalDate startDate, LocalDate endDate){
+        Room chosenRoom = roomMapper.toEntity(getRoomById(roomId));
+        Booking currentBooking = bookingMapper.toEntity(getBookingById(bookingId));
+        BookedObject bookedObject = new BookedObject(chosenRoom, List.of(), currentBooking, startDate, endDate);
         bookedObjectDao.save(bookedObject);
     }
 
     @Override
-    public Customer getCustomerByBookingId(Long id){
-        return bookingDao.findById(id).stream().map(Booking::getCustomer).findFirst().orElse(null);
+    public CustomerDTO getCustomerByBookingId(Long id){
+        return bookingDao.findById(id).stream().map(Booking::getCustomer)
+                .map(customerMapper::toDTO).findFirst().orElseThrow(() -> new IllegalArgumentException("Customer not found"));
     }
 
     @Override
-    public BookedObject getBookedObjectById(Long id){
-        return bookedObjectDao.findById(id).orElse(null);
+    public BookedObjectDTO getBookedObjectById(Long id){
+        return bookedObjectMapper.toDTO(bookedObjectDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Booked object not found")));
     }
 
+
+    @Transactional
     @Override
     public void deleteExtraFromBookedObjectById(Long extraId){
         try{
@@ -155,18 +161,18 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<ExtraType> getAllExtraChoicesAvailable(Long bookedObjectId){
+    public List<ExtraTypeDTO> getAllExtraChoicesAvailable(Long bookedObjectId){
 
-        BookedObject bookedObject = getBookedObjectById(bookedObjectId);
+        BookedObjectDTO bookedObject = getBookedObjectById(bookedObjectId);
         long currentExtraBedsAdded = bookedObject.getExtras().stream().filter(extra -> extra.getExtraType().getName().equals("bed")).count();
 
         if(bookedObject.getRoom().getRoomType().getName().equals("Single room") || currentExtraBedsAdded >= bookedObject.getRoom().getExtraBedsAvailable()){
-            return extraTypeDao.findAll().stream().filter(extraType -> !extraType.getName().equals("bed")).collect(Collectors.toList());
+            return extraTypeDao.findAll().stream().filter(extraType -> !extraType.getName().equals("bed")).map(extraTypeMapper::toDTO).toList();
         }
-        return extraTypeDao.findAll();
+        return extraTypeDao.findAll().stream().map(extraTypeMapper::toDTO).toList();
     }
 
-
+    @Transactional
     @Override
     public void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
 
@@ -183,6 +189,60 @@ public class BookingServiceImpl implements BookingService {
         bookedObject.getExtras().add(addedExtra);
         bookedObjectDao.save(bookedObject);
     }
+
+
+
+
+
+    // Metoder som inte används
+
+//    @Override
+//    public BookedObject editBookedObject(BookedObject bookedObject) {
+//        return bookedObjectDao.save(bookedObject);
+//    }
+//
+//    @Override
+//    public List<Room> getRoomsByBookingId(Long bookingId) {
+//        return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId))
+//                .map(BookedObject::getRoom)
+//                .toList();
+//    }
+//
+//    @Override
+//    public BookedObject addBookedObjectToBooking(BookedObject bookedObject, Long bookingId) {
+//        Booking booking = bookingDao.findById(bookingId).orElse(null);
+//        if (booking == null) {
+//            //TODO implement return Optional.None?
+//            throw new IllegalArgumentException("Booking not found");
+//        }
+//        bookedObject.setBooking(booking);
+//        //TODO implement return Optional.BookedObject?
+//        return bookedObjectDao.save(bookedObject);
+//    }
+
+//    @Override
+//    public List<Room> getAvailableRoomsBetweenDatesWithinMaxCapacity(LocalDate startDate, LocalDate endDate, int numOfResidents) {
+//        return bookedObjectDao.findAll().stream().filter(bookedObj -> bookedObj.getStartDate().isAfter(endDate)
+//                        || bookedObj.getEndDate().isBefore(startDate))
+//                .map(BookedObject::getRoom)
+//                .filter(room -> room.getMaxCapacity() >= numOfResidents)
+//                .toList();
+//    }
+
+    //    @Override
+//    public List<Booking> getBookingsByCustomerId(Long customerId) {
+//        return bookingDao.findAll().stream().filter(booking -> booking.getCustomer().getId().equals(customerId)).toList();
+//    }
+
+//    @Override
+//    public Booking getBookingById(Long id) {
+//        return bookingDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
+//    }
+
+//    @Override
+//    public Booking createBooking(Booking booking) {
+//        return bookingDao.save(booking);
+//    }
 
 
 }

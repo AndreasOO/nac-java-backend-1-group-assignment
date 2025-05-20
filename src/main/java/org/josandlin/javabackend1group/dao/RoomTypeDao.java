@@ -7,7 +7,4 @@ import java.util.Optional;
 
 public interface RoomTypeDao extends JpaRepository<RoomType, Long> {
 
-    Optional<RoomType> findById(Long id);
-
-    Optional<RoomType> findByName(String name);
 }
