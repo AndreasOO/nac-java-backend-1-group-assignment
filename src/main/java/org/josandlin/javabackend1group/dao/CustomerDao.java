@@ -11,20 +11,12 @@ import org.springframework.data.repository.query.Param;
 public interface CustomerDao extends JpaRepository <Customer, Long> {
     Customer findByName(String name);
 
+    Customer registerCustomer(Customer customer);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Customer c " +
-            "WHERE c.id = :id " +
-            "AND NOT EXISTS (" +
-            "   SELECT b FROM Booking b WHERE b.customer.id = c.id" +
-            ")")
-    void deleteCustomerIfNoBookings(@Param("id") Long id);
+    Customer editCustomer(Customer customer);
 
+    Customer deleteCustomer(Long id);
 
-    @Modifying
-    @Transactional
-    @Query("UPDATE Customer c SET c.name = :newName WHERE c.id = :id")
-    void updateCustomer(@Param("newName") String newName, @Param("id") Long id);
+    Customer saveCustomer(Customer customer);
 
 }

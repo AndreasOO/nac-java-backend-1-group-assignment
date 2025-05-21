@@ -16,8 +16,11 @@ public interface CustomerService {
 
 //    Customer logIn(String name);
 
+    Customer findByName(String name);
+
     Customer findById(Long id);
 
+    Customer saveCustomer(Customer customer);
 
     @Transactional
     Customer registerCustomer(Customer customer);

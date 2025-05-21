@@ -16,7 +16,7 @@ import java.util.Optional;
 public class CustomerController {
 
     @Autowired
-    private CustomerDao customerDao;
+   // private CustomerDao customerDao;
 
     private final CustomerService customerService;
 
@@ -44,45 +44,33 @@ public class CustomerController {
 
     @PostMapping("/edit/{id}")
     @ResponseBody
-    public String editCustomer(Model model, @PathVariable long id, @RequestParam String newName) {
-        customerDao.updateCustomer(newName, id);
-        customerDao.flush();
-        model.addAttribute("customer", customerDao.findById(id).get());
+    public String editCustomer(Model model, @PathVariable long id, @RequestParam String newName, Customer customer) {
+        model.addAttribute("customer", customerService.findById(id));
         System.out.println("New name on customer registered " + id + " " + newName);
-        //TODO use service here
+        customerService.editCustomer(customer);
+        customerService.saveCustomer(customer);
         return "edit-customer"; //Tl-sida funkar inte men tas sen
     }
 
     @DeleteMapping("/remove/{id}")
-    public String deleteCustomer(Model model, @PathVariable Long id) {
-        Optional<Customer> optionalCustomer = customerDao.findById(id);
-        if (optionalCustomer.isPresent()) {
-            try {
-                customerDao.deleteCustomerIfNoBookings(id);
-                model.addAttribute("message", "Customer removed if no bookings were present.");
-            } catch (Exception e) {
-                model.addAttribute("message", "Could not remove customer: " + e.getMessage());
-            }
-        } else {
-            model.addAttribute("message", "Customer not found.");
-        }
-        model.addAttribute("customer", optionalCustomer);
-        System.out.println("deleting customer " + id + " " + optionalCustomer);
-        //TODO use service here
-        return "delete"; //Tl-sida funkar ej men det tar vi sen
+    public String deleteCustomer(Model model, @PathVariable Long id, Customer customer) {
+        model.addAttribute("customer", customer);
+        System.out.println("deleting customer " + id + " " + customer);
+        customerService.deleteCustomer(customer);
+        return "delete";
     }
 
     @GetMapping("customer/name/{name}")
     @ResponseBody
     public String findCustomerByName(Model model, @PathVariable String name) {
-        Customer customer = customerDao.findByName(name);
+        Customer customer = customerService.findByName(name);
         model.addAttribute("customer", customer);
         return "customer-details";
     }
 
     @GetMapping("/customer/id/{id}")
     @ResponseBody
-    public Optional<Customer> findCustomerById(@PathVariable Long id) {
-        return customerDao.findById(id);
+    public Customer findCustomerById(@PathVariable Long id) {
+        return customerService.findById(id);
     }
 }
