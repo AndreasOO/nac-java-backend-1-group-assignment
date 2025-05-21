@@ -47,6 +47,9 @@ public interface BookingService {
     @Transactional
     void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId);
 
+    @Transactional
+    void editBookedObject(Long bookedObjectId, Long roomId, LocalDate startDate, LocalDate endDate);
+
 //    @Transactional
 //    BookedObject addBookedObjectToBooking(BookedObject bookedObject, Long bookingId);
 //

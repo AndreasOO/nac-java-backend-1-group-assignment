@@ -40,12 +40,24 @@ public class BookingController {
     }
 
     @GetMapping("/booking/add-room")
-    public String showAvailableRooms(Model model, @RequestParam("bookingId") Long bookingId, @RequestParam("guestCount") int guestCount, @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
+    public String showAvailableRooms(Model model,
+                                     @RequestParam(required = false) Long bookedObjectId,
+                                     @RequestParam("bookingId") Long bookingId,
+                                     @RequestParam("guestCount") int guestCount,
+                                     @RequestParam("startDate") LocalDate startDate,
+                                     @RequestParam("endDate") LocalDate endDate) {
+
         model.addAttribute("guests", guestCount);
         model.addAttribute("rooms", roomService.getAvailableRoomsBetweenDatesWithinCapacity(startDate, endDate, guestCount));
         model.addAttribute("bookingId", bookingId);
         model.addAttribute("startDate", startDate);
         model.addAttribute("endDate", endDate);
+
+        if (bookedObjectId != null) {
+            model.addAttribute("bookedObjectId", bookedObjectId);
+            model.addAttribute("isUpdate", true);
+        }
+
         return "available-rooms";
     }
 
@@ -62,6 +74,7 @@ public class BookingController {
     public String showBookedRoom(Model model, @RequestParam Long bookedObjectId){
         model.addAttribute("bookedObject", bookingService.getBookedObjectById(bookedObjectId));
         model.addAttribute("extraChoices", bookingService.getExtraOptionsAvailable(bookedObjectId));
+        model.addAttribute("capacityOptions", roomService.getCapacityOptions());
         return "booked-room";
     }
 
@@ -72,26 +85,47 @@ public class BookingController {
     }
 
     @PostMapping("/booking/add-room")
-    public String addRoomToBooking(@RequestParam Long roomId, @RequestParam Long bookingId, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate){
+    public String addRoomToBooking(@RequestParam Long roomId,
+                                   @RequestParam Long bookingId,
+                                   @RequestParam LocalDate startDate,
+                                   @RequestParam LocalDate endDate){
+
         bookingService.saveBookedObject(roomService.getRoomById(roomId), bookingId, startDate, endDate);
         return "redirect:/bookings/booking?bookingId=" + bookingId;
     }
 
     @PostMapping("/booking/delete-extra")
-    public String deleteExtraFromBookedRoom(@RequestParam Long bookedObjectId, @RequestParam Long extraId) {
+    public String deleteExtraFromBookedRoom(@RequestParam Long bookedObjectId,
+                                            @RequestParam Long extraId) {
+
         bookingService.deleteExtraFromBookedObjectById(extraId);
         return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
     }
 
     @PostMapping("/booking/add-extra")
-    public String addExtraToBookedRoom(@RequestParam Long bookedObjectId, @RequestParam Long extraTypeId) {
+    public String addExtraToBookedRoom(@RequestParam Long bookedObjectId,
+                                       @RequestParam Long extraTypeId) {
+
         bookingService.addExtraToBookedObject(bookedObjectId, extraTypeId);
         return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
     }
 
     @PostMapping("/booking/delete-room")
-    public String deleteRoom(@RequestParam Long bookedObjectId, @RequestParam Long bookingId) {
+    public String deleteRoom(@RequestParam Long bookedObjectId,
+                             @RequestParam Long bookingId) {
+
         bookingService.removeBookedObject(bookedObjectId);
         return "redirect:/bookings/booking?bookingId=" + bookingId;
+    }
+
+    @PostMapping("/booking/edit-room")
+    public String editRoom(@RequestParam Long bookedObjectId,
+                           @RequestParam Long bookingId,
+                           @RequestParam Long roomId,
+                           @RequestParam LocalDate startDate,
+                           @RequestParam LocalDate endDate){
+
+        bookingService.editBookedObject(bookedObjectId, roomId, startDate, endDate);
+        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
     }
 }

@@ -26,6 +26,8 @@ public class BookingServiceImpl implements BookingService {
     private final BookedObjectMapper bookedObjectMapper;
     private final ExtraTypeMapper extraTypeMapper;
 
+    private final RoomService roomService;
+
     @Autowired
     public BookingServiceImpl(BookingDao bookingDao,
                               BookedObjectDao bookedObjectDao,
@@ -36,7 +38,7 @@ public class BookingServiceImpl implements BookingService {
                               CustomerMapper customerMapper,
                               RoomMapper roomMapper,
                               BookedObjectMapper bookedObjectMapper,
-                              ExtraTypeMapper extraTypeMapper) {
+                              ExtraTypeMapper extraTypeMapper, RoomService roomService) {
 
         this.bookingDao = bookingDao;
         this.bookedObjectDao = bookedObjectDao;
@@ -49,6 +51,7 @@ public class BookingServiceImpl implements BookingService {
         this.roomMapper = roomMapper;
         this.bookedObjectMapper = bookedObjectMapper;
         this.extraTypeMapper = extraTypeMapper;
+        this.roomService = roomService;
     }
 
 
@@ -162,6 +165,18 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
+    @Transactional
+    @Override
+    public void editBookedObject(Long bookedObjectId, Long roomId, LocalDate startDate, LocalDate endDate){
+        BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElseThrow(() -> new IllegalArgumentException("Booked object not found"));
+
+        bookedObject.setRoom(roomMapper.toEntity(roomService.getRoomById(roomId)));
+        bookedObject.setStartDate(startDate);
+        bookedObject.setEndDate(endDate);
+        bookedObject.getExtras().forEach(extra -> deleteExtraFromBookedObjectById(extra.getId()));
+
+        bookedObjectDao.save(bookedObject);
+    }
 
 
 
