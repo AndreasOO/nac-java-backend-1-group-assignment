@@ -39,17 +39,6 @@ public class CustomerServiceImpl implements CustomerService {
         return customerDao.findAll();
     }
 
-//    @Override
-//    public Customer logIn(String name){
-//        Customer loggedInCustomer = customerDao.findByName(name);
-//        if (loggedInCustomer == null) {
-//            throw new IllegalArgumentException("Customer doesn't exist!");
-//        }
-//        return loggedInCustomer;
-//    }
-
-
-
     @Override
     public Customer registerCustomer(Customer customer) {
         return customerDao.save(customer);
