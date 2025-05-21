@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -19,10 +20,19 @@ public class CustomerController {
    // private CustomerDao customerDao;
 
     private final CustomerService customerService;
+    @Autowired
+    private CustomerDao customerDao;
 
     @Autowired
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
+    }
+
+    @GetMapping("/all")
+    public String getCustomers(Model model) {
+        List<Customer> customers = customerService.getAllCustomers();
+        model.addAttribute("customers", customers);
+        return "customers";
     }
 
     @GetMapping("/register")
@@ -48,7 +58,7 @@ public class CustomerController {
         model.addAttribute("customer", customerService.findById(id));
         System.out.println("New name on customer registered " + id + " " + newName);
         customerService.editCustomer(customer);
-        customerService.saveCustomer(customer);
+        customerDao.save(customer);
         return "edit-customer"; //Tl-sida funkar inte men tas sen
     }
 

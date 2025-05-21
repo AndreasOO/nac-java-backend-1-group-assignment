@@ -15,21 +15,19 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final BookingDao bookingDao;
     private final CustomerDao customerDao;
-    private final CustomerService customerService;
 
 
 
     @Autowired
     public CustomerServiceImpl(BookingDao bookingDao,
-                               CustomerDao customerDao, CustomerService customerService) {
+                               CustomerDao customerDao) {
         this.bookingDao = bookingDao;
         this.customerDao = customerDao;
-        this.customerService = customerService;
     }
 
     @Override
     public Customer createAccount(Customer customer) {
-        if (customerService.findByName(customer.getName()) != null) {
+        if (findByName(customer.getName()) != null) {
             throw new IllegalArgumentException("Customer already exists!");
         }
         customerDao.save(customer);
@@ -43,7 +41,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer findByName(String name) {
-        return customerDao.findByName(name);
+        return findByName(name);
     }
 
 //    @Override
@@ -84,8 +82,4 @@ public class CustomerServiceImpl implements CustomerService {
         return customerDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
     }
 
-    @Override
-    public Customer saveCustomer(Customer customer) {
-        return saveCustomer(customer);
-    }
 }

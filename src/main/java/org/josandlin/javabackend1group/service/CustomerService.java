@@ -20,8 +20,6 @@ public interface CustomerService {
 
     Customer findById(Long id);
 
-    Customer saveCustomer(Customer customer);
-
     @Transactional
     Customer registerCustomer(Customer customer);
 

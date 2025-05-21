@@ -9,14 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 
 public interface CustomerDao extends JpaRepository <Customer, Long> {
-    Customer findByName(String name);
 
-    Customer registerCustomer(Customer customer);
-
-    Customer editCustomer(Customer customer);
-
-    Customer deleteCustomer(Long id);
-
-    Customer saveCustomer(Customer customer);
 
 }
