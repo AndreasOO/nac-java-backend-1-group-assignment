@@ -26,6 +26,9 @@ public class BookingServiceImpl implements BookingService {
     private final BookedObjectMapper bookedObjectMapper;
     private final ExtraTypeMapper extraTypeMapper;
 
+    private final RoomMapper2 roomMapper2;
+    private final BookedObjectMapper2 bookedObjectMapper2;
+
     @Autowired
     public BookingServiceImpl(BookingDao bookingDao,
                               BookedObjectDao bookedObjectDao,
@@ -36,7 +39,9 @@ public class BookingServiceImpl implements BookingService {
                               CustomerMapper customerMapper,
                               RoomMapper roomMapper,
                               BookedObjectMapper bookedObjectMapper,
-                              ExtraTypeMapper extraTypeMapper) {
+                              ExtraTypeMapper extraTypeMapper,
+                              RoomMapper2 roomMapper2,
+                              BookedObjectMapper2 bookedObjectMapper2) {
 
         this.bookingDao = bookingDao;
         this.bookedObjectDao = bookedObjectDao;
@@ -49,6 +54,9 @@ public class BookingServiceImpl implements BookingService {
         this.roomMapper = roomMapper;
         this.bookedObjectMapper = bookedObjectMapper;
         this.extraTypeMapper = extraTypeMapper;
+
+        this.roomMapper2 = roomMapper2;
+        this.bookedObjectMapper2 = bookedObjectMapper2;
     }
 
 
@@ -89,9 +97,10 @@ public class BookingServiceImpl implements BookingService {
         //TODO implement return Optional.Success / Fail?
     }
 
+    // ÄNDRAT
     @Override
-    public List<BookedObjectDTO> getBookedRoomsByBookingId(Long bookingId){
-        return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId)).map(bookedObjectMapper::toDTO).toList();
+    public List<BookedObjectDetailedDTO> getBookedRoomsByBookingId(Long bookingId){
+        return bookedObjectDao.findAll().stream().filter(booking -> booking.getBooking().getId().equals(bookingId)).map(bookedObjectMapper2::toDTO).toList();
     }
 
     @Override
@@ -100,11 +109,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
+    // ÄNDRAT
     @Transactional
     @Override
-    public void saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
+    public void saveBookedObject(RoomDetailedDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
         Booking currentBooking = bookingMapper.toEntity(getBookingById(bookingId));
-        BookedObject bookedObject = new BookedObject(roomMapper.toEntity(room), List.of(), currentBooking, startDate, endDate);
+        BookedObject bookedObject = new BookedObject(roomMapper2.toEntity(room), List.of(), currentBooking, startDate, endDate);
         bookedObjectDao.save(bookedObject);
     }
 

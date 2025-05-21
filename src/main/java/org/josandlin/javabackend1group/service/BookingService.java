@@ -30,10 +30,10 @@ public interface BookingService {
 
     List<BookingDTO> getAllBookings();
 
-    List<BookedObjectDTO> getBookedRoomsByBookingId(Long bookingId);
+    List<BookedObjectDetailedDTO> getBookedRoomsByBookingId(Long bookingId);
 
     @Transactional
-    void saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate);
+    void saveBookedObject(RoomDetailedDTO room, Long bookingId, LocalDate startDate, LocalDate endDate);
 
     CustomerDTO getCustomerByBookingId(Long id);
 

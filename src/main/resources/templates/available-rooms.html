@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Registration</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
@@ -36,15 +37,15 @@
             <tbody>
             <tr th:each="room, iterStat : ${rooms}">
                 <th scope="row" th:text="${iterStat.index + 1}">1</th>
-                <td th:text="${room.getName()}">Room name</td>
-                <td th:text="${room.getRoomType().getName()}">Room type</td>
-                <td th:text="${room.getExtraBedsAvailable()}">Extra beds available</td>
-                <td th:text="${room.getMaxCapacity()}">Max capacity</td>
-                <td th:text="'$' + ${room.getRoomType().getCostPerNight()}">Cost per night</td>
+                <td th:text="${room.roomName}">Room name</td>
+                <td th:text="${room.roomTypeName}">Room type</td>
+                <td th:text="${room.extraBedsAvailable}">Extra beds available</td>
+                <td th:text="${room.maxCapacity}">Max capacity</td>
+                <td th:text="'$' + ${room.costPerNight}">Cost per night</td>
                 <td>
                     <form th:action="@{/bookings/booking/add-room}" method="post">
                         <input type="hidden" name="bookingId" th:value="${bookingId}" />
-                        <input type="hidden" name="roomId" th:value="${room.getId()}" />
+                        <input type="hidden" name="roomId" th:value="${room.roomId}" />
                         <input type="hidden" name="startDate" th:value="${startDate}" />
                         <input type="hidden" name="endDate" th:value="${endDate}" />
                         <button type="submit" class="btn btn-sm btn-dark">Add room</button>
