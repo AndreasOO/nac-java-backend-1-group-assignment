@@ -106,16 +106,21 @@ class JavaBackend1GroupApplicationTests {
 
     @Test
     void shouldRegisterCustomer() {
+        //given
         Customer customer1 = new Customer("Test1");
         Customer customer2 = new Customer("Test2");
         Customer customer3 = new Customer("Test3");
+
+        //when
         Customer registeredCustomer1 = customerService.registerCustomer(customer1);
         Customer registeredCustomer2 = customerService.registerCustomer(customer2);
         Customer registeredCustomer3 = customerService.registerCustomer(customer3);
+
+        //then
         assertThat(registeredCustomer1.getId()).isEqualTo(customer1.getId());
         assertThat(registeredCustomer2.getId()).isEqualTo(customer2.getId());
         assertThat(registeredCustomer3.getId()).isEqualTo(customer3.getId());
-
+        assertThat(customerService.getAllCustomers().size()).isEqualTo(3);
     }
 
 }
