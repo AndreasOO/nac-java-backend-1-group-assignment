@@ -87,7 +87,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public void removeBookedObject(Long bookedObjectId) {
+    public void deleteBookedObject(Long bookedObjectId) {
         bookedObjectDao.deleteById(bookedObjectId);
         //TODO implement return Optional.Success / Fail?
     }
@@ -105,10 +105,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public void saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
+    public BookedObjectDTO saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
         Booking currentBooking = bookingMapper.toEntity(getBookingById(bookingId));
         BookedObject bookedObject = new BookedObject(roomMapper.toEntity(room), List.of(), currentBooking, startDate, endDate);
-        bookedObjectDao.save(bookedObject);
+        return bookedObjectMapper.toDTO(bookedObjectDao.save(bookedObject));
     }
 
     @Override
@@ -148,7 +148,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
+    public BookedObjectDTO addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
 
         BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElse(null);
         ExtraType chosenExtraType = extraTypeDao.findById(extraTypeId).orElse(null);
@@ -161,7 +161,7 @@ public class BookingServiceImpl implements BookingService {
         }
         AddedExtra addedExtra = new AddedExtra(chosenExtraType);
         bookedObject.getExtras().add(addedExtra);
-        bookedObjectDao.save(bookedObject);
+        return bookedObjectMapper.toDTO(bookedObjectDao.save(bookedObject));
     }
 
 
