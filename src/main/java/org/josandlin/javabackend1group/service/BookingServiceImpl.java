@@ -167,7 +167,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public void editBookedObject(Long bookedObjectId, Long roomId, LocalDate startDate, LocalDate endDate){
+    public BookedObjectDTO editBookedObject(Long bookedObjectId, Long roomId, LocalDate startDate, LocalDate endDate){
         BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElseThrow(() -> new IllegalArgumentException("Booked object not found"));
 
         bookedObject.setRoom(roomMapper.toEntity(roomService.getRoomById(roomId)));
@@ -175,7 +175,7 @@ public class BookingServiceImpl implements BookingService {
         bookedObject.setEndDate(endDate);
         bookedObject.getExtras().forEach(extra -> deleteExtraFromBookedObjectById(extra.getId()));
 
-        bookedObjectDao.save(bookedObject);
+        return bookedObjectMapper.toDTO(bookedObjectDao.save(bookedObject));
     }
 
 

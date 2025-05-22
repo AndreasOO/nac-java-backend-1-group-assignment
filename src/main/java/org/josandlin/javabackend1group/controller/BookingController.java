@@ -125,7 +125,7 @@ public class BookingController {
                            @RequestParam LocalDate startDate,
                            @RequestParam LocalDate endDate){
 
-        bookingService.editBookedObject(bookedObjectId, roomId, startDate, endDate);
-        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
+        BookedObjectDTO bookedObject = bookingService.editBookedObject(bookedObjectId, roomId, startDate, endDate);
+        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObject.getId();
     }
 }
