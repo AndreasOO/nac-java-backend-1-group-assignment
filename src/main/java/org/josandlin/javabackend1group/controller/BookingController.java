@@ -13,9 +13,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDate;import java.util.List;
 import java.util.stream.IntStream;
+
 
 @Controller
 @RequestMapping("bookings")
@@ -90,8 +90,8 @@ public class BookingController {
                                    @RequestParam LocalDate startDate,
                                    @RequestParam LocalDate endDate){
 
-        bookingService.saveBookedObject(roomService.getRoomById(roomId), bookingId, startDate, endDate);
-        return "redirect:/bookings/booking?bookingId=" + bookingId;
+        BookedObjectDTO bookedObject = bookingService.saveBookedObject(roomService.getRoomById(roomId), bookingId, startDate, endDate);
+        return "redirect:/bookings/booking?bookingId=" + bookedObject.getBooking().getId();
     }
 
     @PostMapping("/booking/delete-extra")
@@ -106,15 +106,15 @@ public class BookingController {
     public String addExtraToBookedRoom(@RequestParam Long bookedObjectId,
                                        @RequestParam Long extraTypeId) {
 
-        bookingService.addExtraToBookedObject(bookedObjectId, extraTypeId);
-        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
+        BookedObjectDTO bookedObject = bookingService.addExtraToBookedObject(bookedObjectId, extraTypeId);
+        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObject.getId();
     }
 
     @PostMapping("/booking/delete-room")
     public String deleteRoom(@RequestParam Long bookedObjectId,
                              @RequestParam Long bookingId) {
 
-        bookingService.removeBookedObject(bookedObjectId);
+        bookingService.deleteBookedObject(bookedObjectId);
         return "redirect:/bookings/booking?bookingId=" + bookingId;
     }
 
