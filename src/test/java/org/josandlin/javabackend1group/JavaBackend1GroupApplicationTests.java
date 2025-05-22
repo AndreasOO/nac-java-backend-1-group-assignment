@@ -1,6 +1,7 @@
 package org.josandlin.javabackend1group;
 
 import org.josandlin.javabackend1group.dao.*;
+import org.josandlin.javabackend1group.dto.BookedObjectDTO;
 import org.josandlin.javabackend1group.dto.BookingDTO;
 import org.josandlin.javabackend1group.dto.RoomDTO;
 import org.josandlin.javabackend1group.entity.*;
@@ -325,11 +326,18 @@ class JavaBackend1GroupApplicationTests {
 
 
         //TODO implement methods to edit booked object, then assert that the edited rooms and dates apply
-//        bookingService.saveBookedObject(savedRoomDTO6, siggesBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
-//        bookingService.saveBookedObject(savedRoomDTO4, siggesBooking.getId(), LocalDate.of(2025, 7, 29), LocalDate.of(2025, 7, 30));
+        BookedObjectDTO bookedObjBeforeEdited = bookingService.saveBookedObject(savedRoomDTO6, siggesBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+        BookedObjectDTO bookedObjAfterEdited = bookingService.editBookedObject(bookedObjBeforeEdited.getId(), savedRoomDTO1.getId(), LocalDate.of(2025, 9, 25), LocalDate.of(2025, 9, 28));
 
+        // move this to then...
+        assertThat(bookedObjBeforeEdited.getRoom().getName()).isEqualTo("Unbooked room");
+        assertThat(bookedObjBeforeEdited.getStartDate()).isEqualTo(LocalDate.of(2025, 5, 29));
+        assertThat(bookedObjBeforeEdited.getEndDate()).isEqualTo(LocalDate.of(2025, 6, 2));
 
-        //TODO FIX EXTRAS IN BOOKING? AFTER saveBOokedObject returns saved object -> then use the id to add extras
+        assertThat(bookedObjAfterEdited.getRoom().getName()).isEqualTo("Sea view room");
+        assertThat(bookedObjAfterEdited.getStartDate()).isEqualTo(LocalDate.of(2025, 9, 25));
+        assertThat(bookedObjAfterEdited.getEndDate()).isEqualTo(LocalDate.of(2025, 9, 28));
+        //TODO FIX EXTRAS IN BOOKING? AFTER saveBookedObject returns saved object -> then use the id to add extras
 
 
 
