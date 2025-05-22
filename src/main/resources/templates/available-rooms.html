@@ -11,13 +11,13 @@
             <div class="d-flex justify-content-between">
                 <div>
                     <strong>Guest capacity:</strong>
-                    <span th:text="${guests}">Guest capacity</span>
+                    <span th:text="${roomSearch.getGuestCount()}">Guest capacity</span>
                 </div>
                 <div>
                     <strong>Rooms available during:</strong>
-                    <span th:text="${startDate}">Start date</span>
+                    <span th:text="${roomSearch.getStartDate()}">Start date</span>
                     <span class="fst-italic">  to  </span>
-                    <span th:text="${endDate}">End date</span>
+                    <span th:text="${roomSearch.getEndDate()}">End date</span>
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each="room, iterStat : ${rooms}">
+            <tr th:each="room, iterStat : ${availableRooms}">
                 <th scope="row" th:text="${iterStat.index + 1}">1</th>
                 <td th:text="${room.getName()}">Room name</td>
                 <td th:text="${room.getRoomType().getName()}">Room type</td>
@@ -42,21 +42,22 @@
                 <td th:text="${room.getMaxCapacity()}">Max capacity</td>
                 <td th:text="'$' + ${room.getRoomType().getCostPerNight()}">Cost per night</td>
                 <td>
-                    <form th:attr="action=${isUpdate} ? '/bookings/booking/edit-room'
+                    <form th:attr="action=${roomSearch.isUpdate()} ? '/bookings/booking/edit-room'
                                                       : '/bookings/booking/add-room'" method="post">
 
-                        <input type="hidden" name="bookingId" th:value="${bookingId}"/>
-                        <input type="hidden" name="bookedObjectId" th:if="${isUpdate}" th:value="${bookedObjectId}"/>
+
+                        <input type="hidden" name="bookingId" th:value="${roomSearch.getBookingId()}"/>
+                        <input type="hidden" name="bookedObjectId" th:if="${roomSearch.isUpdate()}" th:value="${roomSearch.getBookedObjectId()}"/>
                         <input type="hidden" name="roomId" th:value="${room.getId()}"/>
-                        <input type="hidden" name="startDate" th:value="${startDate}"/>
-                        <input type="hidden" name="endDate" th:value="${endDate}"/>
-                        <button type="submit" class="btn btn-sm btn-dark" th:text="${isUpdate} ? 'Update room' : 'Add room'">Action</button>
+                        <input type="hidden" name="startDate" th:value="${roomSearch.getStartDate()}"/>
+                        <input type="hidden" name="endDate" th:value="${roomSearch.getEndDate()}"/>
+                        <button type="submit" class="btn btn-sm btn-dark" th:text="${roomSearch.isUpdate()} ? 'Update room' : 'Add room'">Action</button>
                     </form>
                 </td>
             </tr>
             </tbody>
         </table>
-        <a th:href="@{/bookings/booking(bookingId=${bookingId})}" class="btn btn-dark w-100">Go to current booking</a>
+        <a th:href="@{/bookings/booking(bookingId=${roomSearch.getBookingId()})}" class="btn btn-dark w-100">Go to current booking</a>
         <hr class="w-100 border-0" style="height: 2px; background-color: #dee2e6;">
         <a th:href="@{/bookings/all}"  class="btn btn-dark w-100">Go to bookings</a>
     </div>

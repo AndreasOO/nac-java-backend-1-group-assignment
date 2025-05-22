@@ -17,13 +17,14 @@
         </button>
       </div>
       <div class="modal-body">
+        <form th:action="@{/bookings/booking/add-room}" method="get" th:object="${roomSearch}" class="mb-4">
 
-        <form th:action="@{/bookings/booking/add-room}" method="get" class="mb-4">
-          <input type="hidden" name="bookingId" th:value="${bookedObject.getBooking().getId()}" />
-          <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
+          <input th:field="*{bookingId}" type="hidden" th:value="${bookingId}" />
+          <input th:field="*{isUpdate()}" type="hidden" th:value="${true}" />
+
           <div class="form-group">
             <label for="guestCount">Amount of guests:</label>
-            <select id="guestCount" name="guestCount" class="form-control">
+            <select th:field="*{guestCount}" id="guestCount" class="form-control" required>
               <option value="" disabled selected>-- Choose guests --</option>
               <option th:each="capacity : ${capacityOptions}" th:value="${capacity}" th:text="${capacity}">
             </select>
@@ -31,15 +32,14 @@
 
           <div class="form-group">
             <label for="startDate">Start date:</label>
-            <input type="date" id="startDate" name="startDate" class="form-control" th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
+            <input th:field="*{startDate}" type="date" id="startDate" name="startDate" class="form-control" th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
           </div>
           <div class="form-group">
             <label for="endDate">End date:</label>
-            <input type="date" id="endDate" name="endDate" class="form-control"  th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
+            <input th:field="*{endDate}" type="date" id="endDate" name="endDate" class="form-control"  th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
           </div>
           <button type="submit" class="btn btn-dark w-100">Show available rooms</button>
         </form>
-
       </div>
     </div>
   </div>

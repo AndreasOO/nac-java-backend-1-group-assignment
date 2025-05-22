@@ -8,6 +8,7 @@ import org.josandlin.javabackend1group.entity.*;
 import org.josandlin.javabackend1group.service.BookingService;
 import org.josandlin.javabackend1group.service.CustomerService;
 import org.josandlin.javabackend1group.service.RoomService;
+import org.josandlin.javabackend1group.util.RoomSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,29 +41,21 @@ public class BookingController {
     }
 
     @GetMapping("/booking/add-room")
-    public String showAvailableRooms(Model model,
-                                     @RequestParam(required = false) Long bookedObjectId,
-                                     @RequestParam("bookingId") Long bookingId,
-                                     @RequestParam("guestCount") int guestCount,
-                                     @RequestParam("startDate") LocalDate startDate,
-                                     @RequestParam("endDate") LocalDate endDate) {
-
-        model.addAttribute("guests", guestCount);
-        model.addAttribute("rooms", roomService.getAvailableRoomsBetweenDatesWithinCapacity(startDate, endDate, guestCount));
-        model.addAttribute("bookingId", bookingId);
-        model.addAttribute("startDate", startDate);
-        model.addAttribute("endDate", endDate);
-
-        if (bookedObjectId != null) {
-            model.addAttribute("bookedObjectId", bookedObjectId);
-            model.addAttribute("isUpdate", true);
-        }
-
+    public String showAvailableRooms(Model model, RoomSearch roomSearch) {
+        model.addAttribute("roomSearch", roomSearch);
+        model.addAttribute("availableRooms", roomService.getAvailableRoomsBetweenDatesWithinCapacity(roomSearch.getStartDate(),
+                                                                                                        roomSearch.getEndDate(),
+                                                                                                        roomSearch.getGuestCount()));
         return "available-rooms";
     }
 
     @GetMapping("/booking")
-    public String showBooking(@RequestParam Long bookingId, Model model) {
+    public String showBooking(Model model, @RequestParam Long bookingId) {
+        RoomSearch roomSearch = new RoomSearch();
+        roomSearch.setUpdate(false);
+
+        model.addAttribute("roomSearch", roomSearch);
+
         model.addAttribute("customer", bookingService.getCustomerByBookingId(bookingId));
         model.addAttribute("bookingId", bookingId);
         model.addAttribute("capacityOptions", roomService.getCapacityOptions());
@@ -72,6 +65,9 @@ public class BookingController {
 
     @GetMapping("/booking/booked-room")
     public String showBookedRoom(Model model, @RequestParam Long bookedObjectId){
+
+        model.addAttribute("roomSearch", new RoomSearch());
+
         model.addAttribute("bookedObject", bookingService.getBookedObjectById(bookedObjectId));
         model.addAttribute("extraChoices", bookingService.getExtraOptionsAvailable(bookedObjectId));
         model.addAttribute("capacityOptions", roomService.getCapacityOptions());
