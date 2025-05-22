@@ -6,8 +6,47 @@
 </head>
 <body>
 
+<!--Modal för att redigera rum-->
+<div class="modal fade" id="edit-room-modal" tabindex="-1" role="dialog" aria-labelledby="edit-room-modal-title" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="edit-room-modal-title">Edit booked room</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
 
-<!-- Modal för välja kund för ny booking -->
+        <form th:action="@{/bookings/booking/add-room}" method="get" class="mb-4">
+          <input type="hidden" name="bookingId" th:value="${bookedObject.getBooking().getId()}" />
+          <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
+          <div class="form-group">
+            <label for="guestCount">Amount of guests:</label>
+            <select id="guestCount" name="guestCount" class="form-control">
+              <option value="" disabled selected>-- Choose guests --</option>
+              <option th:each="capacity : ${capacityOptions}" th:value="${capacity}" th:text="${capacity}">
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="startDate">Start date:</label>
+            <input type="date" id="startDate" name="startDate" class="form-control" th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
+          </div>
+          <div class="form-group">
+            <label for="endDate">End date:</label>
+            <input type="date" id="endDate" name="endDate" class="form-control"  th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
+          </div>
+          <button type="submit" class="btn btn-dark w-100">Show available rooms</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal för välja extra för booking -->
 <div class="modal fade" id="add-extra-modal" tabindex="-1" role="dialog" aria-labelledby="add-extra-modal-label" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -44,16 +83,36 @@
   <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 40%;">
     <div class="card-header bg-light">
       <div class="d-flex justify-content-between">
+        <strong class="h5">Room information</strong>
+      </div>
+    </div>
+    <div class="card-header bg-light">
+      <div class="d-flex justify-content-between">
         <div>
           <strong>Booked room:</strong>
-          <span th:text="${bookedObject.getRoom().getName()}">5</span>
+          <span th:text="${bookedObject.getRoom().getName()}">Room name</span>
         </div>
         <div>
-          <strong>Date of booking:</strong>
-          <span th:text="${bookedObject.getStartDate()}">Start date</span>
-          <span class="font-weight-bold"> to </span>
-          <span th:text="${bookedObject.getEndDate()}">End date</span>
+          <strong>From:</strong>
+          <span th:text="${bookedObject.getStartDate()}">Room name</span>
         </div>
+      </div>
+      <div class="d-flex justify-content-between">
+        <div>
+          <strong>Room type:</strong>
+          <span th:text="${bookedObject.getRoom().getRoomType().getName()}">5</span>
+        </div>
+        <div>
+          <strong>To:</strong>
+          <span th:text="${bookedObject.getEndDate()}">5</span>
+        </div>
+      </div>
+    </div>
+    <a href="#" class="btn btn-dark w-100" data-toggle="modal" data-target="#edit-room-modal">Edit</a>
+
+    <div class="card-header bg-light mt-3">
+      <div class="d-flex justify-content-between">
+        <strong class="h5">Extras added to room</strong>
       </div>
     </div>
     <table class="table">
@@ -86,6 +145,12 @@
     <a th:href="@{/bookings/booking(bookingId=${bookedObject.getBooking().getId()})}" class="btn btn-dark w-100">Go to booking</a>
   </div>
 </div>
+<script>
+  document.getElementById('startDate').addEventListener('change', function() {
+    const startDate = this.value;
+    document.getElementById('endDate').min = startDate;
+  });
+</script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
