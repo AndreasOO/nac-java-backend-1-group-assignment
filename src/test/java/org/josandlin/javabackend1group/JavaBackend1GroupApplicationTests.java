@@ -327,7 +327,11 @@ class JavaBackend1GroupApplicationTests {
         //TODO implement methods to edit booked object, then assert that the edited rooms and dates apply
 //        bookingService.saveBookedObject(savedRoomDTO6, siggesBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
 //        bookingService.saveBookedObject(savedRoomDTO4, siggesBooking.getId(), LocalDate.of(2025, 7, 29), LocalDate.of(2025, 7, 30));
-        //TODO FIX EXTRAS IN BOOKING?
+
+
+        //TODO FIX EXTRAS IN BOOKING? AFTER saveBOokedObject returns saved object -> then use the id to add extras
+
+
 
 
         //then
@@ -358,10 +362,85 @@ class JavaBackend1GroupApplicationTests {
         assertThat(bookingService.getBookedRoomsByBookingId(josefinsBooking.getId()).get(0).getEndDate()).isEqualTo(LocalDate.of(2025, 6, 2));
 
 
-        //TODO uncomment assertion after throw is implemented in service method
+//        //TODO uncomment assertion after throw is implemented in service method
 //        Exception exception = assertThrows(IllegalArgumentException.class,
 //                () -> bookingService.saveBookedObject(savedRoomDTO1, siggesBooking.getId(), LocalDate.of(2025, 4, 16), LocalDate.of(2025, 4, 21)));
 //        assertThat(exception.getMessage().equals("Room is not available during input dates")).isTrue();
+    }
+
+    @Test
+    void shouldShowAvailableRooms() {
+        //given
+        Customer ola = customerService.registerCustomer(new Customer("Ola"));
+        Customer milly = customerService.registerCustomer(new Customer("Milly"));
+
+
+        BookingDTO olasBooking = bookingService.createBooking(ola.getId());
+        BookingDTO millysBooking =bookingService.createBooking(milly.getId());
+
+
+        RoomType singleRoom1 = new RoomType("Single room", 1000);
+        RoomType doubleRoom = new RoomType("Double room", 2000);
+
+        roomTypeDao.save(singleRoom1);
+        roomTypeDao.save(doubleRoom);
+
+
+        Room roomOne = new Room("Sea view room", 3, 1, doubleRoom);
+        Room roomThree = new Room("Honeymoon suite", 4, 2, doubleRoom);
+        Room roomFour = new Room("Nice room", 1, 0, singleRoom1);
+        Room roomSix = new Room("Unbooked room", 1, 1, singleRoom1);
+
+        Room savedRoom1 = roomDao.save(roomOne);
+        Room savedRoom3 = roomDao.save(roomThree);
+        Room savedRoom4 = roomDao.save(roomFour);
+        Room savedRoom6 = roomDao.save(roomSix);
+
+        RoomDTO savedRoomDTO1 = roomService.getRoomById(savedRoom1.getId());
+        RoomDTO savedRoomDTO3 = roomService.getRoomById(savedRoom3.getId());
+        RoomDTO savedRoomDTO4 = roomService.getRoomById(savedRoom4.getId());
+        RoomDTO savedRoomDTO6 = roomService.getRoomById(savedRoom6.getId());
+
+
+        //when
+        //happy flow
+        bookingService.saveBookedObject(savedRoomDTO1, olasBooking.getId(), LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 5));
+        bookingService.saveBookedObject(savedRoomDTO1, olasBooking.getId(), LocalDate.of(2025, 5, 8), LocalDate.of(2025, 5, 10));
+
+        //check bordering dates
+        bookingService.saveBookedObject(savedRoomDTO1, millysBooking.getId(), LocalDate.of(2025, 5, 11), LocalDate.of(2025, 5, 12));
+        bookingService.saveBookedObject(savedRoomDTO1, millysBooking.getId(), LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
+
+        //check that other rooms are shown in month 5 dates despite being booked in month 6
+        bookingService.saveBookedObject(savedRoomDTO3, millysBooking.getId(), LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
+        bookingService.saveBookedObject(savedRoomDTO4, millysBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+
+        //find all rooms in clear period
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 1), LocalDate.of(2025, 4, 30), 1).size()).isEqualTo(4);
+
+        //find all rooms but room 1 in period
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 2), LocalDate.of(2025, 5, 4), 1).size()).isEqualTo(3);
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 2), LocalDate.of(2025, 5, 4), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
+
+        //find all rooms but room 1 in period with both overlapping bordering dates
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 10), 1).size()).isEqualTo(3);
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 10), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
+
+        //find all rooms but room 1 in period with start overlapping bordering dates
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 11), 1).size()).isEqualTo(3);
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 11), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
+
+        //find all rooms but room 1 in period with end overlapping bordering dates
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 1), 1).size()).isEqualTo(3);
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 1), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
+
+        //find all rooms but room 1 in period with booking in middle of picked dates
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 15), 1).size()).isEqualTo(3);
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 15), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
+
+
+
+
     }
 
 }
