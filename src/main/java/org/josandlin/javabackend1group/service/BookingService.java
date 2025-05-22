@@ -26,14 +26,14 @@ public interface BookingService {
     BookingDTO createBooking(Long customerId);
 
     @Transactional
-    void removeBookedObject(Long bookedObjectId);
+    void deleteBookedObject(Long bookedObjectId);
 
     List<BookingDTO> getAllBookings();
 
     List<BookedObjectDTO> getBookedRoomsByBookingId(Long bookingId);
 
     @Transactional
-    void saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate);
+    BookedObjectDTO saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate);
 
     CustomerDTO getCustomerByBookingId(Long id);
 
@@ -45,7 +45,7 @@ public interface BookingService {
     List<ExtraTypeDTO> getExtraOptionsAvailable(Long bookedObjectId);
 
     @Transactional
-    void addExtraToBookedObject(Long bookedObjectId, Long extraTypeId);
+    BookedObjectDTO addExtraToBookedObject(Long bookedObjectId, Long extraTypeId);
 
     @Transactional
     BookedObjectDTO editBookedObject(Long bookedObjectId, Long roomId, LocalDate startDate, LocalDate endDate);
