@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -103,9 +104,28 @@ public class BookingServiceImpl implements BookingService {
     }
 
 
+
+//    Du kan redan använda dig av getAllAvailableRooms för du har ju redan datumen som input.
+//
+//    Sedan filtrera på valt rum.
+//
+//    Om rummet finns, gå vidare, om inte, kasta IllegalArgumentException med texten "Room is not available during input dates"
+
     @Transactional
     @Override
     public BookedObjectDTO saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
+
+        boolean roomIsUnavailable = bookedObjectDao.findAll()
+                .stream().filter(bookedObject -> bookedObject.getStartDate().isEqual(startDate) ||
+                                            (bookedObject.getStartDate().isAfter(startDate) && bookedObject.getStartDate().isBefore(endDate)) ||
+                                            (bookedObject.getStartDate().isBefore(startDate) && bookedObject.getEndDate().isAfter(startDate)))
+                         .map(BookedObject::getRoom)
+                         .anyMatch(bookedRoom -> bookedRoom.getId().equals(room.getId()));
+
+        if (roomIsUnavailable) {
+            throw new IllegalArgumentException("Room is not available during input dates");
+        }
+
         Booking currentBooking = bookingMapper.toEntity(getBookingById(bookingId));
         BookedObject bookedObject = new BookedObject(roomMapper.toEntity(room), List.of(), currentBooking, startDate, endDate);
         return bookedObjectMapper.toDTO(bookedObjectDao.save(bookedObject));
