@@ -49,10 +49,12 @@ public class RoomServiceImpl implements RoomService{
 
     @Override
     public List<RoomDTO> getAvailableRoomsBetweenDatesWithinCapacity(LocalDate startDate, LocalDate endDate, int guests){
-        Set<Room> bookedRoomsBetweenDates = bookedObjectDao.findAll()
-                .stream().filter(bookedRoom -> !bookedRoom.getEndDate().isBefore(startDate)
-                        && !bookedRoom.getStartDate().isAfter(endDate))
-                .map(BookedObject::getRoom).collect(Collectors.toSet());
+
+                Set<Room> bookedRoomsBetweenDates = bookedObjectDao.findAll()
+                .stream().filter(bookedObject -> bookedObject.getStartDate().isEqual(startDate) ||
+                                                            (bookedObject.getStartDate().isAfter(startDate) && bookedObject.getStartDate().isBefore(endDate)) ||
+                                                            (bookedObject.getStartDate().isBefore(startDate) && bookedObject.getEndDate().isAfter(startDate)))
+                         .map(BookedObject::getRoom).collect(Collectors.toSet());
 
         return roomDao.findAll().stream()
                 .filter(room -> !bookedRoomsBetweenDates.contains(room))
