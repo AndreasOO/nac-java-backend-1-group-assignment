@@ -240,7 +240,6 @@ class JavaBackend1GroupApplicationTests {
         assertThat(allRooms.stream().filter(room -> room.getName().equals("Nice room")).findFirst().get().getExtraBedsAvailable())
                 .isEqualTo(0);
 
-        //
         assertThat(allRooms.stream().filter(room -> room.getName().equals("Ok room")).findFirst().get().getExtraBedsAvailable())
                 .isEqualTo(0);
         assertThat(allRooms.stream().filter(room -> room.getName().equals("Unbooked room")).findFirst().get().getExtraBedsAvailable())
@@ -266,47 +265,14 @@ class JavaBackend1GroupApplicationTests {
         BookingDTO josefinsBooking =bookingService.createBooking(josefin.getId());
         BookingDTO siggesBooking =bookingService.createBooking(Sigge.getId());
 
-        RoomType singleRoom1 = new RoomType("Single room", 1000);
-        RoomType doubleRoom = new RoomType("Double room", 2000);
-        RoomType twinRoom = new RoomType("Twin room", 1900);
-        RoomType singleRoom2 = new RoomType("Single room", 3200);
+        ExtraType extraBed = extraTypeDao.save(new ExtraType("bed", 200));
 
-        roomTypeDao.save(singleRoom1);
-        roomTypeDao.save(doubleRoom);
-        roomTypeDao.save(twinRoom);
-        roomTypeDao.save(singleRoom2);
-
-        ExtraType extraBed = new ExtraType("bed", 200);
-        ExtraType extraSnacks = new ExtraType("snacks", 85);
-        ExtraType extraTowels = new ExtraType("towels", 50);
-        ExtraType extraPillows = new ExtraType("pillows", 50);
-        ExtraType extraBabyCrib = new ExtraType("baby crib", 120);
-
-        extraTypeDao.save(extraBed);
-        extraTypeDao.save(extraSnacks);
-        extraTypeDao.save(extraTowels);
-        extraTypeDao.save(extraPillows);
-        extraTypeDao.save(extraBabyCrib);
-
-        AddedExtra olasExtra = new AddedExtra(extraSnacks);
-        AddedExtra andreasFirstExtra = new AddedExtra(extraBed);
-        AddedExtra andreasSecondExtra = new AddedExtra(extraBabyCrib);
-        AddedExtra millysExtra = new AddedExtra(extraPillows);
-        AddedExtra linnsExtra = new AddedExtra(extraSnacks);
-
-        Room roomOne = new Room("Sea view room", 3, 1, doubleRoom); // millys bokning + andreas bokning (lagt till en extra bed)
-        Room roomTwo = new Room("Dumpster room", 2, 0, twinRoom); // olas bokning
-        Room roomThree = new Room("Honeymoon suite", 4, 2, doubleRoom); // linns bokning
-        Room roomFour = new Room("Nice room", 1, 0, singleRoom1); // josefins bokning
-        Room roomFive = new Room("Ok room", 1, 0, singleRoom2); //olas bokning
-        Room roomSix = new Room("Unbooked room", 1, 1, singleRoom1);
-
-        Room savedRoom1 = roomDao.save(roomOne);
-        Room savedRoom2 = roomDao.save(roomTwo);
-        Room savedRoom3 = roomDao.save(roomThree);
-        Room savedRoom4 = roomDao.save(roomFour);
-        Room savedRoom5 = roomDao.save(roomFive);
-        Room savedRoom6 = roomDao.save(roomSix);
+        Room savedRoom1 = roomDao.save(new Room("Sea view room", 3, 1, roomTypeDao.save(new RoomType("Double room", 2000))));
+        Room savedRoom2 = roomDao.save(new Room("Dumpster room", 2, 0, roomTypeDao.save(new RoomType("Twin room", 1900))));
+        Room savedRoom3 = roomDao.save(new Room("Honeymoon suite", 4, 2, roomTypeDao.save(new RoomType("Double room", 2000))));
+        Room savedRoom4 = roomDao.save(new Room("Nice room", 1, 0, roomTypeDao.save(new RoomType("Single room", 1000))));
+        Room savedRoom5 = roomDao.save(new Room("Ok room", 1, 0, roomTypeDao.save(new RoomType("Single room", 3200))));
+        Room savedRoom6 = roomDao.save(new Room("Unbooked room", 1, 1, roomTypeDao.save(new RoomType("Single room", 1000))));
 
         RoomDTO savedRoomDTO1 = roomService.getRoomById(savedRoom1.getId());
         RoomDTO savedRoomDTO2 = roomService.getRoomById(savedRoom2.getId());
@@ -317,32 +283,25 @@ class JavaBackend1GroupApplicationTests {
 
 
         //when
-        bookingService.saveBookedObject(savedRoomDTO2, olasBooking.getId(), LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
-        bookingService.saveBookedObject(savedRoomDTO5, olasBooking.getId(), LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 17));
-        bookingService.saveBookedObject(savedRoomDTO1, millysBooking.getId(), LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
-        bookingService.saveBookedObject(savedRoomDTO1, andreasBooking.getId(), LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
-        bookingService.saveBookedObject(savedRoomDTO3, linnsBooking.getId(), LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
-        bookingService.saveBookedObject(savedRoomDTO4, josefinsBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+        BookedObjectDTO roomTwoBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO2, olasBooking.getId(), LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
+        BookedObjectDTO roomFiveBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO5, olasBooking.getId(), LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 17));
+        BookedObjectDTO roomOneBookedObj1OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, millysBooking.getId(), LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
+        BookedObjectDTO roomOneBookedObj2OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, andreasBooking.getId(), LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
+        BookedObjectDTO roomThreeBookedObjTwoExtraBeds = bookingService.saveBookedObject(savedRoomDTO3, linnsBooking.getId(), LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
+        BookedObjectDTO roomFourBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO4, josefinsBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
 
+        bookingService.addExtraToBookedObject(roomOneBookedObj1OneExtraBed.getId(),extraBed.getId());
+        bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(),extraBed.getId());
+        bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(),extraBed.getId());
 
-        //TODO implement methods to edit booked object, then assert that the edited rooms and dates apply
         BookedObjectDTO bookedObjBeforeEdited = bookingService.saveBookedObject(savedRoomDTO6, siggesBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
         BookedObjectDTO bookedObjAfterEdited = bookingService.editBookedObject(bookedObjBeforeEdited.getId(), savedRoomDTO1.getId(), LocalDate.of(2025, 9, 25), LocalDate.of(2025, 9, 28));
-
-        // move this to then...
-        assertThat(bookedObjBeforeEdited.getRoom().getName()).isEqualTo("Unbooked room");
-        assertThat(bookedObjBeforeEdited.getStartDate()).isEqualTo(LocalDate.of(2025, 5, 29));
-        assertThat(bookedObjBeforeEdited.getEndDate()).isEqualTo(LocalDate.of(2025, 6, 2));
-
-        assertThat(bookedObjAfterEdited.getRoom().getName()).isEqualTo("Sea view room");
-        assertThat(bookedObjAfterEdited.getStartDate()).isEqualTo(LocalDate.of(2025, 9, 25));
-        assertThat(bookedObjAfterEdited.getEndDate()).isEqualTo(LocalDate.of(2025, 9, 28));
-        //TODO FIX EXTRAS IN BOOKING? AFTER saveBookedObject returns saved object -> then use the id to add extras
 
 
 
 
         //then
+        // test bookings
         assertThat(bookingService.getAllBookings().size()).isEqualTo(6);
 
         assertThat(bookingService.getBookedRoomsByBookingId(olasBooking.getId()).size()).isEqualTo(2);
@@ -373,6 +332,43 @@ class JavaBackend1GroupApplicationTests {
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> bookingService.saveBookedObject(savedRoomDTO1, siggesBooking.getId(), LocalDate.of(2025, 4, 16), LocalDate.of(2025, 4, 21)));
         assertThat(exception.getMessage().equals("Room is not available during input dates")).isTrue();
+
+        // test edits
+        assertThat(bookedObjBeforeEdited.getRoom().getName()).isEqualTo("Unbooked room");
+        assertThat(bookedObjBeforeEdited.getStartDate()).isEqualTo(LocalDate.of(2025, 5, 29));
+        assertThat(bookedObjBeforeEdited.getEndDate()).isEqualTo(LocalDate.of(2025, 6, 2));
+
+        assertThat(bookedObjAfterEdited.getRoom().getName()).isEqualTo("Sea view room");
+        assertThat(bookedObjAfterEdited.getStartDate()).isEqualTo(LocalDate.of(2025, 9, 25));
+        assertThat(bookedObjAfterEdited.getEndDate()).isEqualTo(LocalDate.of(2025, 9, 28));
+
+
+        // test extras
+        assertThat(bookingService.getBookedObjectById(roomOneBookedObj1OneExtraBed.getId()).getExtras().size()).isEqualTo(1);
+        assertThat(bookingService.getBookedObjectById(roomOneBookedObj1OneExtraBed.getId()).getExtras().get(0).getExtraType().getName()).isEqualTo("bed");
+
+        assertThat(bookingService.getBookedObjectById(roomOneBookedObj2OneExtraBed.getId()).getExtras().size()).isEqualTo(0);
+
+        assertThat(bookingService.getBookedObjectById(roomThreeBookedObjTwoExtraBeds.getId()).getExtras().size()).isEqualTo(2);
+        assertThat(bookingService.getBookedObjectById(roomThreeBookedObjTwoExtraBeds.getId()).getExtras().get(0).getExtraType().getName()).isEqualTo("bed");
+        assertThat(bookingService.getBookedObjectById(roomThreeBookedObjTwoExtraBeds.getId()).getExtras().get(1).getExtraType().getName()).isEqualTo("bed");
+
+        Exception exceptionDoubleBookingBeds1 = assertThrows(IllegalArgumentException.class,
+                () -> bookingService.addExtraToBookedObject(roomOneBookedObj1OneExtraBed.getId(),extraBed.getId()));
+        assertThat(exceptionDoubleBookingBeds1.getMessage().equals("Bed can't be added to this room")).isTrue();
+
+        Exception exceptionDoubleBookingBeds2 = assertThrows(IllegalArgumentException.class,
+                () -> bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(),extraBed.getId()));
+        assertThat(exceptionDoubleBookingBeds2.getMessage().equals("Bed can't be added to this room")).isTrue();
+
+        Exception exceptionDoubleBookingBeds3 = assertThrows(IllegalArgumentException.class,
+                () -> bookingService.addExtraToBookedObject(roomTwoBookedObjNoExtraBeds.getId(),extraBed.getId()));
+        assertThat(exceptionDoubleBookingBeds3.getMessage().equals("Bed can't be added to this room")).isTrue();
+
+        Exception exceptionDoubleBookingBeds4 = assertThrows(IllegalArgumentException.class,
+                () -> bookingService.addExtraToBookedObject(roomFourBookedObjNoExtraBeds.getId(),extraBed.getId()));
+        assertThat(exceptionDoubleBookingBeds4.getMessage().equals("Bed can't be added to this room")).isTrue();
+
     }
 
     @Test
