@@ -44,26 +44,26 @@ class AddedExtraMapperTest {
         assertEquals("bedFromEntity",dtoFromEntity2.getExtraType().getName());
     }
 
-//    @Test
-//    void testDtoToEntity() {
-//        AddedExtraDTO EntityFromDto1 = addedExtraMapper.toDTO(addedExtraEntity1);
-//        AddedExtraDTO EntityFromDto2 = addedExtraMapper.toDTO(addedExtraEntity2);
-//
-//
-//        assertEquals(addedExtraEntity1.getId(), EntityFromDto1.getId());
-//        assertEquals(1L, addedExtraEntity1.getId());
-//        assertEquals(addedExtraEntity1.getExtraType().getId(),EntityFromDto1.getExtraType().getId());
-//        assertEquals(2L, EntityFromDto1.getExtraType().getId());
-//        assertEquals("bedFromDto",EntityFromDto1.getExtraType().getName());
-//
-//
-//
-//        assertEquals(addedExtraEntity2.getId(), EntityFromDto2.getId());
-//        assertEquals(3L, addedExtraEntity2.getId());
-//        assertEquals(addedExtraEntity2.getExtraType().getId(),EntityFromDto2.getExtraType().getId());
-//        assertEquals(2L, EntityFromDto2.getExtraType().getId());
-//        assertEquals("bedFromDto",EntityFromDto2.getExtraType().getName());
+    @Test
+    void testDtoToEntity() {
+        AddedExtra entityFromDto1 = addedExtraMapper.toEntity(addedExtraDto1);
+        AddedExtra entityFromDto2 = addedExtraMapper.toEntity(addedExtraDto2);
 
-//    }
+
+        assertEquals(addedExtraDto1.getId(), entityFromDto1.getId());
+        assertEquals(5L, addedExtraDto1.getId());
+        assertEquals(addedExtraDto1.getExtraType().getId(),entityFromDto1.getExtraType().getId());
+        assertEquals(4L, entityFromDto1.getExtraType().getId());
+        assertEquals("bedFromDto",entityFromDto1.getExtraType().getName());
+
+
+
+        assertEquals(addedExtraDto2.getId(), entityFromDto2.getId());
+        assertEquals(6L, addedExtraDto2.getId());
+        assertEquals(addedExtraDto2.getExtraType().getId(),entityFromDto2.getExtraType().getId());
+        assertEquals(4L, entityFromDto2.getExtraType().getId());
+        assertEquals("bedFromDto",entityFromDto2.getExtraType().getName());
+
+    }
 
 }
