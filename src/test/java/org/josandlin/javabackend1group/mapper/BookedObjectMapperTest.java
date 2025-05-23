@@ -4,10 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.josandlin.javabackend1group.dto.AddedExtraDTO;
+import org.josandlin.javabackend1group.dto.BookedObjectDTO;
 import org.josandlin.javabackend1group.dto.ExtraTypeDTO;
-import org.josandlin.javabackend1group.entity.AddedExtra;
-import org.josandlin.javabackend1group.entity.ExtraType;
+import org.josandlin.javabackend1group.entity.*;
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDate;
+import java.util.List;
 
 class BookedObjectMapperTest {
 
@@ -15,19 +18,57 @@ class BookedObjectMapperTest {
                                                                    new AddedExtraMapper(new ExtraTypeMapper()),
                                                                    new BookingMapper(new CustomerMapper()));
 
+    BookedObject bookedObjectEntity = new BookedObject(1L,
+                                                        new Room(2L,
+                                                                "roomFromEntity",
+                                                                3,
+                                                                1,
+                                                                new RoomType(3L,"single", 200)),
+                                                        List.of(),
+                                                        new Booking(4L, new Customer(5L, "customerFromEntity")),
+                                                        LocalDate.of(2025,5,12),
+                                                        LocalDate.of(2025,5,13)
+                                                        );
 
-    ExtraType extraBedEntity = new ExtraType(2L,"bedFromEntity",200);
-    AddedExtra addedExtraEntity1 = new AddedExtra(1L, extraBedEntity);
-    AddedExtra addedExtraEntity2 = new AddedExtra(3L, extraBedEntity);
 
 
-    ExtraTypeDTO extraBedDto = new ExtraTypeDTO(4L,"bedFromDto",200);
-    AddedExtraDTO addedExtraDto1 = new AddedExtraDTO(5L,extraBedDto);
-    AddedExtraDTO addedExtraDto2 = new AddedExtraDTO(6L,extraBedDto);
+
 
 
     @Test
     void testEntityToDto() {
+        BookedObjectDTO bookedObjectDTOFromEntity = bookedObjectMapper.toDTO(bookedObjectEntity);
+
+        assertEquals(1L, bookedObjectDTOFromEntity.getId());
+        assertEquals(bookedObjectEntity.getId(), bookedObjectDTOFromEntity.getId());
+
+
+        assertEquals(bookedObjectEntity.getRoom().getId(), bookedObjectDTOFromEntity.getRoom().getId());
+        assertEquals(2L, bookedObjectDTOFromEntity.getRoom().getId());
+
+        assertEquals("roomFromEntity", bookedObjectDTOFromEntity.getRoom().getName());
+        assertEquals(bookedObjectEntity.getRoom().getName(), bookedObjectDTOFromEntity.getRoom().getName());
+
+        assertEquals(3L, bookedObjectDTOFromEntity.getRoom().getRoomType().getId());
+        assertEquals(bookedObjectEntity.getRoom().getRoomType().getId(), bookedObjectDTOFromEntity.getRoom().getRoomType().getId());
+
+        assertEquals("single", bookedObjectDTOFromEntity.getRoom().getRoomType().getName());
+        assertEquals(bookedObjectEntity.getRoom().getRoomType().getName(), bookedObjectDTOFromEntity.getRoom().getRoomType().getName());
+
+        assertEquals(4L, bookedObjectDTOFromEntity.getBooking().getId());
+        assertEquals(bookedObjectEntity.getBooking().getId(), bookedObjectDTOFromEntity.getBooking().getId());
+
+        assertEquals(5L, bookedObjectDTOFromEntity.getBooking().getCustomer().getId());
+        assertEquals(bookedObjectEntity.getBooking().getCustomer().getId(), bookedObjectDTOFromEntity.getBooking().getCustomer().getId());
+
+        assertEquals("customerFromEntity", bookedObjectDTOFromEntity.getBooking().getCustomer().getName());
+        assertEquals(bookedObjectEntity.getBooking().getCustomer().getName(), bookedObjectDTOFromEntity.getBooking().getCustomer().getName());
+
+        assertEquals(LocalDate.of(2025,5,12), bookedObjectDTOFromEntity.getStartDate());
+        assertEquals(bookedObjectEntity.getStartDate(), bookedObjectDTOFromEntity.getStartDate());
+
+        assertEquals(LocalDate.of(2025,5,13), bookedObjectDTOFromEntity.getEndDate());
+        assertEquals(bookedObjectEntity.getEndDate(), bookedObjectDTOFromEntity.getEndDate());
 
     }
 
