@@ -56,7 +56,7 @@
       </thead>
       <tbody>
       <!-- Gör hela raden klickbar, skapa ett th attribut med ett namn (data-url) och ge det url för specifik bokning, onclick hamna där -->
-      <tr th:each="booking, iterStat : ${bookings}" th:attr="data-url=@{/bookings/booking(bookingId=${booking.getId()})}"
+      <tr th:each="booking, iterStat : ${bookings}" th:attr="data-url=@{/bookings/booking/{bookingId}(bookingId=${booking.id})}"
           onclick="window.location = this.getAttribute('data-url')"
           style="cursor: pointer;">
         <th scope="row" th:text="${iterStat.index + 1}">1</th>

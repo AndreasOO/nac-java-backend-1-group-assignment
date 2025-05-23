@@ -18,13 +18,15 @@
       </div>
       <div class="modal-body">
 
-        <form th:action="@{/bookings/booking/add-room}" method="get" class="mb-4">
-          <input type="hidden" name="bookingId" th:value="${bookedObject.getBooking().getId()}" />
-          <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
+        <form th:action="@{/bookings/booking/available-rooms}" method="get" class="mb-4">
+
+          <input type="hidden" name="bookingId" th:value="${bookedObject.getBooking().getId()}"/>
+          <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}"/>
+          <input type="hidden" name="update" th:value="${roomSearch.isUpdate()}" />
+
           <div class="form-group">
             <label for="guestCount">Amount of guests:</label>
             <select id="guestCount" name="guestCount" class="form-control">
-              <option value="" disabled selected>-- Choose guests --</option>
               <option th:each="capacity : ${capacityOptions}" th:value="${capacity}" th:text="${capacity}">
             </select>
           </div>
@@ -58,7 +60,7 @@
       </div>
       <div class="modal-body">
 
-        <form th:action="@{/bookings/booking/add-extra}" method="post" class="mb-4">
+        <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/add-extra(bookingId=${bookingId}, bookedObjectId=${bookedObject.getId()})}" method="post" class="mb-4">
           <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
           <div class="form-group">
             <label for="extra-type">Extra choices available:</label>
@@ -131,7 +133,7 @@
         <td th:text="${extra.getExtraType().getName()}">Type</td>
         <td th:text="'$' + ${extra.getExtraType().getCost()}">Cost</td>
         <td>
-          <form th:action="@{/bookings/booking/delete-extra}" method="post">
+          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra(bookingId=${bookingId}, bookedObjectId=${bookedObjectId})}" method="post">
             <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
             <input type="hidden" name="extraId" th:value="${extra.getId()}" />
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Delete</button>
@@ -142,13 +144,12 @@
     </table>
     <a href="#" class="btn btn-dark w-100" data-toggle="modal" data-target="#add-extra-modal">Add extra</a>
     <hr class="w-100 border-0" style="height: 2px; background-color: #dee2e6;">
-    <a th:href="@{/bookings/booking(bookingId=${bookedObject.getBooking().getId()})}" class="btn btn-dark w-100">Go to booking</a>
+    <a th:href="@{/bookings/booking/{bookingId}(bookingId=${roomSearch.getBookingId()})}" class="btn btn-dark w-100">Go to booking</a>
   </div>
 </div>
 <script>
   document.getElementById('startDate').addEventListener('change', function() {
-    const startDate = this.value;
-    document.getElementById('endDate').min = startDate;
+    document.getElementById('endDate').min = this.value;
   });
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
