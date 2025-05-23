@@ -171,10 +171,15 @@ public class BookingServiceImpl implements BookingService {
     public BookedObjectDTO addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
 
         BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElse(null);
+
+        if (bookedObject == null) {
+            throw new IllegalArgumentException("Bed can't be added to this room");
+        }
+
         ExtraType chosenExtraType = extraTypeDao.findById(extraTypeId).orElse(null);
         long extraBedsAlreadyAdded = bookedObject.getExtras().stream().filter(extra -> extra.getExtraType().getName().equals("bed")).count();
 
-        if(chosenExtraType.getName().equals("bed")) {
+        if(chosenExtraType == null || chosenExtraType.getName().equals("bed")) {
             if (bookedObject.getRoom().getRoomType().getName().equals("Single room") || extraBedsAlreadyAdded >= bookedObject.getRoom().getExtraBedsAvailable()) {
                 throw new IllegalArgumentException("Bed can't be added to this room");
             }
