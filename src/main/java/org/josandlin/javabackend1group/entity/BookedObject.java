@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -42,6 +43,14 @@ public class BookedObject {
         this.booking = booking;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public BookedObject(Room room, Booking booking, LocalDate startDate, LocalDate endDate) {
+        this.room = room;
+        this.booking = booking;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.extras = new ArrayList<>();
     }
 
     public BookedObject(){

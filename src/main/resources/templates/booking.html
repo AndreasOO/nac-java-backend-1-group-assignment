@@ -20,14 +20,16 @@
 
         <form th:action="@{/bookings/booking/add-room}" method="get" th:object="${roomSearch}" class="mb-4">
 
-          <input th:field="*{bookingId}" type="hidden"/>
-          <input th:field="*{isUpdate}" type="hidden"/>
+          <input type="hidden" th:field="*{bookingId}" />
+          <input type="hidden" th:field="*{bookedObjectId}" />
 
           <div class="form-group">
             <label for="guestCount">Amount of guests:</label>
             <select th:field="*{guestCount}" id="guestCount" class="form-control" required>
-              <option value="" disabled selected>-- Choose guests --</option>
-              <option th:each="capacity : ${capacityOptions}" th:value="${capacity}" th:text="${capacity}">
+              <option th:each="capacity : ${capacityOptions}"
+                      th:value="${capacity}"
+                      th:text="${capacity}">
+              </option>
             </select>
           </div>
 
@@ -39,7 +41,9 @@
             <label for="endDate">End date:</label>
             <input th:field="*{endDate}" type="date" id="endDate" class="form-control"  th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
           </div>
+
           <button type="submit" class="btn btn-dark w-100">Show available rooms</button>
+
         </form>
 
       </div>
@@ -54,11 +58,11 @@
       <div class="d-flex justify-content-between">
         <div>
           <strong>Customer:</strong>
-          <span th:text="${customer.getName()}">Customer Name</span>
+          <span th:text="${booking.getCustomer().getName()}">Customer Name</span>
         </div>
         <div>
           <strong>Booking id:</strong>
-          <span th:text="${bookingId}">5</span>
+          <span th:text="${booking.getId()}">5</span>
         </div>
       </div>
     </div>
@@ -76,23 +80,24 @@
       </tr>
       </thead>
       <tbody>
-      <tr th:each="bookedRoom, iterStat : ${bookedRooms}">
+      <tr th:each="bookedObject, iterStat : ${bookedObjects}">
         <th scope="row" th:text="${iterStat.index + 1}">1</th>
-        <td th:text="${bookedRoom.getRoom().getId()}">Room id</td>
-        <td th:text="${bookedRoom.getRoom().getRoomType().getName()}">Room type</td>
-        <td th:text="'$' + ${bookedRoom.getRoom().getRoomType().getCostPerNight()}">Cost per night</td>
-        <td th:text="${bookedRoom.getStartDate()}">Start</td>
-        <td th:text="${bookedRoom.getEndDate()}">End</td>
+        <td th:text="${bookedObject.getRoom().getId()}">Room id</td>
+        <td th:text="${bookedObject.getRoom().getRoomType().getName()}">Room type</td>
+        <td th:text="'$' + ${bookedObject.getRoom().getRoomType().getCostPerNight()}">Cost per night</td>
+        <td th:text="${bookedObject.getStartDate()}">Start</td>
+        <td th:text="${bookedObject.getEndDate()}">End</td>
         <td>
-          <form th:action="@{/bookings/booking/booked-room(bookedObjectId=${bookedRoom.getId()})}" method="get">
-            <input type="hidden" name="bookedObjectId" th:value="${bookedRoom.getId()}" />
+          <form th:action="@{/bookings/booking/booked-room}" method="get">
+            <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
+            <input type="hidden" name="bookingId" th:value="${bookedObject.getBooking().getId()}" />
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Edit</button>
           </form>
         </td>
         <td>
           <form th:action="@{/bookings/booking/delete-room}" method="post">
-            <input type="hidden" name="bookingId" th:value="${bookingId}" />
-            <input type="hidden" name="bookedObjectId" th:value="${bookedRoom.getId()}" />
+            <input type="hidden" name="bookingId" th:value="${booking.getId()}" />
+            <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Delete room</button>
           </form>
         </td>
@@ -110,8 +115,7 @@
 <!-- Litet script för att man inte ska kunna välja enddate som ligger innan startdate -->
 <script>
   document.getElementById('startDate').addEventListener('change', function() {
-    const startDate = this.value;
-    document.getElementById('endDate').min = startDate;
+    document.getElementById('endDate').min = this.value;
   });
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

@@ -42,16 +42,16 @@
                 <td th:text="${room.getMaxCapacity()}">Max capacity</td>
                 <td th:text="'$' + ${room.getRoomType().getCostPerNight()}">Cost per night</td>
                 <td>
-                    <form th:attr="action=${roomSearch.isUpdate()} ? '/bookings/booking/edit-room'
-                                                      : '/bookings/booking/add-room'" method="post">
+                    <form th:action="${roomSearch.isUpdate()} ? '/bookings/booking/edit-room' : '/bookings/booking/add-room'" method="post">
 
+                        <input type="hidden" name="bookingId" th:value="${roomSearch.bookingId}" />
+                        <input type="hidden" name="bookedObjectId" th:value="${roomSearch.bookedObjectId}" />
+                        <input type="hidden" name="roomId" th:value="${room.id}" />
+                        <input type="hidden" name="startDate" th:value="${roomSearch.startDate}" />
+                        <input type="hidden" name="endDate" th:value="${roomSearch.endDate}" />
 
-                        <input type="hidden" name="bookingId" th:value="${roomSearch.getBookingId()}"/>
-                        <input type="hidden" name="bookedObjectId" th:if="${roomSearch.isUpdate()}" th:value="${roomSearch.getBookedObjectId()}"/>
-                        <input type="hidden" name="roomId" th:value="${room.getId()}"/>
-                        <input type="hidden" name="startDate" th:value="${roomSearch.getStartDate()}"/>
-                        <input type="hidden" name="endDate" th:value="${roomSearch.getEndDate()}"/>
-                        <button type="submit" class="btn btn-sm btn-dark" th:text="${roomSearch.isUpdate()} ? 'Update room' : 'Add room'">Action</button>
+                        <button type="submit" class="btn btn-sm btn-dark"
+                                th:text="${roomSearch.isUpdate()} ? 'Update room' : 'Add room'">Action</button>
                     </form>
                 </td>
             </tr>

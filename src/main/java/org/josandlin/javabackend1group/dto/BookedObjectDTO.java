@@ -26,6 +26,23 @@ public class BookedObjectDTO {
         this.endDate = endDate;
     }
 
+    public BookedObjectDTO(Long id, BookingDTO booking, LocalDate startDate, LocalDate endDate) {
+        this.id = id;
+        this.booking = booking;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public BookedObjectDTO(BookingDTO booking, LocalDate startDate, LocalDate endDate) {
+        this.booking = booking;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    public BookedObjectDTO() {
+
+    }
+
     public Long getId() {
         return id;
     }

@@ -19,13 +19,12 @@
       <div class="modal-body">
         <form th:action="@{/bookings/booking/add-room}" method="get" th:object="${roomSearch}" class="mb-4">
 
-          <input th:field="*{bookingId}" type="hidden" th:value="${bookingId}" />
-          <input th:field="*{isUpdate()}" type="hidden" th:value="${true}" />
+          <input th:field="*{bookingId}" type="hidden"/>
+          <input th:field="*{bookedObjectId}" type="hidden"/>
 
           <div class="form-group">
             <label for="guestCount">Amount of guests:</label>
             <select th:field="*{guestCount}" id="guestCount" class="form-control" required>
-              <option value="" disabled selected>-- Choose guests --</option>
               <option th:each="capacity : ${capacityOptions}" th:value="${capacity}" th:text="${capacity}">
             </select>
           </div>
@@ -38,7 +37,9 @@
             <label for="endDate">End date:</label>
             <input th:field="*{endDate}" type="date" id="endDate" name="endDate" class="form-control"  th:attr="min=${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" required>
           </div>
+
           <button type="submit" class="btn btn-dark w-100">Show available rooms</button>
+
         </form>
       </div>
     </div>
@@ -147,8 +148,7 @@
 </div>
 <script>
   document.getElementById('startDate').addEventListener('change', function() {
-    const startDate = this.value;
-    document.getElementById('endDate').min = startDate;
+    document.getElementById('endDate').min = this.value;
   });
 </script>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>

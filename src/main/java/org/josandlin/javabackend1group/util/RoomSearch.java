@@ -6,19 +6,30 @@ import java.time.LocalDate;
 
 public class RoomSearch {
 
-    Long bookedObjectId = -1L;
     Long bookingId;
-    int guestCount;
+    Long bookedObjectId = 0L;
+    Integer guestCount = 1;
     LocalDate startDate;
     LocalDate endDate;
     boolean isUpdate;
 
-    public RoomSearch(Long bookedObjectId, Long bookingId, int guestCount, LocalDate startDate, LocalDate endDate) {
-        this.bookedObjectId = bookedObjectId;
+    public RoomSearch(Long bookingId, Long bookedObjectId, int guestCount, LocalDate startDate, LocalDate endDate) {
         this.bookingId = bookingId;
+        this.bookedObjectId = bookedObjectId;
         this.guestCount = guestCount;
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public RoomSearch(boolean isUpdate, Long bookingId) {
+        this.isUpdate = isUpdate;
+        this.bookingId = bookingId;
+    }
+
+    public RoomSearch(boolean isUpdate, Long bookingId, Long bookedObjectId) {
+        this.isUpdate = isUpdate;
+        this.bookingId = bookingId;
+        this.bookedObjectId = bookedObjectId;
     }
 
     public RoomSearch() {
