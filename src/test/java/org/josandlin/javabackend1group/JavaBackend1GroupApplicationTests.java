@@ -370,10 +370,9 @@ class JavaBackend1GroupApplicationTests {
         assertThat(bookingService.getBookedRoomsByBookingId(josefinsBooking.getId()).get(0).getEndDate()).isEqualTo(LocalDate.of(2025, 6, 2));
 
 
-//        //TODO uncomment assertion after throw is implemented in service method
-//        Exception exception = assertThrows(IllegalArgumentException.class,
-//                () -> bookingService.saveBookedObject(savedRoomDTO1, siggesBooking.getId(), LocalDate.of(2025, 4, 16), LocalDate.of(2025, 4, 21)));
-//        assertThat(exception.getMessage().equals("Room is not available during input dates")).isTrue();
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> bookingService.saveBookedObject(savedRoomDTO1, siggesBooking.getId(), LocalDate.of(2025, 4, 16), LocalDate.of(2025, 4, 21)));
+        assertThat(exception.getMessage().equals("Room is not available during input dates")).isTrue();
     }
 
     @Test
