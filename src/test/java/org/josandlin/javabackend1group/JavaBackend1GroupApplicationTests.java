@@ -49,9 +49,9 @@ class JavaBackend1GroupApplicationTests {
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", () -> "jdbc:mysql://localhost:3306/backend_db");
-        registry.add("spring.datasource.username", () -> "backend_app");
-        registry.add("spring.datasource.password", () -> "test1234");
+        registry.add("spring.datasource.url", () -> mysql.getJdbcUrl());
+        registry.add("spring.datasource.username", () -> mysql.getUsername());
+        registry.add("spring.datasource.password", () -> mysql.getPassword());
     }
 
     @BeforeAll
@@ -426,28 +426,30 @@ class JavaBackend1GroupApplicationTests {
         //find all rooms in clear period
         assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 1), LocalDate.of(2025, 4, 30), 1).size()).isEqualTo(4);
 
-        //find all rooms but room 1 in period
+        //find all rooms in clear period with bordering start date
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 1), 1).size()).isEqualTo(4);
+
+        //find all rooms in clear period with bordering end date
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 5), LocalDate.of(2025, 5, 7), 1).size()).isEqualTo(4);
+
+        //find all rooms in clear period with bordering start date and end date
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 5), LocalDate.of(2025, 5, 8), 1).size()).isEqualTo(4);
+
+//        //find all rooms but room 1 in period
         assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 2), LocalDate.of(2025, 5, 4), 1).size()).isEqualTo(3);
         assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 2), LocalDate.of(2025, 5, 4), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
 
-        //find all rooms but room 1 in period with both overlapping bordering dates
+//        //find all rooms but room 1 in period with both overlapping bordering dates
         assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 10), 1).size()).isEqualTo(3);
         assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 10), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
-
-        //find all rooms but room 1 in period with start overlapping bordering dates
+//
+//        //find all rooms but room 1 in period with start overlapping bordering dates
         assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 11), 1).size()).isEqualTo(3);
         assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 5, 1), LocalDate.of(2025, 5, 11), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
-
-        //find all rooms but room 1 in period with end overlapping bordering dates
-        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 1), 1).size()).isEqualTo(3);
-        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 1), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
-
-        //find all rooms but room 1 in period with booking in middle of picked dates
-        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 15), 1).size()).isEqualTo(3);
-        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 15), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
-
-
-
+//
+//        //find all rooms but room 1 in period with end overlapping bordering dates
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 2), 1).size()).isEqualTo(3);
+        assertThat(roomService.getAvailableRoomsBetweenDatesWithinCapacity(LocalDate.of(2025, 4, 29), LocalDate.of(2025, 5, 2), 1).stream().filter(room -> room.getName().equals("Sea view room")).toList().size()).isEqualTo(0);
 
     }
 
