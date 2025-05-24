@@ -27,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public Customer createAccount(Customer customer) {
-        if (findByName(customer.getName()) != null) {
+        if (customerDao.findByName(customer.getName()) != null) {
             throw new IllegalArgumentException("Customer already exists!");
         }
         customerDao.save(customer);
@@ -38,22 +38,6 @@ public class CustomerServiceImpl implements CustomerService {
     public List<Customer> getAllCustomers(){
         return customerDao.findAll();
     }
-
-    @Override
-    public Customer findByName(String name) {
-        return findByName(name);
-    }
-
-//    @Override
-//    public Customer logIn(String name){
-//        Customer loggedInCustomer = customerDao.findByName(name);
-//        if (loggedInCustomer == null) {
-//            throw new IllegalArgumentException("Customer doesn't exist!");
-//        }
-//        return loggedInCustomer;
-//    }
-
-
 
     @Override
     public Customer registerCustomer(Customer customer) {
@@ -81,5 +65,4 @@ public class CustomerServiceImpl implements CustomerService {
     public Customer findById(Long id){
         return customerDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
     }
-
 }

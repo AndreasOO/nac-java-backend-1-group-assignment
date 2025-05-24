@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 
 
 import java.io.Serializable;
+import java.util.Objects;
 
 
 @Entity
@@ -79,5 +80,16 @@ public class Room implements Serializable {
 
     public void setRoomType(RoomType roomType) {
         this.roomType = roomType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Room room)) return false;
+        return Objects.equals(id, room.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
     }
 }

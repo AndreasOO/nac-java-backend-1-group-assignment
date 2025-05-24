@@ -1,16 +1,21 @@
 package org.josandlin.javabackend1group.controller;
 
+import org.josandlin.javabackend1group.dto.BookedObjectDTO;
+import org.josandlin.javabackend1group.dto.BookingDTO;
+import org.josandlin.javabackend1group.dto.CustomerDTO;
+import org.josandlin.javabackend1group.dto.RoomDTO;
 import org.josandlin.javabackend1group.entity.*;
 import org.josandlin.javabackend1group.service.BookingService;
 import org.josandlin.javabackend1group.service.CustomerService;
+import org.josandlin.javabackend1group.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDate;import java.util.List;
 import java.util.stream.IntStream;
+
 
 @Controller
 @RequestMapping("bookings")
@@ -18,90 +23,109 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final CustomerService customerService;
+    private final RoomService roomService;
 
     @Autowired
-    public BookingController(BookingService bookingService, CustomerService customerService) {
+    public BookingController(BookingService bookingService, CustomerService customerService, RoomService roomService) {
         this.bookingService = bookingService;
         this.customerService = customerService;
+        this.roomService = roomService;
     }
-
-    // Snygga upp alla endpoints
-    // Använder mig än så länge av RequestParams, snyggare med PathVariable?
 
     @GetMapping("/all")
     public String showBookings(Model model) {
-        List<Booking> bookings = bookingService.getAllBookings();
-        List<Customer> customers = customerService.getAllCustomers();
-        model.addAttribute("bookings", bookings);
-        model.addAttribute("customers", customers);
+        model.addAttribute("bookings", bookingService.getAllBookings());
+        model.addAttribute("customers", bookingService.getAllCustomers());
         return "bookings";
+    }
+
+    @GetMapping("/booking/add-room")
+    public String showAvailableRooms(Model model,
+                                     @RequestParam(required = false) Long bookedObjectId,
+                                     @RequestParam("bookingId") Long bookingId,
+                                     @RequestParam("guestCount") int guestCount,
+                                     @RequestParam("startDate") LocalDate startDate,
+                                     @RequestParam("endDate") LocalDate endDate) {
+
+        model.addAttribute("guests", guestCount);
+        model.addAttribute("rooms", roomService.getAvailableRoomsBetweenDatesWithinCapacity(startDate, endDate, guestCount));
+        model.addAttribute("bookingId", bookingId);
+        model.addAttribute("startDate", startDate);
+        model.addAttribute("endDate", endDate);
+
+        if (bookedObjectId != null) {
+            model.addAttribute("bookedObjectId", bookedObjectId);
+            model.addAttribute("isUpdate", true);
+        }
+
+        return "available-rooms";
     }
 
     @GetMapping("/booking")
     public String showBooking(@RequestParam Long bookingId, Model model) {
-        List<BookedObject> bookedRooms = bookingService.getBookedRoomsByBookingId(bookingId);
-        List<Integer> capacityOptions = IntStream.rangeClosed(1, bookingService.getRoomMaxCapacity()).boxed().toList();
         model.addAttribute("customer", bookingService.getCustomerByBookingId(bookingId));
         model.addAttribute("bookingId", bookingId);
-        model.addAttribute("capacityOptions", capacityOptions);
-        model.addAttribute("bookedRooms", bookedRooms);
+        model.addAttribute("capacityOptions", roomService.getCapacityOptions());
+        model.addAttribute("bookedRooms", bookingService.getBookedRoomsByBookingId(bookingId));
         return "booking";
-    }
-
-    @PostMapping("/booking")
-    public String createBooking(@RequestParam("customerId") Long customerId) {
-        Customer customer = customerService.findById(customerId);
-        Booking booking = new Booking(customer);
-        booking = bookingService.createBooking(booking);
-        return "redirect:/bookings/booking?bookingId=" + booking.getId();
-    }
-
-    @GetMapping("/booking/add-room")
-    public String showAvailableRooms(Model model, @RequestParam("bookingId") Long bookingId, @RequestParam("guestCount") int guestCount, @RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
-        List<Room> availableRooms = bookingService.getAvailableRoomsWithinMaxCapacity(startDate, endDate, guestCount);
-        model.addAttribute("guests", guestCount);
-        model.addAttribute("rooms", availableRooms);
-        model.addAttribute("bookingId", bookingId);
-        model.addAttribute("startDate", startDate);
-        model.addAttribute("endDate", endDate);
-        return "available-rooms";
-    }
-
-    @PostMapping("/booking/add-room")
-    public String addRoomToBooking(@RequestParam Long roomId, @RequestParam Long bookingId, @RequestParam LocalDate startDate, @RequestParam LocalDate endDate){
-        Room chosenRoom = bookingService.getRoomById(roomId);
-        Booking currentBooking = bookingService.getBookingById(bookingId);
-        BookedObject bookedObject = new BookedObject(chosenRoom, List.of(), currentBooking, startDate, endDate);
-        bookingService.saveBookedObject(bookedObject);
-        return "redirect:/bookings/booking?bookingId=" + bookingId;
     }
 
     @GetMapping("/booking/booked-room")
     public String showBookedRoom(Model model, @RequestParam Long bookedObjectId){
-        BookedObject bookedObject = bookingService.getBookedObjectById(bookedObjectId);
-        List<ExtraType> extraChoices = bookingService.getAllExtraChoicesAvailable(bookedObjectId);
-        model.addAttribute("bookedObject", bookedObject);
-        model.addAttribute("extraChoices", extraChoices);
+        model.addAttribute("bookedObject", bookingService.getBookedObjectById(bookedObjectId));
+        model.addAttribute("extraChoices", bookingService.getExtraOptionsAvailable(bookedObjectId));
+        model.addAttribute("capacityOptions", roomService.getCapacityOptions());
         return "booked-room";
     }
 
+    @PostMapping("/booking")
+    public String createBooking(@RequestParam("customerId") Long customerId) {
+        BookingDTO newBooking = bookingService.createBooking(customerId);
+        return "redirect:/bookings/booking?bookingId=" + newBooking.getId();
+    }
+
+    @PostMapping("/booking/add-room")
+    public String addRoomToBooking(@RequestParam Long roomId,
+                                   @RequestParam Long bookingId,
+                                   @RequestParam LocalDate startDate,
+                                   @RequestParam LocalDate endDate){
+
+        BookedObjectDTO bookedObject = bookingService.saveBookedObject(roomService.getRoomById(roomId), bookingId, startDate, endDate);
+        return "redirect:/bookings/booking?bookingId=" + bookedObject.getBooking().getId();
+    }
+
     @PostMapping("/booking/delete-extra")
-    public String deleteExtraFromBookedRoom(Model model, @RequestParam Long bookedObjectId, @RequestParam Long extraId) {
+    public String deleteExtraFromBookedRoom(@RequestParam Long bookedObjectId,
+                                            @RequestParam Long extraId) {
+
         bookingService.deleteExtraFromBookedObjectById(extraId);
         return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
     }
 
     @PostMapping("/booking/add-extra")
-    public String addExtraToBookedRoom(Model model, @RequestParam Long bookedObjectId, @RequestParam Long extraTypeId) {
-        bookingService.addExtraToBookedObject(bookedObjectId, extraTypeId);
-        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObjectId;
+    public String addExtraToBookedRoom(@RequestParam Long bookedObjectId,
+                                       @RequestParam Long extraTypeId) {
+
+        BookedObjectDTO bookedObject = bookingService.addExtraToBookedObject(bookedObjectId, extraTypeId);
+        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObject.getId();
     }
 
     @PostMapping("/booking/delete-room")
-    public String deleteRoom(Model model, @RequestParam Long bookedObjectId, @RequestParam Long bookingId) {
-        bookingService.removeBookedObject(bookedObjectId);
+    public String deleteRoom(@RequestParam Long bookedObjectId,
+                             @RequestParam Long bookingId) {
+
+        bookingService.deleteBookedObject(bookedObjectId);
         return "redirect:/bookings/booking?bookingId=" + bookingId;
     }
 
+    @PostMapping("/booking/edit-room")
+    public String editRoom(@RequestParam Long bookedObjectId,
+                           @RequestParam Long bookingId,
+                           @RequestParam Long roomId,
+                           @RequestParam LocalDate startDate,
+                           @RequestParam LocalDate endDate){
 
+        BookedObjectDTO bookedObject = bookingService.editBookedObject(bookedObjectId, roomId, startDate, endDate);
+        return "redirect:/bookings/booking/booked-room?bookedObjectId=" + bookedObject.getId();
+    }
 }
