@@ -20,7 +20,7 @@
 
         <form th:object="${roomSearch}" th:action="@{/bookings/booking/available-rooms}" method="get" class="mb-4">
 
-          <input type="hidden" name="bookingId" th:value="${bookingId}"/>
+          <input type="hidden" name="bookingId" th:value="${booking.getId()}"/>
           <input type="hidden" name="isUpdate" th:value="${roomSearch.isUpdate}" />
 
           <div class="form-group">
@@ -53,11 +53,11 @@
       <div class="d-flex justify-content-between">
         <div>
           <strong>Customer:</strong>
-          <span th:text="${customer.getName()}">Customer Name</span>
+          <span th:text="${booking.getCustomer().getName()}">Customer Name</span>
         </div>
         <div>
           <strong>Booking id:</strong>
-          <span th:text="${bookingId}">5</span>
+          <span th:text="${booking.getId()}">5</span>
         </div>
       </div>
     </div>
@@ -83,14 +83,14 @@
         <td th:text="${bookedRoom.getStartDate()}">Start</td>
         <td th:text="${bookedRoom.getEndDate()}">End</td>
         <td>
-          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}(bookingId=${bookingId}, bookedObjectId=${bookedRoom.getId()})}" method="get">
+          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}(bookingId=${booking.getId()}, bookedObjectId=${bookedRoom.getId()})}" method="get">
             <input type="hidden" name="bookedObjectId" th:value="${bookedRoom.getId()}" />
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Edit</button>
           </form>
         </td>
         <td>
-          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room(bookingId=${bookingId}, bookedObjectId=${bookedRoom.getId()})}" method="post">
-            <input type="hidden" name="bookingId" th:value="${bookedRoom.getBooking().getId()}" />
+          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room(bookingId=${booking.getId()}, bookedObjectId=${bookedRoom.getId()})}" method="post">
+            <input type="hidden" name="bookingId" th:value="${booking.getId()}" />
             <input type="hidden" name="bookedObjectId" th:value="${bookedRoom.getId()}" />
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Delete room</button>
           </form>

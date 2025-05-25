@@ -2,9 +2,6 @@ package org.josandlin.javabackend1group.controller;
 
 import org.josandlin.javabackend1group.dto.BookedObjectDTO;
 import org.josandlin.javabackend1group.dto.BookingDTO;
-import org.josandlin.javabackend1group.dto.CustomerDTO;
-import org.josandlin.javabackend1group.dto.RoomDTO;
-import org.josandlin.javabackend1group.entity.*;
 import org.josandlin.javabackend1group.service.BookingService;
 import org.josandlin.javabackend1group.service.CustomerService;
 import org.josandlin.javabackend1group.service.RoomService;
@@ -14,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;import java.util.List;
-import java.util.stream.IntStream;
 
 
 @Controller
@@ -41,13 +35,11 @@ public class BookingController {
         return "bookings";
     }
 
-    // metod som skickar ett RoomSearchUtil för att söka på rum att addera, försöker nå showAvailableRooms
     @GetMapping("/booking/{bookingId}")
     public String showBooking(@PathVariable Long bookingId, Model model) {
         model.addAttribute("roomSearch", new RoomSearchUtil(false, bookingId));
-        model.addAttribute("bookingId", bookingId);
-        model.addAttribute("customer", bookingService.getCustomerByBookingId(bookingId));
         model.addAttribute("capacityOptions", roomService.getCapacityOptions());
+        model.addAttribute("booking", bookingService.getBookingById(bookingId));
         model.addAttribute("bookedRooms", bookingService.getBookedRoomsByBookingId(bookingId));
         return "booking";
     }
@@ -68,7 +60,6 @@ public class BookingController {
         BookedObjectUtil chosenRoom = new BookedObjectUtil(roomSearch.getBookingId(), roomSearch.getStartDate(), roomSearch.getEndDate());
 
         if (roomSearch.isUpdate()){
-            System.out.println("This is an update");
             chosenRoom.setBookedObjectId(roomSearch.getBookedObjectId());
         }
 
