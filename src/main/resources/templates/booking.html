@@ -84,14 +84,11 @@
         <td th:text="${bookedRoom.getEndDate()}">End</td>
         <td>
           <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}(bookingId=${booking.getId()}, bookedObjectId=${bookedRoom.getId()})}" method="get">
-            <input type="hidden" name="bookedObjectId" th:value="${bookedRoom.getId()}" />
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Edit</button>
           </form>
         </td>
         <td>
           <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room(bookingId=${booking.getId()}, bookedObjectId=${bookedRoom.getId()})}" method="post">
-            <input type="hidden" name="bookingId" th:value="${booking.getId()}" />
-            <input type="hidden" name="bookedObjectId" th:value="${bookedRoom.getId()}" />
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Delete room</button>
           </form>
         </td>
@@ -108,7 +105,6 @@
 
   </div>
 </div>
-<!-- Litet script för att man inte ska kunna välja enddate som ligger innan startdate -->
 <script>
   document.getElementById('startDate').addEventListener('change', function() {
     document.getElementById('endDate').min = this.value;

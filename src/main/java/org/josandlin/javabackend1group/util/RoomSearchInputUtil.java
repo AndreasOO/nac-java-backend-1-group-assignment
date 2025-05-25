@@ -2,29 +2,36 @@ package org.josandlin.javabackend1group.util;
 
 import java.time.LocalDate;
 
-public class BookedObjectUtil {
+public class RoomSearchInputUtil {
 
+    boolean update;
     Long bookingId;
-    Long bookedObjectId;
-    Long roomId;
+    Long bookedObjectId = 0L;
+    Integer questCount = 1;
     LocalDate startDate;
     LocalDate endDate;
 
-    public BookedObjectUtil(Long bookingId, Long bookedObjectId, Long roomId, LocalDate startDate, LocalDate endDate) {
+    public RoomSearchInputUtil(boolean update, Long bookingId, Long bookedObjectId, Integer questCount, LocalDate startDate, LocalDate endDate) {
+        this.update = update;
         this.bookingId = bookingId;
         this.bookedObjectId = bookedObjectId;
-        this.roomId = roomId;
+        this.questCount = questCount;
         this.startDate = startDate;
         this.endDate = endDate;
     }
 
-    public BookedObjectUtil(Long bookingId, LocalDate startDate, LocalDate endDate) {
+    public RoomSearchInputUtil(boolean update, Long bookingId, Long bookedObjectId) {
+        this.update = update;
         this.bookingId = bookingId;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.bookedObjectId = bookedObjectId;
     }
 
-    public BookedObjectUtil(){
+    public RoomSearchInputUtil(boolean update, Long bookingId) {
+        this.update = update;
+        this.bookingId = bookingId;
+    }
+
+    public RoomSearchInputUtil(){
 
     }
 
@@ -44,12 +51,12 @@ public class BookedObjectUtil {
         this.bookedObjectId = bookedObjectId;
     }
 
-    public Long getRoomId() {
-        return roomId;
+    public Integer getQuestCount() {
+        return questCount;
     }
 
-    public void setRoomId(Long roomId) {
-        this.roomId = roomId;
+    public void setQuestCount(Integer questCount) {
+        this.questCount = questCount;
     }
 
     public LocalDate getStartDate() {
@@ -66,5 +73,13 @@ public class BookedObjectUtil {
 
     public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public boolean isUpdate() {
+        return update;
+    }
+
+    public void setUpdate(boolean update) {
+        this.update = update;
     }
 }

@@ -5,8 +5,8 @@ import org.josandlin.javabackend1group.dto.BookingDTO;
 import org.josandlin.javabackend1group.service.BookingService;
 import org.josandlin.javabackend1group.service.CustomerService;
 import org.josandlin.javabackend1group.service.RoomService;
-import org.josandlin.javabackend1group.util.BookedObjectUtil;
-import org.josandlin.javabackend1group.util.RoomSearchUtil;
+import org.josandlin.javabackend1group.util.BookedObjectInputUtil;
+import org.josandlin.javabackend1group.util.RoomSearchInputUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,17 +37,17 @@ public class BookingController {
 
     @GetMapping("/booking/{bookingId}")
     public String showBooking(@PathVariable Long bookingId, Model model) {
-        model.addAttribute("roomSearch", new RoomSearchUtil(false, bookingId));
+        model.addAttribute("roomSearch", new RoomSearchInputUtil(false, bookingId));
         model.addAttribute("capacityOptions", roomService.getCapacityOptions());
         model.addAttribute("booking", bookingService.getBookingById(bookingId));
         model.addAttribute("bookedRooms", bookingService.getBookedRoomsByBookingId(bookingId));
         return "booking";
     }
 
-    // metod som skickar ett RoomSearchUtil för att söka på rum att ändra, försöker nå showAvailableRooms
+    // metod som skickar ett RoomSearchInputUtil för att söka på rum att ändra, försöker nå showAvailableRooms
     @GetMapping("/booking/{bookingId}/booked-room/{bookedObjectId}")
     public String showBookedRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, Model model){
-        model.addAttribute("roomSearch", new RoomSearchUtil(true, bookingId, bookedObjectId));
+        model.addAttribute("roomSearch", new RoomSearchInputUtil(true, bookingId, bookedObjectId));
         model.addAttribute("bookedObject", bookingService.getBookedObjectById(bookedObjectId));
         model.addAttribute("extraChoices", bookingService.getExtraOptionsAvailable(bookedObjectId));
         model.addAttribute("capacityOptions", roomService.getCapacityOptions());
@@ -56,8 +56,8 @@ public class BookingController {
 
     // visar tillgängliga rum, går vidare till antingen add-room eller edit-room
     @GetMapping("/booking/available-rooms")
-    public String showAvailableRooms(@ModelAttribute RoomSearchUtil roomSearch, Model model) {
-        BookedObjectUtil chosenRoom = new BookedObjectUtil(roomSearch.getBookingId(), roomSearch.getStartDate(), roomSearch.getEndDate());
+    public String showAvailableRooms(@ModelAttribute RoomSearchInputUtil roomSearch, Model model) {
+        BookedObjectInputUtil chosenRoom = new BookedObjectInputUtil(roomSearch.getBookingId(), roomSearch.getStartDate(), roomSearch.getEndDate());
 
         if (roomSearch.isUpdate()){
             chosenRoom.setBookedObjectId(roomSearch.getBookedObjectId());
@@ -72,7 +72,7 @@ public class BookingController {
 
     // nås via booking-sida
     @PostMapping("/booking/add-room")
-    public String addRoomToBooking(@ModelAttribute BookedObjectUtil chosenRoom){
+    public String addRoomToBooking(@ModelAttribute BookedObjectInputUtil chosenRoom){
 
         BookedObjectDTO bookedObject = bookingService.saveBookedObject(roomService.getRoomById(chosenRoom.getRoomId()),
                                                                                                 chosenRoom.getBookingId(),
@@ -83,7 +83,7 @@ public class BookingController {
 
     // nås via booked-room sida
     @PostMapping("/booking/edit-room")
-    public String editRoom(@ModelAttribute BookedObjectUtil chosenRoom){
+    public String editRoom(@ModelAttribute BookedObjectInputUtil chosenRoom){
 
         BookedObjectDTO bookedObject = bookingService.editBookedObject(chosenRoom.getBookedObjectId(),
                                                                         chosenRoom.getRoomId(),
@@ -99,8 +99,8 @@ public class BookingController {
         return "redirect:/bookings/booking/" + newBooking.getId();
     }
 
-    @PostMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra")
-    public String deleteExtraFromBookedRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, @RequestParam Long extraId) {
+    @PostMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra/{extraId}")
+    public String deleteExtraFromBookedRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, @PathVariable Long extraId) {
         bookingService.deleteExtraFromBookedObjectById(extraId);
         return "redirect:/bookings/booking/" + bookingId + "/booked-room/" + bookedObjectId;
     }

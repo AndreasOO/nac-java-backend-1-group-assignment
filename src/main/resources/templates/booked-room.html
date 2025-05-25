@@ -133,9 +133,7 @@
         <td th:text="${extra.getExtraType().getName()}">Type</td>
         <td th:text="'$' + ${extra.getExtraType().getCost()}">Cost</td>
         <td>
-          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra(bookingId=${bookingId}, bookedObjectId=${bookedObjectId})}" method="post">
-            <input type="hidden" name="bookedObjectId" th:value="${bookedObject.getId()}" />
-            <input type="hidden" name="extraId" th:value="${extra.getId()}" />
+          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra/{extraId}(bookingId=${bookingId}, bookedObjectId=${bookedObjectId}, extraId=${extra.getId})}" method="post">
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Delete</button>
           </form>
         </td>
