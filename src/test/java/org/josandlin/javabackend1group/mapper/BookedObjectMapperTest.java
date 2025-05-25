@@ -3,9 +3,7 @@ package org.josandlin.javabackend1group.mapper;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.josandlin.javabackend1group.dto.AddedExtraDTO;
-import org.josandlin.javabackend1group.dto.BookedObjectDTO;
-import org.josandlin.javabackend1group.dto.ExtraTypeDTO;
+import org.josandlin.javabackend1group.dto.*;
 import org.josandlin.javabackend1group.entity.*;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +29,17 @@ class BookedObjectMapperTest {
                                                         );
 
 
+    BookedObjectDTO bookedObjectDto = new BookedObjectDTO(6L,
+                                                        new RoomDTO(7L,
+                                                                "roomFromDto",
+                                                                3,
+                                                                1,
+                                                                new RoomTypeDTO(8L,"single", 200)),
+                                                        List.of(),
+                                                        new BookingDTO(9L, new CustomerDTO(10L, "customerFromDto")),
+                                                        LocalDate.of(2025,5,12),
+                                                        LocalDate.of(2025,5,13)
+    );
 
 
 
@@ -69,12 +78,6 @@ class BookedObjectMapperTest {
 
         assertEquals(LocalDate.of(2025,5,13), bookedObjectDTOFromEntity.getEndDate());
         assertEquals(bookedObjectEntity.getEndDate(), bookedObjectDTOFromEntity.getEndDate());
-
-    }
-
-    @Test
-    void testDtoToEntity() {
-
 
     }
 
