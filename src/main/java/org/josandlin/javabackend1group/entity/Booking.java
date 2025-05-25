@@ -1,6 +1,8 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 
 import java.io.Serializable;
@@ -16,6 +18,7 @@ public class Booking implements Serializable {
 
     @ManyToOne
     @JoinColumn
+    @NotNull(message="Customer must not be null")
     private Customer customer;
 
     public Booking(Long id, Customer customer) {
