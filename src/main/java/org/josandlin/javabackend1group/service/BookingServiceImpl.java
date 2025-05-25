@@ -65,12 +65,6 @@ public class BookingServiceImpl implements BookingService {
         return customerMapper.toDTO(customerDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found")));
     }
 
-    /// Stämmer denna tro?
-//    @Override
-//    public Customer findCustomerById(Long id){
-//        return customerDao.findById(id).stream().map(customerMapper::toDTO).filter(customer -> customer.getId().equals(id));
-//    }
-
 
     @Override
     public List<CustomerDTO> getAllCustomers(){
