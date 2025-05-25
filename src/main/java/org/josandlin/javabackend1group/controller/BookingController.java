@@ -35,7 +35,7 @@ public class BookingController {
     @GetMapping("/all")
     public String showBookings(Model model) {
         model.addAttribute("bookings", bookingService.getAllBookings());
-        model.addAttribute("customers", bookingService.getAllCustomers());
+        model.addAttribute("customers", customerService.getAllCustomers());
         return "bookings";
     }
 

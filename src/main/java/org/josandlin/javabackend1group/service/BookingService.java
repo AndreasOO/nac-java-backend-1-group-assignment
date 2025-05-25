@@ -12,9 +12,11 @@ import java.util.Set;
 public interface BookingService {
 
     // Metoder som ska vara i customer service
+
     CustomerDTO findCustomerById(Long id);
 
     List<CustomerDTO> getAllCustomers();
+
 
     //
 
