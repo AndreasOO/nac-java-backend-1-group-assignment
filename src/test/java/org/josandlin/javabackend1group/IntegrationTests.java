@@ -1,5 +1,6 @@
 package org.josandlin.javabackend1group;
 
+import io.restassured.http.ContentType;
 import org.josandlin.javabackend1group.dao.*;
 import org.josandlin.javabackend1group.dto.BookedObjectDTO;
 import org.josandlin.javabackend1group.dto.BookingDTO;
@@ -11,7 +12,11 @@ import org.josandlin.javabackend1group.service.CustomerService;
 import org.josandlin.javabackend1group.service.RoomService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import io.restassured.response.Response;
+
+import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -110,6 +115,23 @@ class IntegrationTests {
     }
 
     @Test
+    void endpointGETBookingsAllShouldGenerateCorrectTemplate() {
+
+        Response response = given()
+                .when()
+                    .get(baseURI+"/bookings/all")
+                .then()
+                        .contentType(ContentType.HTML)
+                        .statusCode(200)
+                .extract()
+                .response();
+
+//        System.out.println(response.getBody().prettyPrint());
+
+        assertThat(response.getBody().htmlPath().getString("html.head.title")).isEqualTo("Bookings");
+    }
+
+    @Test
     //TODO change to DTO pattern
     void shouldRegisterCustomer() {
         //given
@@ -135,15 +157,9 @@ class IntegrationTests {
         assertThat(registeredCustomer3.getName()).isEqualTo(customer3.getName());
 
         assertThat(customerService.getAllCustomers().size()).isEqualTo(3);
-
-//        assertThat(registeredCustomer1.getId()).isEqualTo(customer1.getId());
-//        assertThat(registeredCustomer2.getId()).isEqualTo(customer2.getId());
-//        assertThat(registeredCustomer3.getId()).isEqualTo(customer3.getId());
-//        assertThat(customerService.getAllCustomers().size()).isEqualTo(3);
     }
 
     @Test
-        //TODO change to DTO pattern
     void shouldEditCustomer() {
         //given
         CustomerDTO customerOriginal = new CustomerDTO();
@@ -167,7 +183,6 @@ class IntegrationTests {
     }
 
     @Test
-        //TODO change to DTO pattern
     void shouldDeleteCustomer() {
         //given
         CustomerDTO customerToBeDeleted = new CustomerDTO();
@@ -206,8 +221,6 @@ class IntegrationTests {
         //when
 
         //then
-//        Exception exception = assertThrows(IllegalArgumentException.class, () -> customerService.deleteCustomer(registeredCustomerToTryBeDeleted));
-//        assertThat(exception.getMessage().equals("Customer has active bookings, cannot delete")).isTrue();
         assertThat(customerService.getAllCustomers().size()).isEqualTo(2);
     }
 
