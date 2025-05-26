@@ -26,7 +26,7 @@ public class BookedObject {
 
     @ManyToOne
     @JoinColumn
-    @NotEmpty(message = "Booking must not be empty")
+    @NotNull(message = "Booking must not be empty")
     private Booking booking;
 
     @NotNull(message = "Booked object must have a start date")
