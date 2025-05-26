@@ -4,7 +4,6 @@ package org.josandlin.javabackend1group.entity;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.util.List;
 
 
 @Entity

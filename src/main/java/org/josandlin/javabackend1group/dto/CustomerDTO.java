@@ -5,6 +5,12 @@ public class CustomerDTO {
     private Long id;
     private String name;
 
+    public CustomerDTO() {}
+
+    public CustomerDTO(String name) {
+        this.name = name;
+    }
+
     public CustomerDTO(Long id, String name) {
         this.id = id;
         this.name = name;

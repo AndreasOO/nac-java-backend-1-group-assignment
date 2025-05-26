@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService {
@@ -29,6 +28,8 @@ public class BookingServiceImpl implements BookingService {
 
     private final RoomService roomService;
 
+    private final CustomerService customerService;
+
     @Autowired
     public BookingServiceImpl(BookingDao bookingDao,
                               BookedObjectDao bookedObjectDao,
@@ -39,7 +40,8 @@ public class BookingServiceImpl implements BookingService {
                               CustomerMapper customerMapper,
                               RoomMapper roomMapper,
                               BookedObjectMapper bookedObjectMapper,
-                              ExtraTypeMapper extraTypeMapper, RoomService roomService) {
+                              ExtraTypeMapper extraTypeMapper, RoomService roomService,
+                              CustomerService customerService) {
 
         this.bookingDao = bookingDao;
         this.bookedObjectDao = bookedObjectDao;
@@ -53,6 +55,8 @@ public class BookingServiceImpl implements BookingService {
         this.bookedObjectMapper = bookedObjectMapper;
         this.extraTypeMapper = extraTypeMapper;
         this.roomService = roomService;
+
+        this.customerService = customerService;
     }
 
 
@@ -60,6 +64,7 @@ public class BookingServiceImpl implements BookingService {
     public CustomerDTO findCustomerById(Long id){
         return customerMapper.toDTO(customerDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found")));
     }
+
 
     @Override
     public List<CustomerDTO> getAllCustomers(){

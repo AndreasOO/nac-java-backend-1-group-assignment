@@ -1,33 +1,42 @@
 package org.josandlin.javabackend1group.service;
 
-import org.josandlin.javabackend1group.entity.Customer;
+import org.josandlin.javabackend1group.dto.CustomerDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface CustomerService {
 
-    @Transactional
-    Customer createAccount(Customer customer);
+//    @Transactional
+//    Customer createAccount(Customer customer);
 
-    List<Customer> getAllCustomers();
+    List<CustomerDTO> getAllCustomers();
 
-//    Customer logIn(String name);
+    CustomerDTO findCustomerById(Long id);
 
-    Customer findById(Long id);
+    /// CustomerDTO findByName(String name);
 
 
-    @Transactional
-    Customer registerCustomer(Customer customer);
 
-    @Transactional
-    Customer editCustomer(Customer customer);
 
     @Transactional
-    void deleteCustomer(Customer customer);
+    CustomerDTO registerCustomer(CustomerDTO customerDTO);
+
+    @Transactional
+    CustomerDTO editCustomer(CustomerDTO customerDTO);
+
+    @Transactional
+    boolean deleteCustomer(CustomerDTO customerDTO);
 
 
 
 }
+
+// Customer findById(Long id);
+
+//    @Transactional
+//    Customer registerCustomer(Customer customer);
+
+//    @Transactional
+//    Customer editCustomer(Customer customer);
