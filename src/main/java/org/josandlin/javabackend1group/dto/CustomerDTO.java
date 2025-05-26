@@ -1,8 +1,11 @@
 package org.josandlin.javabackend1group.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+
 public class CustomerDTO {
 
     private Long id;
+
     private String name;
 
     public CustomerDTO() {}

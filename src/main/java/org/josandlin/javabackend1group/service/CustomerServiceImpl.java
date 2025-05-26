@@ -1,5 +1,6 @@
 package org.josandlin.javabackend1group.service;
 
+import jakarta.validation.Valid;
 import org.josandlin.javabackend1group.dao.BookingDao;
 import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.dto.CustomerDTO;
@@ -64,6 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO registerCustomer(CustomerDTO customerDTO) {
+        @Valid
         Customer customer = customerMapper.toEntity(customerDTO);
         Customer savedCustomer = customerDao.save(customer);
         return customerMapper.toDTO(savedCustomer);

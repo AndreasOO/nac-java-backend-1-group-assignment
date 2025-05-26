@@ -47,8 +47,7 @@ public class CustomerController {
 
     @PostMapping("/add")
     public String registerCustomer(@RequestParam String name) {
-        CustomerDTO customerDTOadd = new CustomerDTO();
-        customerDTOadd.setName(name);
+        CustomerDTO customerDTOadd = new CustomerDTO(name);
         customerService.registerCustomer(customerDTOadd);
         return "redirect:/customers/all";
     }
