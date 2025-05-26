@@ -1,8 +1,6 @@
 package org.josandlin.javabackend1group;
 
-import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
-import io.restassured.specification.RequestSpecification;
 import org.josandlin.javabackend1group.dao.*;
 import org.josandlin.javabackend1group.dto.BookedObjectDTO;
 import org.josandlin.javabackend1group.dto.BookingDTO;
@@ -119,8 +117,93 @@ class IntegrationTests {
     }
 
     @Test
-    void endpointGETBookingsAllShouldGenerateCorrectTemplate() {
+    void endpointGETRootShouldGenerateCorrectTemplate() {
+        setupDataAndReturnBookingId();
+        Response response = given()
+                .when()
+                .get(baseURI+"/")
+                .then()
+                .contentType(ContentType.HTML)
+                .statusCode(200)
+                .extract()
+                .response();
 
+//        System.out.println(response.getBody().prettyPrint());
+
+        assertThat(response.getBody().htmlPath().getString("html.head.title")).isEqualTo("Welcome");
+    }
+
+    @Test
+    void endpointGETCustomersAllShouldGenerateCorrectTemplate() {
+        setupDataAndReturnBookingId();
+        Response response = given()
+                .when()
+                .get(baseURI+"/customers/all")
+                .then()
+                .contentType(ContentType.HTML)
+                .statusCode(200)
+                .extract()
+                .response();
+
+//        System.out.println(response.getBody().prettyPrint());
+
+        assertThat(response.getBody().htmlPath().getString("html.head.title")).isEqualTo("Customers");
+    }
+
+    @Test
+    void endpointGETRegisterCustomerShouldGenerateCorrectTemplate() {
+        setupDataAndReturnBookingId();
+        Response response = given()
+                .when()
+                .get(baseURI+"/customers/register")
+                .then()
+                .contentType(ContentType.HTML)
+                .statusCode(200)
+                .extract()
+                .response();
+
+//        System.out.println(response.getBody().prettyPrint());
+
+        assertThat(response.getBody().htmlPath().getString("html.head.title")).isEqualTo("Registration");
+    }
+
+    @Test
+    void endpointPOSTRegisterCustomerShouldRedirectToCorrectUrl() {
+        setupDataAndReturnCustomerId();
+
+        Response response = given()
+                .when()
+                .post(baseURI+"/customers/add?name=test")
+                .then()
+                .statusCode(302)
+                .extract()
+                .response();
+
+        assertThat(response.getHeader("Location").startsWith(baseURI+"/customers/all")).isTrue();
+
+
+    }
+
+    @Test
+    void endpointPOSTEditCustomerShouldRedirectToCorrectUrl() {
+        Long customerId = setupDataAndReturnCustomerId();
+
+        Response response = given()
+                .when()
+                .post(baseURI+"/customers/edit?id="+customerId+"&name=test2")
+                .then()
+                .statusCode(302)
+                .extract()
+                .response();
+
+        assertThat(response.getHeader("Location").startsWith(baseURI+"/customers/all")).isTrue();
+
+
+    }
+
+    @Test
+    void endpointGETBookingsAllShouldGenerateCorrectTemplate() {
+        setupDataAndReturnBookingId();
         Response response = given()
                 .when()
                     .get(baseURI+"/bookings/all")
@@ -155,7 +238,7 @@ class IntegrationTests {
 
     @Test
     void endpointGETShowBookedRoomShouldGenerateCorrectTemplate() {
-        Map<String,Long> idMap = setupDataAndReturnBookingIdAndBookedObjectId();
+        Map<String,Long> idMap = setupDataAndReturnBookingIdAndBookedObjectIdAndExtraTypeId();
 
         Response response = given()
                 .when()
@@ -188,35 +271,26 @@ class IntegrationTests {
 
     }
 
-//    @Test
-//    void endpointGETShowAvailableRoomsShouldGenerateCorrectTemplate() {
-//        Map<String,Long> idMap = setupDataAndReturnBookingIdAndBookedObjectId();
-//
-//        RequestSpecification requestSpecification= new RequestSpecBuilder()
-//                .addQueryParam("update", "false",
-//                        "bookingId", idMap.get("BookingId"),
-//                        "bookingObjectId", idMap.get("BookingObjectId"),
-//                        "questCount", 1,
-//                        "startDate", LocalDate.of(2025, 5,28),
-//                        "endDate", LocalDate.of(2025, 5,29))
-//                .build();
-//
-//        Response response = given()
-//                .spec(requestSpecification)
-//                .when()
-//                .get(baseURI+"/bookings/booking/available-rooms")
-//                .then()
-//                .contentType(ContentType.HTML)
-//                .statusCode(200)
-//                .extract()
-//                .response();
-//
-////        System.out.println(response.getBody().prettyPrint());
-//
-//        assertThat(response.getBody().htmlPath().getString("html.head.title")).isEqualTo("Available Rooms");
-//    }
+    @Test
+    void endpointPOSTAddExtraToBookedRoomShouldRedirectToCorrectUrl() {
+        Map<String,Long> idMap = setupDataAndReturnBookingIdAndBookedObjectIdAndExtraTypeId();
 
-    private Map<String,Long> setupDataAndReturnBookingIdAndBookedObjectId() {
+        Response response = given()
+                .when()
+                .post(baseURI+"/bookings/booking/"+idMap.get("BookingId")+"/booked-room/"+idMap.get("BookingObjectId")+"/add-extra?extraTypeId="+idMap.get("ExtraTypeId"))
+                .then()
+                .statusCode(302)
+                .extract()
+                .response();
+
+        assertThat(response.getHeader("Location").startsWith(baseURI+"/bookings/booking")).isTrue();
+
+    }
+
+    //TODO DELETE-MAPPING ENDPOINTS FOR ROOM AND EXTRA AFTER BEING CORRECTED
+
+
+    private Map<String,Long> setupDataAndReturnBookingIdAndBookedObjectIdAndExtraTypeId() {
         //given
         CustomerDTO ola = customerService.registerCustomer(new CustomerDTO("Ola"));
         CustomerDTO milly = customerService.registerCustomer(new CustomerDTO("Milly"));
@@ -264,7 +338,7 @@ class IntegrationTests {
         BookedObjectDTO bookedObjBeforeEdited = bookingService.saveBookedObject(savedRoomDTO6, sixtensBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
         BookedObjectDTO bookedObjAfterEdited = bookingService.editBookedObject(bookedObjBeforeEdited.getId(), savedRoomDTO1.getId(), LocalDate.of(2025, 9, 25), LocalDate.of(2025, 9, 28));
 
-        return Map.of("BookingId", olasBooking.getId(), "BookingObjectId", roomTwoBookedObjNoExtraBeds.getId());
+        return Map.of("BookingId", millysBooking.getId(), "BookingObjectId", roomOneBookedObj2OneExtraBed.getId(),"ExtraTypeId", extraBed.getId());
     }
 
     private Long setupDataAndReturnBookingId() {
