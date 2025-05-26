@@ -1,6 +1,8 @@
 package org.josandlin.javabackend1group;
 
+import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.specification.RequestSpecification;
 import org.josandlin.javabackend1group.dao.*;
 import org.josandlin.javabackend1group.dto.BookedObjectDTO;
 import org.josandlin.javabackend1group.dto.BookingDTO;
@@ -24,6 +26,8 @@ import io.restassured.RestAssured;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -131,6 +135,239 @@ class IntegrationTests {
         assertThat(response.getBody().htmlPath().getString("html.head.title")).isEqualTo("Bookings");
     }
 
+    @Test
+    void endpointGETShowBookingShouldGenerateCorrectTemplate() {
+        Long id = setupDataAndReturnBookingId();
+
+        Response response = given()
+                .when()
+                .get(baseURI+"/bookings/booking/"+id)
+                .then()
+                .contentType(ContentType.HTML)
+                .statusCode(200)
+                .extract()
+                .response();
+
+//        System.out.println(response.getBody().prettyPrint());
+
+        assertThat(response.getBody().htmlPath().getString("html.head.title")).isEqualTo("Booking");
+    }
+
+    @Test
+    void endpointGETShowBookedRoomShouldGenerateCorrectTemplate() {
+        Map<String,Long> idMap = setupDataAndReturnBookingIdAndBookedObjectId();
+
+        Response response = given()
+                .when()
+                .get(baseURI+"/bookings/booking/"+idMap.get("BookingId")+"/booked-room/"+idMap.get("BookingObjectId"))
+                .then()
+                .contentType(ContentType.HTML)
+                .statusCode(200)
+                .extract()
+                .response();
+
+//        System.out.println(response.getBody().prettyPrint());
+
+        assertThat(response.getBody().htmlPath().getString("html.head.title")).isEqualTo("Booked Room");
+    }
+
+    @Test
+    void endpointPOSTBookingShouldRedirectToCorrectUrl() {
+        Long customerId = setupDataAndReturnCustomerId();
+
+        Response response = given()
+                .when()
+                .post(baseURI+"/bookings/booking?customerId="+customerId)
+                .then()
+                .statusCode(302)
+                .extract()
+                .response();
+
+        assertThat(response.getHeader("Location").startsWith(baseURI+"/bookings/booking")).isTrue();
+
+
+    }
+
+//    @Test
+//    void endpointGETShowAvailableRoomsShouldGenerateCorrectTemplate() {
+//        Map<String,Long> idMap = setupDataAndReturnBookingIdAndBookedObjectId();
+//
+//        RequestSpecification requestSpecification= new RequestSpecBuilder()
+//                .addQueryParam("update", "false",
+//                        "bookingId", idMap.get("BookingId"),
+//                        "bookingObjectId", idMap.get("BookingObjectId"),
+//                        "questCount", 1,
+//                        "startDate", LocalDate.of(2025, 5,28),
+//                        "endDate", LocalDate.of(2025, 5,29))
+//                .build();
+//
+//        Response response = given()
+//                .spec(requestSpecification)
+//                .when()
+//                .get(baseURI+"/bookings/booking/available-rooms")
+//                .then()
+//                .contentType(ContentType.HTML)
+//                .statusCode(200)
+//                .extract()
+//                .response();
+//
+////        System.out.println(response.getBody().prettyPrint());
+//
+//        assertThat(response.getBody().htmlPath().getString("html.head.title")).isEqualTo("Available Rooms");
+//    }
+
+    private Map<String,Long> setupDataAndReturnBookingIdAndBookedObjectId() {
+        //given
+        CustomerDTO ola = customerService.registerCustomer(new CustomerDTO("Ola"));
+        CustomerDTO milly = customerService.registerCustomer(new CustomerDTO("Milly"));
+        CustomerDTO andreas = customerService.registerCustomer(new CustomerDTO("Andreas"));
+        CustomerDTO linn = customerService.registerCustomer(new CustomerDTO("Linn"));
+        CustomerDTO josefin = customerService.registerCustomer(new CustomerDTO("Josefin"));
+        CustomerDTO Sixten = customerService.registerCustomer(new CustomerDTO("Sixten"));
+
+        BookingDTO olasBooking = bookingService.createBooking(ola.getId());
+        BookingDTO millysBooking = bookingService.createBooking(milly.getId());
+        BookingDTO andreasBooking = bookingService.createBooking(andreas.getId());
+        BookingDTO linnsBooking = bookingService.createBooking(linn.getId());
+        BookingDTO josefinsBooking = bookingService.createBooking(josefin.getId());
+        BookingDTO sixtensBooking = bookingService.createBooking(Sixten.getId());
+
+        ExtraType extraBed = extraTypeDao.save(new ExtraType("bed", 200));
+
+        Room savedRoom1 = roomDao.save(new Room("Sea view room", 3, 1, roomTypeDao.save(new RoomType("Double room", 2000))));
+        Room savedRoom2 = roomDao.save(new Room("Dumpster room", 2, 0, roomTypeDao.save(new RoomType("Twin room", 1900))));
+        Room savedRoom3 = roomDao.save(new Room("Honeymoon suite", 4, 2, roomTypeDao.save(new RoomType("Double room", 2000))));
+        Room savedRoom4 = roomDao.save(new Room("Nice room", 1, 0, roomTypeDao.save(new RoomType("Single room", 1000))));
+        Room savedRoom5 = roomDao.save(new Room("Ok room", 1, 0, roomTypeDao.save(new RoomType("Single room", 3200))));
+        Room savedRoom6 = roomDao.save(new Room("Unbooked room", 1, 1, roomTypeDao.save(new RoomType("Single room", 1000))));
+
+        RoomDTO savedRoomDTO1 = roomService.getRoomById(savedRoom1.getId());
+        RoomDTO savedRoomDTO2 = roomService.getRoomById(savedRoom2.getId());
+        RoomDTO savedRoomDTO3 = roomService.getRoomById(savedRoom3.getId());
+        RoomDTO savedRoomDTO4 = roomService.getRoomById(savedRoom4.getId());
+        RoomDTO savedRoomDTO5 = roomService.getRoomById(savedRoom5.getId());
+        RoomDTO savedRoomDTO6 = roomService.getRoomById(savedRoom6.getId());
+
+
+        //when
+        BookedObjectDTO roomTwoBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO2, olasBooking.getId(), LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
+        BookedObjectDTO roomFiveBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO5, olasBooking.getId(), LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 17));
+        BookedObjectDTO roomOneBookedObj1OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, millysBooking.getId(), LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
+        BookedObjectDTO roomOneBookedObj2OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, andreasBooking.getId(), LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
+        BookedObjectDTO roomThreeBookedObjTwoExtraBeds = bookingService.saveBookedObject(savedRoomDTO3, linnsBooking.getId(), LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
+        BookedObjectDTO roomFourBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO4, josefinsBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+
+        bookingService.addExtraToBookedObject(roomOneBookedObj1OneExtraBed.getId(), extraBed.getId());
+        bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(), extraBed.getId());
+        bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(), extraBed.getId());
+
+        BookedObjectDTO bookedObjBeforeEdited = bookingService.saveBookedObject(savedRoomDTO6, sixtensBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+        BookedObjectDTO bookedObjAfterEdited = bookingService.editBookedObject(bookedObjBeforeEdited.getId(), savedRoomDTO1.getId(), LocalDate.of(2025, 9, 25), LocalDate.of(2025, 9, 28));
+
+        return Map.of("BookingId", olasBooking.getId(), "BookingObjectId", roomTwoBookedObjNoExtraBeds.getId());
+    }
+
+    private Long setupDataAndReturnBookingId() {
+        //given
+        CustomerDTO ola = customerService.registerCustomer(new CustomerDTO("Ola"));
+        CustomerDTO milly = customerService.registerCustomer(new CustomerDTO("Milly"));
+        CustomerDTO andreas = customerService.registerCustomer(new CustomerDTO("Andreas"));
+        CustomerDTO linn = customerService.registerCustomer(new CustomerDTO("Linn"));
+        CustomerDTO josefin = customerService.registerCustomer(new CustomerDTO("Josefin"));
+        CustomerDTO Sixten = customerService.registerCustomer(new CustomerDTO("Sixten"));
+
+        BookingDTO olasBooking = bookingService.createBooking(ola.getId());
+        BookingDTO millysBooking =bookingService.createBooking(milly.getId());
+        BookingDTO andreasBooking =bookingService.createBooking(andreas.getId());
+        BookingDTO linnsBooking =bookingService.createBooking(linn.getId());
+        BookingDTO josefinsBooking =bookingService.createBooking(josefin.getId());
+        BookingDTO sixtensBooking =bookingService.createBooking(Sixten.getId());
+
+        ExtraType extraBed = extraTypeDao.save(new ExtraType("bed", 200));
+
+        Room savedRoom1 = roomDao.save(new Room("Sea view room", 3, 1, roomTypeDao.save(new RoomType("Double room", 2000))));
+        Room savedRoom2 = roomDao.save(new Room("Dumpster room", 2, 0, roomTypeDao.save(new RoomType("Twin room", 1900))));
+        Room savedRoom3 = roomDao.save(new Room("Honeymoon suite", 4, 2, roomTypeDao.save(new RoomType("Double room", 2000))));
+        Room savedRoom4 = roomDao.save(new Room("Nice room", 1, 0, roomTypeDao.save(new RoomType("Single room", 1000))));
+        Room savedRoom5 = roomDao.save(new Room("Ok room", 1, 0, roomTypeDao.save(new RoomType("Single room", 3200))));
+        Room savedRoom6 = roomDao.save(new Room("Unbooked room", 1, 1, roomTypeDao.save(new RoomType("Single room", 1000))));
+
+        RoomDTO savedRoomDTO1 = roomService.getRoomById(savedRoom1.getId());
+        RoomDTO savedRoomDTO2 = roomService.getRoomById(savedRoom2.getId());
+        RoomDTO savedRoomDTO3 = roomService.getRoomById(savedRoom3.getId());
+        RoomDTO savedRoomDTO4 = roomService.getRoomById(savedRoom4.getId());
+        RoomDTO savedRoomDTO5 = roomService.getRoomById(savedRoom5.getId());
+        RoomDTO savedRoomDTO6 = roomService.getRoomById(savedRoom6.getId());
+
+
+        //when
+        BookedObjectDTO roomTwoBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO2, olasBooking.getId(), LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
+        BookedObjectDTO roomFiveBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO5, olasBooking.getId(), LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 17));
+        BookedObjectDTO roomOneBookedObj1OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, millysBooking.getId(), LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
+        BookedObjectDTO roomOneBookedObj2OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, andreasBooking.getId(), LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
+        BookedObjectDTO roomThreeBookedObjTwoExtraBeds = bookingService.saveBookedObject(savedRoomDTO3, linnsBooking.getId(), LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
+        BookedObjectDTO roomFourBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO4, josefinsBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+
+        bookingService.addExtraToBookedObject(roomOneBookedObj1OneExtraBed.getId(),extraBed.getId());
+        bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(),extraBed.getId());
+        bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(),extraBed.getId());
+
+        BookedObjectDTO bookedObjBeforeEdited = bookingService.saveBookedObject(savedRoomDTO6, sixtensBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+        BookedObjectDTO bookedObjAfterEdited = bookingService.editBookedObject(bookedObjBeforeEdited.getId(), savedRoomDTO1.getId(), LocalDate.of(2025, 9, 25), LocalDate.of(2025, 9, 28));
+
+        return olasBooking.getId();
+    }
+
+    private Long setupDataAndReturnCustomerId() {
+        //given
+        CustomerDTO ola = customerService.registerCustomer(new CustomerDTO("Ola"));
+        CustomerDTO milly = customerService.registerCustomer(new CustomerDTO("Milly"));
+        CustomerDTO andreas = customerService.registerCustomer(new CustomerDTO("Andreas"));
+        CustomerDTO linn = customerService.registerCustomer(new CustomerDTO("Linn"));
+        CustomerDTO josefin = customerService.registerCustomer(new CustomerDTO("Josefin"));
+        CustomerDTO Sixten = customerService.registerCustomer(new CustomerDTO("Sixten"));
+
+        BookingDTO olasBooking = bookingService.createBooking(ola.getId());
+        BookingDTO millysBooking =bookingService.createBooking(milly.getId());
+        BookingDTO andreasBooking =bookingService.createBooking(andreas.getId());
+        BookingDTO linnsBooking =bookingService.createBooking(linn.getId());
+        BookingDTO josefinsBooking =bookingService.createBooking(josefin.getId());
+        BookingDTO sixtensBooking =bookingService.createBooking(Sixten.getId());
+
+        ExtraType extraBed = extraTypeDao.save(new ExtraType("bed", 200));
+
+        Room savedRoom1 = roomDao.save(new Room("Sea view room", 3, 1, roomTypeDao.save(new RoomType("Double room", 2000))));
+        Room savedRoom2 = roomDao.save(new Room("Dumpster room", 2, 0, roomTypeDao.save(new RoomType("Twin room", 1900))));
+        Room savedRoom3 = roomDao.save(new Room("Honeymoon suite", 4, 2, roomTypeDao.save(new RoomType("Double room", 2000))));
+        Room savedRoom4 = roomDao.save(new Room("Nice room", 1, 0, roomTypeDao.save(new RoomType("Single room", 1000))));
+        Room savedRoom5 = roomDao.save(new Room("Ok room", 1, 0, roomTypeDao.save(new RoomType("Single room", 3200))));
+        Room savedRoom6 = roomDao.save(new Room("Unbooked room", 1, 1, roomTypeDao.save(new RoomType("Single room", 1000))));
+
+        RoomDTO savedRoomDTO1 = roomService.getRoomById(savedRoom1.getId());
+        RoomDTO savedRoomDTO2 = roomService.getRoomById(savedRoom2.getId());
+        RoomDTO savedRoomDTO3 = roomService.getRoomById(savedRoom3.getId());
+        RoomDTO savedRoomDTO4 = roomService.getRoomById(savedRoom4.getId());
+        RoomDTO savedRoomDTO5 = roomService.getRoomById(savedRoom5.getId());
+        RoomDTO savedRoomDTO6 = roomService.getRoomById(savedRoom6.getId());
+
+
+        //when
+        BookedObjectDTO roomTwoBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO2, olasBooking.getId(), LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
+        BookedObjectDTO roomFiveBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO5, olasBooking.getId(), LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 17));
+        BookedObjectDTO roomOneBookedObj1OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, millysBooking.getId(), LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
+        BookedObjectDTO roomOneBookedObj2OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, andreasBooking.getId(), LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
+        BookedObjectDTO roomThreeBookedObjTwoExtraBeds = bookingService.saveBookedObject(savedRoomDTO3, linnsBooking.getId(), LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
+        BookedObjectDTO roomFourBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO4, josefinsBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+
+        bookingService.addExtraToBookedObject(roomOneBookedObj1OneExtraBed.getId(),extraBed.getId());
+        bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(),extraBed.getId());
+        bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(),extraBed.getId());
+
+        BookedObjectDTO bookedObjBeforeEdited = bookingService.saveBookedObject(savedRoomDTO6, sixtensBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
+        BookedObjectDTO bookedObjAfterEdited = bookingService.editBookedObject(bookedObjBeforeEdited.getId(), savedRoomDTO1.getId(), LocalDate.of(2025, 9, 25), LocalDate.of(2025, 9, 28));
+
+        return ola.getId();
+    }
     @Test
     //TODO change to DTO pattern
     void shouldRegisterCustomer() {
