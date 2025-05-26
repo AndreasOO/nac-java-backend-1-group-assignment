@@ -2,6 +2,7 @@ package org.josandlin.javabackend1group.entity;
 
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,6 +13,8 @@ public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+
+    @NotEmpty(message="Customer name shall not pass")
     private String name;
 
     public Customer(Long id, String name) {

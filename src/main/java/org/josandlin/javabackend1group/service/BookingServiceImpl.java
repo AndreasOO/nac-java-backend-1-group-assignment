@@ -1,5 +1,6 @@
 package org.josandlin.javabackend1group.service;
 
+import jakarta.validation.Valid;
 import org.josandlin.javabackend1group.dao.*;
 import org.josandlin.javabackend1group.dto.*;
 import org.josandlin.javabackend1group.entity.*;
@@ -113,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public BookedObjectDTO saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
+    public BookedObjectDTO saveBookedObject(@Valid RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
 
         boolean roomIsUnavailable = bookedObjectDao.findAll()
                 .stream().filter(bookedObject -> bookedObject.getStartDate().isEqual(startDate) ||
