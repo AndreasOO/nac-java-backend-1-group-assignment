@@ -7,9 +7,10 @@
 </head>
 <body class="p-5">
 <div class="container">
-    <h2>Kundlista</h2>
+    <h2>Customers</h2>
 
     <button class="btn btn-sm btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Register new customer</button>
+    <a href="/" class="btn btn-sm btn-dark mb-3">Till startsidan</a>
 
     <table class="table table-striped">
         <thead>
@@ -52,6 +53,8 @@
                 <div class="modal-body">
                     <input type="hidden" name="id" th:value="${customer.id}" />
                     <input type="text" name="name" class="form-control" th:value="${customer.name}" required />
+                    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+                    <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-sm btn-dark">Save</button>
@@ -64,7 +67,7 @@
 <!-- add modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <form th:action="@{/customers/add}" method="post" class="modal-content">
+        <form th:action="@{/customers/register}" th:object="${customer}" method="post" class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Register new customer</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

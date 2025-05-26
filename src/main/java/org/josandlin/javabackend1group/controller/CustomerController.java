@@ -1,5 +1,7 @@
 package org.josandlin.javabackend1group.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.dto.CustomerDTO;
 import org.josandlin.javabackend1group.entity.Customer;
@@ -10,27 +12,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/customers")
 public class CustomerController {
 
-    @Autowired
-   // private CustomerDao customerDao;
-
     private final CustomerService customerService;
-//    @Autowired
-//    private CustomerDao customerDao;
 
     @Autowired
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, View error) {
         this.customerService = customerService;
     }
+
 
     @GetMapping("/all")
     public String getCustomers(Model model) {
@@ -45,12 +49,32 @@ public class CustomerController {
     }
 
 
-    @PostMapping("/add")
-    public String registerCustomer(@RequestParam String name) {
-        CustomerDTO customerDTOadd = new CustomerDTO();
-        customerDTOadd.setName(name);
-        customerService.registerCustomer(customerDTOadd);
-        return "redirect:/customers/all";
+//    @PostMapping("/add")
+//    public String registerCustomer(@RequestParam String name) {
+//        CustomerDTO customerDTOadd = new CustomerDTO();
+//        customerDTOadd.setName(name);
+//        customerService.registerCustomer(customerDTOadd);
+//        return "redirect:/customers/all";
+//    }
+
+    @PostMapping("/register")
+    public String registerCustomer(@ModelAttribute("customer") @Valid CustomerDTO customerDTO,
+                                   BindingResult result,
+                                   Model model, RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            //här sparas det inte när man sedan skriver in korrekt format.
+            return "registration";
+        }
+        try {
+            //detta funkar nu
+            customerService.registerCustomer(customerDTO);
+            redirectAttributes.addFlashAttribute("success", "Customer registered successfully!"); //visas dock inte.
+            return "redirect:/customers/all";
+        } catch (ValidationException e) {
+          e.getMessage();
+            model.addAttribute("error", "Registration failed: " + e.getMessage());
+            return "registration";
+        }
     }
 
     @PostMapping("/edit")
@@ -74,47 +98,23 @@ public class CustomerController {
         return "redirect:/customers/all";
     }
 
-//    @PostMapping("/edit/{id}")
-//    @ResponseBody
-//    public String editCustomer(Model model, @PathVariable long id, String newName, Customer customer) {
-//        model.addAttribute("customer", customerService.findCustomerById(id));
-//        System.out.println("New name on customer registered " + id + " " + newName);
-//        customerService.editCustomer(id, newName);
-//        customerDao.save(customer);
-//        return "edit-customer";
-//    }
-//
-//    @DeleteMapping("/remove/{id}")
-//    public String deleteCustomer(Model model, @PathVariable Long customerId) {
-//        model.addAttribute("customer", customerId);
-//        System.out.println("deleting customer " + customerId + " ");
-//        customerService.deleteCustomer(customerId);
-//        return "delete";
-//    }
 
-//    @GetMapping("customer/name/{name}")
-//    @ResponseBody
-//    public String findCustomerByName(Model model, @PathVariable String name) {
-//        Customer customer = customerService.findByName(name);
-//        model.addAttribute("customer", customerService.f);
-//        return "customer-details";
-//    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationException(MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
 
-    //    @PostMapping("/register")
-//    public String registerCustomer(@ModelAttribute Customer customer, Model model) {
-//        try {
-//            customerService.createAccount(customer);
-//            return "redirect:/customers/login";
-//        } catch (IllegalArgumentException e) {
-//            model.addAttribute("error", e.getMessage());
-//            return "registration";
-//        }
-//    }
-
-    @GetMapping("/customer/id/{id}")
-    @ResponseBody
-    public String findCustomerById(@PathVariable Long id, Model model) {
-        model.addAttribute("customer", customerService.findCustomerById(id));
-        return "customers";
+        ex.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldname = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldname, errorMessage);
+        });
+        return errors;
     }
+
+
+
+
+
+
 }
