@@ -82,15 +82,16 @@ public class BookingController {
     public String showAvailableRooms(@ModelAttribute RoomSearchInputUtil roomSearch, Model model, RedirectAttributes redirectAttributes) {
         try{
             BookedObjectInputUtil chosenRoom = new BookedObjectInputUtil(roomSearch.getBookingId(), roomSearch.getStartDate(), roomSearch.getEndDate());
-
             if (roomSearch.isUpdate()){
                 chosenRoom.setBookedObjectId(roomSearch.getBookedObjectId());
+                boolean deleted = bookingService.deleteRoomFromBookedObject(roomSearch.getBookedObjectId());
+                if(!deleted){
+                    redirectAttributes.addFlashAttribute("error", "Could not delete room from booked object");
+                }
             }
-
             model.addAttribute("chosenRoom", chosenRoom);
             model.addAttribute("roomSearch", roomSearch);
             model.addAttribute("rooms", roomService.getAvailableRoomsBetweenDatesWithinCapacity(roomSearch.getStartDate(), roomSearch.getEndDate(), roomSearch.getGuestCount()));
-
             return "available-rooms";
         }
         catch (Exception e) {

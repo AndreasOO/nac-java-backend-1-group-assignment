@@ -185,5 +185,14 @@ public class BookingServiceImpl implements BookingService {
         return bookedObjectMapper.toDTO(bookedObjectDao.save(bookedObject));
     }
 
+    @Override
+    public boolean deleteRoomFromBookedObject(Long bookedObjectId){
+        if (!bookedObjectDao.existsById(bookedObjectId)) {
+            return false;
+        }
+        BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElseThrow(() -> new IllegalArgumentException("Booked object not found"));
+        bookedObject.setRoom(null);
+        return true;
+    }
 
 }

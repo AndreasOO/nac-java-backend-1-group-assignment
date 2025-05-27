@@ -44,4 +44,8 @@ public interface BookingService {
     @Transactional
     BookedObjectDTO editBookedObject(Long bookedObjectId, Long roomId, LocalDate startDate, LocalDate endDate);
 
+
+    @Transactional
+    boolean deleteRoomFromBookedObject(Long bookedObjectId);
+
 }

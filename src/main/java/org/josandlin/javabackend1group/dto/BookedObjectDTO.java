@@ -15,7 +15,6 @@ public class BookedObjectDTO {
     private Long id;
 
     @Valid
-    @NotNull(message="Booked object must involve a room")
     private RoomDTO room;
 
     @Valid

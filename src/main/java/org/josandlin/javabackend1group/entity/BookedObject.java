@@ -18,7 +18,6 @@ public class BookedObject {
     @ManyToOne
     @JoinColumn
     @Valid
-    @NotNull(message="Booked object must involve a room")
     private Room room;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
