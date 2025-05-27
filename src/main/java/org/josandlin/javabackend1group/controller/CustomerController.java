@@ -78,11 +78,11 @@ public class CustomerController {
                                Model model) {
         if (result.hasErrors()) {
             model.addAttribute("editModalId", customerDTO.getId());
-            return "redirect:/customers/all";
+            return "edit";
+
         }
         try {
             customerService.editCustomer(customerDTO);
-            redirectAttributes.addFlashAttribute("successEdit", "Customer name updated successfully!"); //visas ej
             return "redirect:/customers/all";
         } catch (ValidationException e) {
             model.addAttribute("editModalId", customerDTO.getId());
