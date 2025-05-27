@@ -7,15 +7,15 @@ public class RoomSearchInputUtil {
     boolean update;
     Long bookingId;
     Long bookedObjectId = 0L;
-    Integer questCount = 1;
+    Integer guestCount = 1;
     LocalDate startDate;
     LocalDate endDate;
 
-    public RoomSearchInputUtil(boolean update, Long bookingId, Long bookedObjectId, Integer questCount, LocalDate startDate, LocalDate endDate) {
+    public RoomSearchInputUtil(boolean update, Long bookingId, Long bookedObjectId, Integer guestCount, LocalDate startDate, LocalDate endDate) {
         this.update = update;
         this.bookingId = bookingId;
         this.bookedObjectId = bookedObjectId;
-        this.questCount = questCount;
+        this.guestCount = guestCount;
         this.startDate = startDate;
         this.endDate = endDate;
     }
@@ -51,12 +51,12 @@ public class RoomSearchInputUtil {
         this.bookedObjectId = bookedObjectId;
     }
 
-    public Integer getQuestCount() {
-        return questCount;
+    public Integer getGuestCount() {
+        return guestCount;
     }
 
-    public void setQuestCount(Integer questCount) {
-        this.questCount = questCount;
+    public void setGuestCount(Integer guestCount) {
+        this.guestCount = guestCount;
     }
 
     public LocalDate getStartDate() {

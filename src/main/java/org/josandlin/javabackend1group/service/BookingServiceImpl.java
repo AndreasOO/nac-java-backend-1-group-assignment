@@ -1,5 +1,6 @@
 package org.josandlin.javabackend1group.service;
 
+import jakarta.validation.Valid;
 import org.josandlin.javabackend1group.dao.*;
 import org.josandlin.javabackend1group.dto.*;
 import org.josandlin.javabackend1group.entity.*;
@@ -7,10 +8,12 @@ import org.josandlin.javabackend1group.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
 import java.util.*;
 
+@Validated
 @Service
 public class BookingServiceImpl implements BookingService {
 
@@ -103,7 +106,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Transactional
     @Override
-    public BookedObjectDTO saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
+    public BookedObjectDTO saveBookedObject(@Valid RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate){
 
         boolean roomIsUnavailable = bookedObjectDao.findAll()
                 .stream().filter(bookedObject -> bookedObject.getStartDate().isEqual(startDate) ||
@@ -136,7 +139,7 @@ public class BookingServiceImpl implements BookingService {
     @Transactional
     @Override
     public boolean deleteExtraFromBookedObjectById(Long extraId){
-        if(!extraTypeDao.existsById(extraId)) {
+        if(!addedExtraDao.existsById(extraId)) {
             return false;
         }
         addedExtraDao.deleteById(extraId);
@@ -159,16 +162,12 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookedObjectDTO addExtraToBookedObject(Long bookedObjectId, Long extraTypeId){
 
-        BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElse(null);
+        BookedObject bookedObject = bookedObjectDao.findById(bookedObjectId).orElseThrow(()-> new IllegalArgumentException("Booked object not found"));
+        ExtraType chosenExtraType = extraTypeDao.findById(extraTypeId).orElseThrow(() -> new IllegalArgumentException("ExtraType not found"));
 
-        if (bookedObject == null) {
-            throw new IllegalArgumentException("Bed can't be added to this room");
-        }
-
-        ExtraType chosenExtraType = extraTypeDao.findById(extraTypeId).orElse(null);
         long extraBedsAlreadyAdded = bookedObject.getExtras().stream().filter(extra -> extra.getExtraType().getName().equals("bed")).count();
 
-        if(chosenExtraType == null || chosenExtraType.getName().equals("bed")) {
+        if(chosenExtraType.getName().equals("bed")) {
             if (bookedObject.getRoom().getRoomType().getName().equals("Single room") || extraBedsAlreadyAdded >= bookedObject.getRoom().getExtraBedsAvailable()) {
                 throw new IllegalArgumentException("Bed can't be added to this room");
             }

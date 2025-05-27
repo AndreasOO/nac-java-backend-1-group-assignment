@@ -1,7 +1,11 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
-
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 
 import java.io.Serializable;
@@ -15,12 +19,21 @@ public class Room implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty(message="Room must have a name")
     private String name;
+
+    @NotNull(message="Max capacity must be specified")
+    @Min(1)
     private int maxCapacity;
+
+    @NotNull(message="Extra beds available must be specified")
+    @Min(0)
     private int extraBedsAvailable;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn
+    @Valid
+    @NotNull(message="Room must have a room type")
     private RoomType roomType;
 
     public Room(Long id, String name, int maxCapacity, int extraBedsAvailable, RoomType roomType) {

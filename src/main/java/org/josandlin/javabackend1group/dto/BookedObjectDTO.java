@@ -1,6 +1,8 @@
 package org.josandlin.javabackend1group.dto;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.josandlin.javabackend1group.entity.AddedExtra;
 import org.josandlin.javabackend1group.entity.Booking;
 import org.josandlin.javabackend1group.entity.Room;
@@ -11,10 +13,22 @@ import java.util.List;
 public class BookedObjectDTO {
 
     private Long id;
+
+    @Valid
+    @NotNull(message="Booked object must involve a room")
     private RoomDTO room;
+
+    @Valid
     private List<AddedExtraDTO> extras;
+
+    @Valid
+    @NotNull(message="Booked object must involve a booking")
     private BookingDTO booking;
+
+    @NotNull(message="Booked object must have a start date")
     private LocalDate startDate;
+
+    @NotNull(message="Booked object must have an end date")
     private LocalDate endDate;
 
     public BookedObjectDTO(Long id, RoomDTO room, List<AddedExtraDTO> extras, BookingDTO booking, LocalDate startDate, LocalDate endDate) {
