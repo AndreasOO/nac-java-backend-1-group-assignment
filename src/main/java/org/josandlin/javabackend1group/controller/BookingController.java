@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 
 @Controller
@@ -99,9 +100,12 @@ public class BookingController {
         return "redirect:/bookings/booking/" + newBooking.getId();
     }
 
-    @PostMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra/{extraId}")
-    public String deleteExtraFromBookedRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, @PathVariable Long extraId) {
-        bookingService.deleteExtraFromBookedObjectById(extraId);
+    @DeleteMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra/{extraId}")
+    public String deleteExtraFromBookedRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, @PathVariable Long extraId, RedirectAttributes redirectAttributes) {
+        boolean deleted = bookingService.deleteExtraFromBookedObjectById(extraId);
+        if(!deleted){
+            redirectAttributes.addFlashAttribute("error", "Could not delete extra");
+        }
         return "redirect:/bookings/booking/" + bookingId + "/booked-room/" + bookedObjectId;
     }
 
@@ -111,43 +115,12 @@ public class BookingController {
         return "redirect:/bookings/booking/" + bookedObject.getBooking().getId() + "/booked-room/" + bookedObject.getId();
     }
 
-    @PostMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room")
-    public String deleteRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId) {
-        bookingService.deleteBookedObject(bookedObjectId);
+    @DeleteMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room")
+    public String deleteRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, RedirectAttributes redirectAttributes) {
+        boolean deleted = bookingService.deleteBookedObject(bookedObjectId);
+        if(!deleted){
+            redirectAttributes.addFlashAttribute("error", "Could not delete booked room");
+        }
         return "redirect:/bookings/booking/" + bookingId;
     }
-
-
-
-
-
-//    @PostMapping("/booking")
-//    public String createBooking(@RequestParam("customerId") Long customerId) {
-//        BookingDTO newBooking = bookingService.createBooking(customerId);
-//        return "redirect:/bookings/booking?bookingId=" + newBooking.getId();
-//    }
-//
-//    @PostMapping("/booking/delete-extra")
-//    public String deleteExtraFromBookedRoom(@RequestParam Long bookedObjectId,
-//                                            @RequestParam Long extraId) {
-//
-//        bookingService.deleteExtraFromBookedObjectById(extraId);
-//        return "redirect:/bookings/booking/" + bookedObject.getBooking().getId() + "/booked-room/" + bookedObject.getId();
-//    }
-//
-//    @PostMapping("/booking/add-extra")
-//    public String addExtraToBookedRoom(@RequestParam Long bookedObjectId,
-//                                       @RequestParam Long extraTypeId) {
-//
-//        BookedObjectDTO bookedObject = bookingService.addExtraToBookedObject(bookedObjectId, extraTypeId);
-//        return "redirect:/bookings/booking/" + bookedObject.getBooking().getId() + "/booked-room/" + bookedObject.getId();
-//    }
-//
-//    @PostMapping("/booking/delete-room")
-//    public String deleteRoom(@RequestParam Long bookedObjectId,
-//                             @RequestParam Long bookingId) {
-//
-//        bookingService.deleteBookedObject(bookedObjectId);
-//        return "redirect:/bookings/booking/" + bookingId;
-//    }
 }

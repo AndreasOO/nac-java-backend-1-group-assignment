@@ -81,4 +81,41 @@ class BookedObjectMapperTest {
 
     }
 
+    @Test
+    void testDtoToEntity() {
+        BookedObject bookedObjectEntityFromDto = bookedObjectMapper.toEntity(bookedObjectDto);
+
+        assertEquals(6L, bookedObjectEntityFromDto.getId());
+        assertEquals(bookedObjectDto.getId(), bookedObjectEntityFromDto.getId());
+
+
+        assertEquals(bookedObjectDto.getRoom().getId(), bookedObjectEntityFromDto.getRoom().getId());
+        assertEquals(7L, bookedObjectEntityFromDto.getRoom().getId());
+
+        assertEquals("roomFromDto", bookedObjectEntityFromDto.getRoom().getName());
+        assertEquals(bookedObjectDto.getRoom().getName(), bookedObjectEntityFromDto.getRoom().getName());
+
+        assertEquals(8L, bookedObjectEntityFromDto.getRoom().getRoomType().getId());
+        assertEquals(bookedObjectDto.getRoom().getRoomType().getId(), bookedObjectEntityFromDto.getRoom().getRoomType().getId());
+
+        assertEquals("single", bookedObjectEntityFromDto.getRoom().getRoomType().getName());
+        assertEquals(bookedObjectDto.getRoom().getRoomType().getName(), bookedObjectEntityFromDto.getRoom().getRoomType().getName());
+
+        assertEquals(9L, bookedObjectEntityFromDto.getBooking().getId());
+        assertEquals(bookedObjectDto.getBooking().getId(), bookedObjectEntityFromDto.getBooking().getId());
+
+        assertEquals(10L, bookedObjectEntityFromDto.getBooking().getCustomer().getId());
+        assertEquals(bookedObjectDto.getBooking().getCustomer().getId(), bookedObjectEntityFromDto.getBooking().getCustomer().getId());
+
+        assertEquals("customerFromDto", bookedObjectEntityFromDto.getBooking().getCustomer().getName());
+        assertEquals(bookedObjectDto.getBooking().getCustomer().getName(), bookedObjectEntityFromDto.getBooking().getCustomer().getName());
+
+        assertEquals(LocalDate.of(2025,5,12), bookedObjectEntityFromDto.getStartDate());
+        assertEquals(bookedObjectDto.getStartDate(), bookedObjectEntityFromDto.getStartDate());
+
+        assertEquals(LocalDate.of(2025,5,13), bookedObjectEntityFromDto.getEndDate());
+        assertEquals(bookedObjectDto.getEndDate(), bookedObjectEntityFromDto.getEndDate());
+
+    }
+
 }

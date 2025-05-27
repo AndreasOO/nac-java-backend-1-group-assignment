@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Registration</title>
+  <title>Booking</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
@@ -88,7 +88,7 @@
           </form>
         </td>
         <td>
-          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room(bookingId=${booking.getId()}, bookedObjectId=${bookedRoom.getId()})}" method="post">
+          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room(bookingId=${booking.getId()}, bookedObjectId=${bookedRoom.getId()})}" th:method="delete">
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Delete room</button>
           </form>
         </td>
@@ -96,6 +96,10 @@
 
       </tbody>
     </table>
+
+    <div th:if="${error}">
+      <p th:text="${error}" class="error-message"></p>
+    </div>
 
     <div class="d-flex flex-column align-items-center">
       <a href="#" class="btn btn-dark w-100" data-toggle="modal" data-target="#new-room-modal">Add new room to booking</a>

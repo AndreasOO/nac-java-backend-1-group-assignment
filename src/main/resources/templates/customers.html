@@ -27,11 +27,12 @@
             <td>
                 <a class="btn btn-sm btn-dark" th:href="@{/customers/edit/{id}(id=${customer.id})}">Edit</a>
 
-                <form th:action="@{/customers/delete/{id}(id=${customer.id})}" method="post" style="display:inline;">
+                <form th:action="@{/customers/delete/{id}(id=${customer.id})}" th:method="delete" style="display:inline;">
                     <input type="hidden" name="id" th:value="${customer.id}"/>
                     <button type="submit" class="btn btn-sm btn-dark">Delete</button>
                     <div th:if="${targetId} == ${customer.id}">
                         <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+                        <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
                     </div>
                 </form>
             </td>

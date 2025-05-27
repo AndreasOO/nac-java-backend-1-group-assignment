@@ -33,4 +33,16 @@ public class BookedObjectMapper {
                                     entity.getStartDate(), entity.getEndDate());
     }
 
+    public BookedObject toEntity(BookedObjectDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        return new BookedObject(dto.getId(),
+                roomMapper.toEntity(dto.getRoom()),
+                dto.getExtras().stream().map(addedExtraMapper::toEntity).toList(),
+                bookingMapper.toEntity(dto.getBooking()),
+                dto.getStartDate(), dto.getEndDate());
+    }
+
 }

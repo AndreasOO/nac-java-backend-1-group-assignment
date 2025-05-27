@@ -11,15 +11,6 @@ import java.util.Set;
 
 public interface BookingService {
 
-    // Metoder som ska vara i customer service
-
-    CustomerDTO findCustomerById(Long id);
-
-    List<CustomerDTO> getAllCustomers();
-
-
-    //
-
     List<BookingDTO> getBookingsByCustomerId(Long customerId);
 
     BookingDTO getBookingById(Long id);
@@ -28,7 +19,7 @@ public interface BookingService {
     BookingDTO createBooking(Long customerId);
 
     @Transactional
-    void deleteBookedObject(Long bookedObjectId);
+    boolean deleteBookedObject(Long bookedObjectId);
 
     List<BookingDTO> getAllBookings();
 
@@ -42,7 +33,7 @@ public interface BookingService {
     BookedObjectDTO getBookedObjectById(Long id);
 
     @Transactional
-    void deleteExtraFromBookedObjectById(Long extraId);
+    boolean deleteExtraFromBookedObjectById(Long extraId);
 
     List<ExtraTypeDTO> getExtraOptionsAvailable(Long bookedObjectId);
 
@@ -51,16 +42,5 @@ public interface BookingService {
 
     @Transactional
     BookedObjectDTO editBookedObject(Long bookedObjectId, Long roomId, LocalDate startDate, LocalDate endDate);
-
-//    @Transactional
-//    BookedObject addBookedObjectToBooking(BookedObject bookedObject, Long bookingId);
-//
-//    @Transactional
-//    void removeBookedObject(Long bookedObjectId);
-//
-//    @Transactional
-//    BookedObject editBookedObject(BookedObject bookedObject);
-//
-//    List<Room> getRoomsByBookingId(Long bookingId);
 
 }

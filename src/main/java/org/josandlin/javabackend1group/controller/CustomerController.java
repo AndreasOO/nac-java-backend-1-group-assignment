@@ -35,14 +35,12 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-
     @GetMapping("/all")
-    public String showAllCustomers(Model model) {
+    public String getCustomers(Model model) {
         model.addAttribute("customers", customerService.getAllCustomers());
         model.addAttribute("sucessEdit");
         return "customers";
     }
-
 
     @GetMapping("/register")
     public String showCustomerRegistrationForm(Model model) {
@@ -78,7 +76,6 @@ public class CustomerController {
                                BindingResult result,
                                RedirectAttributes redirectAttributes,
                                Model model) {
-
         if (result.hasErrors()) {
             model.addAttribute("editModalId", customerDTO.getId());
             return "redirect:/customers/all";
@@ -91,10 +88,9 @@ public class CustomerController {
             model.addAttribute("editModalId", customerDTO.getId());
             return "customers";
         }
-
     }
 
-    @PostMapping("/delete/{id}")    //Visar felmeddelanden och sucess
+    @DeleteMapping("/delete/{id}")    //Visar felmeddelanden och sucess
     public String removeCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         CustomerDTO customerToDelete = customerService.findCustomerById(id);
         boolean deleted = customerService.deleteCustomer(customerToDelete);
@@ -106,11 +102,4 @@ public class CustomerController {
         }
         return "redirect:/customers/all";
     }
-
-
-
-
-
-
-
 }
