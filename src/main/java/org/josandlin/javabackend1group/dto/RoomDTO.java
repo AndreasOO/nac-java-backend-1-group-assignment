@@ -5,7 +5,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import org.josandlin.javabackend1group.entity.RoomType;
 
-public class RoomDTO {
+public class RoomDTO extends AbstractDTO {
 
     private Long id;
 

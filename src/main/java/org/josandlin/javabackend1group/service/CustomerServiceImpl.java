@@ -6,12 +6,15 @@ import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.dto.CustomerDTO;
 import org.josandlin.javabackend1group.entity.Customer;
 import org.josandlin.javabackend1group.mapper.CustomerMapper;
+import org.josandlin.javabackend1group.util.ActualResult;
+import org.josandlin.javabackend1group.util.OperationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,16 +72,28 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public boolean deleteCustomer(CustomerDTO customerDTO) {
-        Customer customer = customerDao.findById(customerDTO.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + customerDTO.getId()));
-        boolean hasBookings = bookingDao.findAll().stream()
-                .anyMatch(booking -> booking.getCustomer().getId().equals(customer.getId()));
-        if (hasBookings) {
-            return false;
+    public OperationResult deleteCustomer(CustomerDTO customerDTO) {
+
+        Optional<Customer> customerOptional = customerDao.findById(customerDTO.getId());
+
+        if (customerOptional.isEmpty()) {
+            return new OperationResult(ActualResult.FAILURE,"Customer not found with id:" + + customerDTO.getId(),customerDTO);
         }
-        customerDao.delete(customer);
-        return true;
+
+        boolean hasBookings = bookingDao.findAll().stream()
+                .anyMatch(booking -> booking.getCustomer().getId().equals(customerOptional.get().getId()));
+
+        if (hasBookings) {
+            return new OperationResult(ActualResult.FAILURE,"Customer has active bookings",customerDTO);
+        }
+
+        try {
+            customerDao.delete(customerOptional.get());
+            return new OperationResult(ActualResult.SUCCESS,"Customer was deleted", customerMapper.toDTO(customerOptional.get()));
+
+        } catch (Exception e) {
+            return new OperationResult(ActualResult.FAILURE,e.getMessage(),customerDTO);
+        }
     }
 }
 

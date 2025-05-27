@@ -7,6 +7,8 @@ import org.josandlin.javabackend1group.dto.CustomerDTO;
 import org.josandlin.javabackend1group.entity.Customer;
 import org.josandlin.javabackend1group.service.CustomerService;
 import org.josandlin.javabackend1group.service.CustomerServiceImpl;
+import org.josandlin.javabackend1group.util.ActualResult;
+import org.josandlin.javabackend1group.util.OperationResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -93,13 +95,15 @@ public class CustomerController {
     @DeleteMapping("/delete/{id}")    //Visar felmeddelanden och sucess
     public String removeCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         CustomerDTO customerToDelete = customerService.findCustomerById(id);
-        boolean deleted = customerService.deleteCustomer(customerToDelete);
+        OperationResult result = customerService.deleteCustomer(customerToDelete);
+
         redirectAttributes.addFlashAttribute("targetId", id);
-        if (!deleted) {
-            redirectAttributes.addFlashAttribute("error", "Customer has bookings, could not be deleted.");
-        } else {
-            redirectAttributes.addFlashAttribute("success", "Customer has been deleted");
+
+        switch (result.getResult()) {
+            case FAILURE -> redirectAttributes.addFlashAttribute("error", result.getResultMessage());
+            case SUCCESS -> redirectAttributes.addFlashAttribute("success", result.getResultMessage());
         }
+
         return "redirect:/customers/all";
     }
 }

@@ -1,6 +1,7 @@
 package org.josandlin.javabackend1group.service;
 
 import org.josandlin.javabackend1group.dto.CustomerDTO;
+import org.josandlin.javabackend1group.util.OperationResult;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -27,7 +28,7 @@ public interface CustomerService {
     CustomerDTO editCustomer(CustomerDTO customerDTO);
 
     @Transactional
-    boolean deleteCustomer(CustomerDTO customerDTO);
+    OperationResult deleteCustomer(CustomerDTO customerDTO);
 
 
 

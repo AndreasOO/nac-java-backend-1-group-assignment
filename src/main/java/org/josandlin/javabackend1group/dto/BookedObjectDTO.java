@@ -8,7 +8,7 @@ import org.josandlin.javabackend1group.entity.Room;
 import java.time.LocalDate;
 import java.util.List;
 
-public class BookedObjectDTO {
+public class BookedObjectDTO extends AbstractDTO {
 
     private Long id;
     private RoomDTO room;

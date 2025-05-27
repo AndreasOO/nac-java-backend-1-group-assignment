@@ -3,7 +3,7 @@ package org.josandlin.javabackend1group.dto;
 import org.josandlin.javabackend1group.entity.Customer;
 
 
-public class BookingDTO {
+public class BookingDTO extends AbstractDTO {
 
     private Long id;
     private CustomerDTO customerDTO;

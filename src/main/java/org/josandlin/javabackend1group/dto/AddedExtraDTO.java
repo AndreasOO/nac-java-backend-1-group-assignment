@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.josandlin.javabackend1group.entity.ExtraType;
 
-public class AddedExtraDTO {
+public class AddedExtraDTO extends AbstractDTO {
 
     private Long id;
 
