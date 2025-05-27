@@ -99,7 +99,7 @@ public class BookingController {
         }
     }
 
-    // nås via booking-sida
+    // nås via available-rooms
     @PostMapping("/booking/add-room")
     public String addRoomToBooking(@ModelAttribute BookedObjectInputUtil chosenRoom, RedirectAttributes redirectAttributes) {
         try{
@@ -119,7 +119,7 @@ public class BookingController {
         return "redirect:/bookings/booking/" + chosenRoom.getBookingId();
     }
 
-    // nås via booked-room sida
+    // nås via available-rooms
     @PostMapping("/booking/edit-room")
     public String editRoom(@ModelAttribute BookedObjectInputUtil chosenRoom, RedirectAttributes redirectAttributes){
         try{

@@ -98,11 +98,6 @@ public class BookingServiceImpl implements BookingService {
 
 
 
-//    Du kan redan använda dig av getAllAvailableRooms för du har ju redan datumen som input.
-//
-//    Sedan filtrera på valt rum.
-//
-//    Om rummet finns, gå vidare, om inte, kasta IllegalArgumentException med texten "Room is not available during input dates"
 
     @Transactional
     @Override
@@ -119,7 +114,7 @@ public class BookingServiceImpl implements BookingService {
             throw new IllegalArgumentException("Room is not available during input dates");
         }
 
-        Booking currentBooking = bookingMapper.toEntity(getBookingById(bookingId));
+        Booking currentBooking = bookingDao.findById(bookingId).orElseThrow(() -> new IllegalArgumentException("Booking not found"));
         BookedObject bookedObject = new BookedObject(roomMapper.toEntity(room), List.of(), currentBooking, startDate, endDate);
         return bookedObjectMapper.toDTO(bookedObjectDao.save(bookedObject));
     }
