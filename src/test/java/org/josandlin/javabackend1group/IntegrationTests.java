@@ -322,7 +322,7 @@ class IntegrationTests {
 
     }
 
-    //TODO DELETE-MAPPING ENDPOINTS FOR ROOM AND EXTRA AFTER BEING CORRECTED
+
 
 
 
