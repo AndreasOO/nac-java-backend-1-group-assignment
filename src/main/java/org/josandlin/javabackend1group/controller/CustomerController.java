@@ -73,32 +73,28 @@ public class CustomerController {
         model.addAttribute("customer", customer);
         return "edit";
     }
-    @PostMapping("/edit")
+    @PostMapping("/edit")       // visar inga felmeddelanden eller liknande men den funkar.
     public String editCustomer(@ModelAttribute("customer") @Valid CustomerDTO customerDTO,
                                BindingResult result,
                                RedirectAttributes redirectAttributes,
                                Model model) {
 
         if (result.hasErrors()) {
-            model.addAttribute("customer", customerDTO);
-            model.addAttribute("editModalId", customerDTO.getId()); // så vi vet vilken modal som ska öppnas
+            model.addAttribute("editModalId", customerDTO.getId());
             return "redirect:/customers/all";
         }
-
         try {
             customerService.editCustomer(customerDTO);
-            redirectAttributes.addFlashAttribute("successEdit", "Customer name updated successfully!");
+            redirectAttributes.addFlashAttribute("successEdit", "Customer name updated successfully!"); //visas ej
             return "redirect:/customers/all";
         } catch (ValidationException e) {
-            model.addAttribute("error", e.getMessage());
-            model.addAttribute("customer", customerDTO);
             model.addAttribute("editModalId", customerDTO.getId());
             return "customers";
         }
 
     }
 
-    @PostMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")    //Visar felmeddelanden och sucess
     public String removeCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         CustomerDTO customerToDelete = customerService.findCustomerById(id);
         boolean deleted = customerService.deleteCustomer(customerToDelete);
