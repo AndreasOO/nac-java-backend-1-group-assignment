@@ -39,6 +39,7 @@ public class CustomerController {
     @GetMapping("/all")
     public String showAllCustomers(Model model) {
         model.addAttribute("customers", customerService.getAllCustomers());
+        model.addAttribute("sucessEdit");
         return "customers";
     }
 
@@ -65,6 +66,13 @@ public class CustomerController {
             return "registration";
         }
     }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        CustomerDTO customer = customerService.findCustomerById(id);
+        model.addAttribute("customer", customer);
+        return "edit";
+    }
     @PostMapping("/edit")
     public String editCustomer(@ModelAttribute("customer") @Valid CustomerDTO customerDTO,
                                BindingResult result,
@@ -90,17 +98,7 @@ public class CustomerController {
 
     }
 
-
-    @PostMapping("/customers/edit/{id}")
-    public String editCustomer(@PathVariable Long id, @RequestParam String name) {
-
-        CustomerDTO existingCustomer = customerService.findCustomerById(id);
-        existingCustomer.setName(name);
-        customerService.editCustomer(existingCustomer);
-        return "redirect:/customers/all";
-    }
-
-    @PostMapping("/customers/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String removeCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         CustomerDTO customerToDelete = customerService.findCustomerById(id);
         boolean deleted = customerService.deleteCustomer(customerToDelete);
@@ -113,19 +111,6 @@ public class CustomerController {
         return "redirect:/customers/all";
     }
 
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationException(MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-
-        ex.getBindingResult().getAllErrors().forEach(error -> {
-            String fieldname = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
-            errors.put(fieldname, errorMessage);
-        });
-        return errors;
-    }
 
 
 

@@ -69,7 +69,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public boolean deleteCustomer(@Validated CustomerDTO customerDTO) {
+    public boolean deleteCustomer(CustomerDTO customerDTO) {
         Customer customer = customerDao.findById(customerDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + customerDTO.getId()));
         boolean hasBookings = bookingDao.findAll().stream()

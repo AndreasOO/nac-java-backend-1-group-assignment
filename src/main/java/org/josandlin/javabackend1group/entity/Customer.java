@@ -15,8 +15,8 @@ public class Customer implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Customer name-field cannot be empty")
-    @Size(min = 2, message = "Customer name must contains at least to characters")
+    @NotBlank
+    @Size(min = 2)
     private String name;
 
     public Customer(Long id, String name) {

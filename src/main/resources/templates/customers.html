@@ -21,22 +21,17 @@
         </thead>
         <tbody>
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
         <tr th:each="customer : ${customers}">
             <td th:text="${customer.name}"></td>
             <td>
-                <button class="btn btn-sm btn-dark"
-                        data-bs-toggle="modal"
-                        th:data-bs-target="'#editModal__' + ${customer.id}">edit
-                </button>
+                <a class="btn btn-sm btn-dark" th:href="@{/customers/edit/{id}(id=${customer.id})}">Edit</a>
 
-                <form th:action="@{/customers/delete}" method="post" style="display:inline;">
+                <form th:action="@{/customers/delete/{id}(id=${customer.id})}" method="post" style="display:inline;">
                     <input type="hidden" name="id" th:value="${customer.id}"/>
                     <button type="submit" class="btn btn-sm btn-dark">Delete</button>
                     <div th:if="${targetId} == ${customer.id}">
                         <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
-                        <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
                     </div>
                 </form>
             </td>
@@ -45,28 +40,6 @@
     </table>
 </div>
 
-<!-- edit modals -->
-<div th:each="customer : ${customers}">
-    <div class="modal fade" th:id="'editModal__' + ${customer.id}" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <form th:action="@{/customers/edit}" method="post" class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit customer</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="id" th:value="${customer.id}" />
-                    <input type="text" name="name" class="form-control" th:value="${customer.name}" required />
-                    <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
-                    <div th:if="${successEdit}" class="alert alert-success" role="alert" th:text="${successEdit}"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-sm btn-dark">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

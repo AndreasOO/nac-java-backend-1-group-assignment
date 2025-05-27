@@ -9,7 +9,7 @@ public class CustomerDTO {
 
     private Long id;
 
-    @NotBlank()
+    @NotBlank(message = "Field can not be empty")
     @Size(min = 2, message = "Name must be at least two letters")
     private String name;
 
