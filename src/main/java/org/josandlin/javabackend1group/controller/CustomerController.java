@@ -94,8 +94,7 @@ public class CustomerController {
 
     @DeleteMapping("/delete/{id}")    //Visar felmeddelanden och sucess
     public String removeCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        OperationResult result = customerService.deleteCustomer(customerService.findCustomerById(id));
-
+        OperationResult<CustomerDTO> result = customerService.deleteCustomer(customerService.findCustomerById(id));
         redirectAttributes.addFlashAttribute("targetId", id);
 
         switch (result.getResult()) {

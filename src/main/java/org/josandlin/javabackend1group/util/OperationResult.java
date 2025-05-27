@@ -4,12 +4,12 @@ import org.josandlin.javabackend1group.dto.AbstractDTO;
 
 import java.util.Optional;
 
-public class OperationResult {
+public class OperationResult<T extends AbstractDTO> {
     private final ActualResult result;
     private final String resultMessage;
-    private final AbstractDTO resultObject;
+    private final T resultObject;
 
-    public OperationResult(ActualResult result, String resultMessage, AbstractDTO resultObject) {
+    public OperationResult(ActualResult result, String resultMessage, T resultObject) {
         this.result = result;
         this.resultMessage = resultMessage;
         this.resultObject = resultObject;
@@ -23,7 +23,7 @@ public class OperationResult {
         return resultMessage;
     }
 
-    public AbstractDTO getResultObject() {
-        return resultObject;
+    public Optional<T> getResultObject() {
+        return Optional.ofNullable(resultObject);
     }
 }
