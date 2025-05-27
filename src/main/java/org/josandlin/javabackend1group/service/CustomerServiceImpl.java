@@ -8,6 +8,8 @@ import org.josandlin.javabackend1group.entity.Customer;
 import org.josandlin.javabackend1group.mapper.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,14 +31,6 @@ public class CustomerServiceImpl implements CustomerService {
         this.customerMapper = customerMapper;
     }
 
-//    @Override
-//    public Customer createAccount(Customer customer) {
-//        if (findByName(customer.getName()) != null) {
-//            throw new IllegalArgumentException("Customer already exists!");
-//        }
-//        customerDao.save(customer);
-//        return customer;
-//    }
 
     @Override
     public List<CustomerDTO> getAllCustomers() {
@@ -53,25 +47,19 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.toDTO(customer);
     }
 
-
-//    @Override
-//    public CustomerDTO findByName(String name) {
-//        Customer customer = customerDao.findByName(name);
-//        if (customer == null) {
-//            throw new IllegalArgumentException("Customer not found with name: " + name);
-//        }
-//        return customerMapper.toDTO(customer);
-//    }
-
+    @Transactional
     @Override
-    public CustomerDTO registerCustomer(CustomerDTO customerDTO) {
+    public CustomerDTO registerCustomer(@Validated CustomerDTO customerDTO) {
         Customer customer = customerMapper.toEntity(customerDTO);
+        System.out.println("Saving customer: " + customer);
         Customer savedCustomer = customerDao.save(customer);
+        System.out.println("Saved Customer: " + savedCustomer);
         return customerMapper.toDTO(savedCustomer);
     }
 
+    @Transactional
     @Override
-    public CustomerDTO editCustomer(CustomerDTO customerDTO) {
+    public CustomerDTO editCustomer(@Validated CustomerDTO customerDTO) {
         Customer customer = customerDao.findById(customerDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + customerDTO.getId()));
         customer.setName(customerDTO.getName());
@@ -79,31 +67,7 @@ public class CustomerServiceImpl implements CustomerService {
         return customerMapper.toDTO(updated);
     }
 
-
-//    @Override
-//    public void deleteCustomer(Long customerId) {
-//        boolean hasBookings = bookingDao.findAll().stream().anyMatch(booking -> booking.getCustomer().getId().equals(customer.getId()));
-//        if (hasBookings) {
-//            //TODO add Optional.fail?
-//            throw new IllegalArgumentException("Customer has active bookings, cannot delete");
-//        } else {
-//            customerDao.delete(customerId);
-//        }
-//
-//    }
-
-//    @Override
-//    public void deleteCustomer(Long customerId) {
-//        Customer customer = customerDao.findById(customerId)
-//                .orElseThrow(() -> new IllegalArgumentException("Customer not found"));
-//        boolean hasBookings = bookingDao.findAll().stream()
-//                .anyMatch(booking -> booking.getCustomer().getId().equals(customer.getId()));
-//        if (hasBookings) {
-//            throw new IllegalArgumentException("Customer has active bookings, please try again!");
-//        }
-//        customerDao.delete(customer);
-//    }
-
+    @Transactional
     @Override
     public boolean deleteCustomer(CustomerDTO customerDTO) {
         Customer customer = customerDao.findById(customerDTO.getId())
@@ -117,17 +81,4 @@ public class CustomerServiceImpl implements CustomerService {
         return true;
     }
 }
-
-
-//    @Override
-//    public Customer findById(Long id){
-//        return customerDao.findById(id).orElseThrow(() -> new IllegalArgumentException("Customer not found"));
-//    }
-
-    //  @Override
-    //    public Customer editCustomer(Customer customer) {
-    //
-    //        return customerDao.save(customer);
-    //    }
-
 

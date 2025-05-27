@@ -1,11 +1,16 @@
 package org.josandlin.javabackend1group.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 
 public class CustomerDTO {
 
     private Long id;
 
+    @NotBlank(message = "Field can not be empty")
+    @Size(min = 2, message = "Name must be at least two letters")
     private String name;
 
     public CustomerDTO() {}
