@@ -52,7 +52,7 @@ public class CustomerController {
     @PostMapping("/register")
     public String registerCustomer(@ModelAttribute("customer") @Valid CustomerDTO customerDTO,
                                    BindingResult result,
-                                   Model model, RedirectAttributes redirectAttributes) {
+                                   RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
             return "registration";
         }
@@ -61,14 +61,39 @@ public class CustomerController {
             redirectAttributes.addFlashAttribute("success", "Customer registered successfully!");
             return "redirect:/customers/all";
         } catch (ValidationException e) {
-            model.addAttribute("error", "Registration failed: " + e.getMessage());
+            e.getMessage();
             return "registration";
         }
+    }
+    @PostMapping("/edit")
+    public String editCustomer(@ModelAttribute("customer") @Valid CustomerDTO customerDTO,
+                               BindingResult result,
+                               RedirectAttributes redirectAttributes,
+                               Model model) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("customer", customerDTO);
+            model.addAttribute("editModalId", customerDTO.getId()); // så vi vet vilken modal som ska öppnas
+            return "redirect:/customers/all";
+        }
+
+        try {
+            customerService.editCustomer(customerDTO);
+            redirectAttributes.addFlashAttribute("successEdit", "Customer name updated successfully!");
+            return "redirect:/customers/all";
+        } catch (ValidationException e) {
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("customer", customerDTO);
+            model.addAttribute("editModalId", customerDTO.getId());
+            return "customers";
+        }
+
     }
 
 
     @PostMapping("/customers/edit/{id}")
     public String editCustomer(@PathVariable Long id, @RequestParam String name) {
+
         CustomerDTO existingCustomer = customerService.findCustomerById(id);
         existingCustomer.setName(name);
         customerService.editCustomer(existingCustomer);
