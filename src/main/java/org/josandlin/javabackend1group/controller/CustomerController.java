@@ -1,5 +1,7 @@
 package org.josandlin.javabackend1group.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.dto.CustomerDTO;
 import org.josandlin.javabackend1group.entity.Customer;
@@ -10,31 +12,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
 @RequestMapping("/customers")
 public class CustomerController {
 
-    @Autowired
-   // private CustomerDao customerDao;
-
     private final CustomerService customerService;
-//    @Autowired
-//    private CustomerDao customerDao;
 
     @Autowired
-    public CustomerController(CustomerService customerService) {
+    public CustomerController(CustomerService customerService, View error) {
         this.customerService = customerService;
     }
 
     @GetMapping("/all")
     public String getCustomers(Model model) {
         model.addAttribute("customers", customerService.getAllCustomers());
+        model.addAttribute("sucessEdit");
         return "customers";
     }
 
@@ -44,24 +48,50 @@ public class CustomerController {
         return "registration";
     }
 
-
-    @PostMapping("/add")
-    public String registerCustomer(@RequestParam String name) {
-        CustomerDTO customerDTOadd = new CustomerDTO(name);
-        customerService.registerCustomer(customerDTOadd);
-        return "redirect:/customers/all";
+    @PostMapping("/register")
+    public String registerCustomer(@ModelAttribute("customer") @Valid CustomerDTO customerDTO,
+                                   BindingResult result,
+                                   RedirectAttributes redirectAttributes) {
+        if (result.hasErrors()) {
+            return "registration";
+        }
+        try {
+            customerService.registerCustomer(customerDTO);
+            redirectAttributes.addFlashAttribute("success", "Customer registered successfully!");
+            return "redirect:/customers/all";
+        } catch (ValidationException e) {
+            e.getMessage();
+            return "registration";
+        }
     }
 
-    @PostMapping("/edit")
-    public String editCustomer(@RequestParam Long id, @RequestParam String name) {
-        CustomerDTO existingCustomer = customerService.findCustomerById(id);
-        existingCustomer.setName(name);
-        customerService.editCustomer(existingCustomer);
-        return "redirect:/customers/all";
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        CustomerDTO customer = customerService.findCustomerById(id);
+        model.addAttribute("customer", customer);
+        return "edit";
+    }
+    @PostMapping("/edit")       // visar inga felmeddelanden eller liknande men den funkar.
+    public String editCustomer(@ModelAttribute("customer") @Valid CustomerDTO customerDTO,
+                               BindingResult result,
+                               RedirectAttributes redirectAttributes,
+                               Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("editModalId", customerDTO.getId());
+            return "edit";
+
+        }
+        try {
+            customerService.editCustomer(customerDTO);
+            return "redirect:/customers/all";
+        } catch (ValidationException e) {
+            model.addAttribute("editModalId", customerDTO.getId());
+            return "customers";
+        }
     }
 
-    @PostMapping("/delete")
-    public String removeCustomer(@RequestParam Long id, RedirectAttributes redirectAttributes) {
+    @DeleteMapping("/delete/{id}")    //Visar felmeddelanden och sucess
+    public String removeCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         CustomerDTO customerToDelete = customerService.findCustomerById(id);
         boolean deleted = customerService.deleteCustomer(customerToDelete);
         redirectAttributes.addFlashAttribute("targetId", id);
@@ -71,49 +101,5 @@ public class CustomerController {
             redirectAttributes.addFlashAttribute("success", "Customer has been deleted");
         }
         return "redirect:/customers/all";
-    }
-
-//    @PostMapping("/edit/{id}")
-//    @ResponseBody
-//    public String editCustomer(Model model, @PathVariable long id, String newName, Customer customer) {
-//        model.addAttribute("customer", customerService.findCustomerById(id));
-//        System.out.println("New name on customer registered " + id + " " + newName);
-//        customerService.editCustomer(id, newName);
-//        customerDao.save(customer);
-//        return "edit-customer";
-//    }
-//
-//    @DeleteMapping("/remove/{id}")
-//    public String deleteCustomer(Model model, @PathVariable Long customerId) {
-//        model.addAttribute("customer", customerId);
-//        System.out.println("deleting customer " + customerId + " ");
-//        customerService.deleteCustomer(customerId);
-//        return "delete";
-//    }
-
-//    @GetMapping("customer/name/{name}")
-//    @ResponseBody
-//    public String findCustomerByName(Model model, @PathVariable String name) {
-//        Customer customer = customerService.findByName(name);
-//        model.addAttribute("customer", customerService.f);
-//        return "customer-details";
-//    }
-
-    //    @PostMapping("/register")
-//    public String registerCustomer(@ModelAttribute Customer customer, Model model) {
-//        try {
-//            customerService.createAccount(customer);
-//            return "redirect:/customers/login";
-//        } catch (IllegalArgumentException e) {
-//            model.addAttribute("error", e.getMessage());
-//            return "registration";
-//        }
-//    }
-
-    @GetMapping("/customer/id/{id}")
-    @ResponseBody
-    public String findCustomerById(@PathVariable Long id, Model model) {
-        model.addAttribute("customer", customerService.findCustomerById(id));
-        return "customers";
     }
 }

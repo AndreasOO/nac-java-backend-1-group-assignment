@@ -18,6 +18,11 @@ public class CustomerMapper {
         if (dto == null) {
             return null;
         }
-        return new Customer(dto.getId(), dto.getName());
+        Customer customer = new Customer();
+        if (dto.getId() != null) {
+            customer.setId(dto.getId());
+        }
+        customer.setName(dto.getName());
+        return customer;
     }
 }

@@ -88,7 +88,7 @@
           </form>
         </td>
         <td>
-          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room(bookingId=${booking.getId()}, bookedObjectId=${bookedRoom.getId()})}" method="post">
+          <form th:action="@{/bookings/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room(bookingId=${booking.getId()}, bookedObjectId=${bookedRoom.getId()})}" th:method="delete">
             <button type="submit" class="btn btn-sm btn-dark" style="width: 100%;">Delete room</button>
           </form>
         </td>

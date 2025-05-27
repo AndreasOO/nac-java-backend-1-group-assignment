@@ -148,7 +148,7 @@ public class BookingController {
     }
 
     // kommer inte åt exception, fångas i boolean
-    @PostMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra/{extraId}")
+    @DeleteMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra/{extraId}")
     public String deleteExtraFromBookedRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, @PathVariable Long extraId, RedirectAttributes redirectAttributes) {
         try{
             boolean deleted = bookingService.deleteExtraFromBookedObjectById(extraId);
@@ -175,7 +175,7 @@ public class BookingController {
     }
 
     // kommer inte åt exception, fångas i boolean
-    @PostMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room")
+    @DeleteMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room")
     public String deleteRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, RedirectAttributes redirectAttributes) {
         try{
             boolean deleted = bookingService.deleteBookedObject(bookedObjectId);
