@@ -100,7 +100,7 @@ public class BookingController {
         return "redirect:/bookings/booking/" + newBooking.getId();
     }
 
-    @PostMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra/{extraId}")
+    @DeleteMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-extra/{extraId}")
     public String deleteExtraFromBookedRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, @PathVariable Long extraId, RedirectAttributes redirectAttributes) {
         boolean deleted = bookingService.deleteExtraFromBookedObjectById(extraId);
         if(!deleted){
@@ -115,7 +115,7 @@ public class BookingController {
         return "redirect:/bookings/booking/" + bookedObject.getBooking().getId() + "/booked-room/" + bookedObject.getId();
     }
 
-    @PostMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room")
+    @DeleteMapping("/booking/{bookingId}/booked-room/{bookedObjectId}/delete-room")
     public String deleteRoom(@PathVariable Long bookingId, @PathVariable Long bookedObjectId, RedirectAttributes redirectAttributes) {
         boolean deleted = bookingService.deleteBookedObject(bookedObjectId);
         if(!deleted){
