@@ -1,9 +1,17 @@
 package org.josandlin.javabackend1group.dto;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 public class RoomTypeDTO {
 
     private Long id;
+
+    @NotEmpty
     private String name;
+
+    @NotNull
     private int costPerNight;
 
     public RoomTypeDTO(Long id, String name, int costPerNight) {
