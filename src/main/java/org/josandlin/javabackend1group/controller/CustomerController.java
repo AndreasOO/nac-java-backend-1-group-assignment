@@ -37,10 +37,11 @@ public class CustomerController {
 
 
     @GetMapping("/all")
-    public String getCustomers(Model model) {
+    public String showAllCustomers(Model model) {
         model.addAttribute("customers", customerService.getAllCustomers());
         return "customers";
     }
+
 
     @GetMapping("/register")
     public String showCustomerRegistrationForm(Model model) {
@@ -48,45 +49,34 @@ public class CustomerController {
         return "registration";
     }
 
-
-//    @PostMapping("/add")
-//    public String registerCustomer(@RequestParam String name) {
-//        CustomerDTO customerDTOadd = new CustomerDTO();
-//        customerDTOadd.setName(name);
-//        customerService.registerCustomer(customerDTOadd);
-//        return "redirect:/customers/all";
-//    }
-
     @PostMapping("/register")
     public String registerCustomer(@ModelAttribute("customer") @Valid CustomerDTO customerDTO,
                                    BindingResult result,
                                    Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-            //här sparas det inte när man sedan skriver in korrekt format.
             return "registration";
         }
         try {
-            //detta funkar nu
             customerService.registerCustomer(customerDTO);
-            redirectAttributes.addFlashAttribute("success", "Customer registered successfully!"); //visas dock inte.
+            redirectAttributes.addFlashAttribute("success", "Customer registered successfully!");
             return "redirect:/customers/all";
         } catch (ValidationException e) {
-          e.getMessage();
             model.addAttribute("error", "Registration failed: " + e.getMessage());
             return "registration";
         }
     }
 
-    @PostMapping("/edit")
-    public String editCustomer(@RequestParam Long id, @RequestParam String name) {
+
+    @PostMapping("/customers/edit/{id}")
+    public String editCustomer(@PathVariable Long id, @RequestParam String name) {
         CustomerDTO existingCustomer = customerService.findCustomerById(id);
         existingCustomer.setName(name);
         customerService.editCustomer(existingCustomer);
         return "redirect:/customers/all";
     }
 
-    @PostMapping("/delete")
-    public String removeCustomer(@RequestParam Long id, RedirectAttributes redirectAttributes) {
+    @PostMapping("/customers/delete/{id}")
+    public String removeCustomer(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         CustomerDTO customerToDelete = customerService.findCustomerById(id);
         boolean deleted = customerService.deleteCustomer(customerToDelete);
         redirectAttributes.addFlashAttribute("targetId", id);

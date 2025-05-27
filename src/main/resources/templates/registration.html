@@ -10,10 +10,11 @@
     <div class="card p-5 shadow rounded border border-light" style="width: 100%; max-width: 600px;">
         <h2 class="pb-3 text-dark">Registration</h2>
         <p th:if="${error}" class="text-danger text-center" th:text="${error}"></p>
-        <form th:action="@{/customers/all}" method="get" th:object="${customer}">
+        <form th:action="@{/customers/register}" method="post" th:object="${customer}">
             <div class="form-group">
                 <label for="name">Name:</label>
                 <input type="text" class="form-control" id="name" placeholder="Enter name" th:field="*{name}">
+                <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}">Name error</div>
             </div>
             <div class="d-flex flex-column align-items-center">
                 <button type="submit" class="btn btn-dark w-100">Register account</button>

@@ -49,7 +49,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public CustomerDTO registerCustomer(@Valid CustomerDTO customerDTO) {
+    public CustomerDTO registerCustomer(@Validated CustomerDTO customerDTO) {
         Customer customer = customerMapper.toEntity(customerDTO);
         System.out.println("Saving customer: " + customer);
         Customer savedCustomer = customerDao.save(customer);
@@ -59,7 +59,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public CustomerDTO editCustomer(CustomerDTO customerDTO) {
+    public CustomerDTO editCustomer(@Validated CustomerDTO customerDTO) {
         Customer customer = customerDao.findById(customerDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + customerDTO.getId()));
         customer.setName(customerDTO.getName());
@@ -69,7 +69,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Transactional
     @Override
-    public boolean deleteCustomer(CustomerDTO customerDTO) {
+    public boolean deleteCustomer(@Validated CustomerDTO customerDTO) {
         Customer customer = customerDao.findById(customerDTO.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Customer not found with id: " + customerDTO.getId()));
         boolean hasBookings = bookingDao.findAll().stream()

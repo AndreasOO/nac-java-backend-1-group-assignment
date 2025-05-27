@@ -9,7 +9,7 @@
 <div class="container">
     <h2>Customers</h2>
 
-    <button class="btn btn-sm btn-dark mb-3" data-bs-toggle="modal" data-bs-target="#addModal">Register new customer</button>
+    <a href="/customers/register" class="btn btn-sm btn-dark mb-3">Register new customer</a>
     <a href="/" class="btn btn-sm btn-dark mb-3">Till startsidan</a>
 
     <table class="table table-striped">
@@ -20,15 +20,19 @@
         </tr>
         </thead>
         <tbody>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
         <tr th:each="customer : ${customers}">
             <td th:text="${customer.name}"></td>
             <td>
                 <button class="btn btn-sm btn-dark"
                         data-bs-toggle="modal"
-                        th:data-bs-target="'#editModal__' + ${customer.id}">edit</button>
+                        th:data-bs-target="'#editModal__' + ${customer.id}">edit
+                </button>
 
                 <form th:action="@{/customers/delete}" method="post" style="display:inline;">
-                    <input type="hidden" name="id" th:value="${customer.id}" />
+                    <input type="hidden" name="id" th:value="${customer.id}"/>
                     <button type="submit" class="btn btn-sm btn-dark">Delete</button>
                     <div th:if="${targetId} == ${customer.id}">
                         <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
@@ -51,8 +55,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <input type="hidden" name="id" th:value="${customer.id}" />
-                    <input type="text" name="name" class="form-control" th:value="${customer.name}" required />
+                    <input type="hidden" name="id" th:value="${customer.id}"/>
+                    <input type="text" name="name" class="form-control" th:value="${customer.name}" required/>
                     <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
                     <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
                 </div>
@@ -61,24 +65,6 @@
                 </div>
             </form>
         </div>
-    </div>
-</div>
-
-<!-- add modal -->
-<div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form th:action="@{/customers/register}" th:object="${customer}" method="post" class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Register new customer</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <input type="text" name="name" class="form-control" placeholder="Name" required />
-            </div>
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-sm btn-dark">Register new customer</button>
-            </div>
-        </form>
     </div>
 </div>
 
