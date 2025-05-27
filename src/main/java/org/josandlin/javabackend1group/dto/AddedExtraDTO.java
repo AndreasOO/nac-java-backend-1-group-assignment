@@ -2,11 +2,17 @@ package org.josandlin.javabackend1group.dto;
 
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.josandlin.javabackend1group.entity.ExtraType;
 
 public class AddedExtraDTO {
 
     private Long id;
+
+    @Valid
+    @NotNull
     private ExtraTypeDTO extraType;
 
     public AddedExtraDTO(Long id, ExtraTypeDTO extraType) {

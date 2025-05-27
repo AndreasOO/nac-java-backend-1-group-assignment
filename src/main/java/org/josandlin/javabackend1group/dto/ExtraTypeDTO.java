@@ -1,9 +1,17 @@
 package org.josandlin.javabackend1group.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 public class ExtraTypeDTO {
 
     private Long id;
+
+    @NotEmpty
     private String name;
+
+    @NotNull
     private int cost;
 
     public ExtraTypeDTO(Long id, String name, int cost) {
