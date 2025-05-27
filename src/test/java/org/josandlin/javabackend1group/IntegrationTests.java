@@ -168,7 +168,7 @@ class IntegrationTests {
 
         Response response = given()
                 .when()
-                .post(baseURI+"/customers/add?name=test")
+                .post(baseURI+"/customers/register?name=test")
                 .then()
                 .statusCode(302)
                 .extract()
@@ -202,7 +202,7 @@ class IntegrationTests {
 
         Response response = given()
                 .when()
-                .delete(baseURI+"/customers/delete?id="+customerId)
+                .delete(baseURI+"/customers/delete/"+customerId)
                 .then()
                 .statusCode(302)
                 .extract()
