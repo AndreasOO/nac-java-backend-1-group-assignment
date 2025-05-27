@@ -197,6 +197,23 @@ class IntegrationTests {
     }
 
     @Test
+    void endpointDELETERemoveCustomerShouldRedirectToCorrectUrl() {
+        Long customerId = setupDataAndReturnCustomerId();
+
+        Response response = given()
+                .when()
+                .delete(baseURI+"/customers/delete?id="+customerId)
+                .then()
+                .statusCode(302)
+                .extract()
+                .response();
+
+        assertThat(response.getHeader("Location").startsWith(baseURI+"/customers/all")).isTrue();
+
+
+    }
+
+    @Test
     void endpointGETBookingsAllShouldGenerateCorrectTemplate() {
         setupDataAndReturnBookingId();
         Response response = given()
@@ -244,6 +261,21 @@ class IntegrationTests {
     }
 
     @Test
+    void endpointDELETERoomShouldRedirectToCorrectUrl() {
+        Map<String,Long> idMap = setupDataAndReturnBookingIdAndBookedObjectIdAndExtraTypeId();
+
+        Response response = given()
+                .when()
+                .delete(baseURI+"/bookings/booking/"+idMap.get("BookingId")+"/booked-room/"+idMap.get("BookingObjectId")+"/delete-room")
+                .then()
+                .statusCode(302)
+                .extract()
+                .response();
+
+        assertThat(response.getHeader("Location").startsWith(baseURI+"/bookings/booking")).isTrue();
+    }
+
+    @Test
     void endpointPOSTBookingShouldRedirectToCorrectUrl() {
         Long customerId = setupDataAndReturnCustomerId();
 
@@ -274,7 +306,23 @@ class IntegrationTests {
 
     }
 
-    //TODO DELETE-MAPPING ENDPOINTS FOR ROOM AND EXTRA AFTER BEING CORRECTED
+    @Test
+    void endpointDELETEExtraFromBookedRoomShouldRedirectToCorrectUrl() {
+        Map<String,Long> idMap = setupDataAndReturnBookingIdAndBookedObjectIdAndExtraTypeId();
+        Long extraId = bookingService.getBookedObjectById(idMap.get("BookingObjectId")).getExtras().get(0).getId();
+        Response response = given()
+                .when()
+                .delete(baseURI+"/bookings/booking/"+idMap.get("BookingId")+"/booked-room/"+idMap.get("BookingObjectId")+"/delete-extra/"+extraId)
+                .then()
+                .statusCode(302)
+                .extract()
+                .response();
+
+        assertThat(response.getHeader("Location").startsWith(baseURI+"/bookings/booking")).isTrue();
+
+    }
+
+
 
 
 
@@ -659,19 +707,19 @@ class IntegrationTests {
         //when
         BookedObjectDTO roomTwoBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO2, olasBooking.getId(), LocalDate.of(2025, 5, 14), LocalDate.of(2025, 5, 20));
         BookedObjectDTO roomFiveBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO5, olasBooking.getId(), LocalDate.of(2025, 6, 2), LocalDate.of(2025, 6, 17));
-        BookedObjectDTO roomOneBookedObj1OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, millysBooking.getId(), LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
+        BookedObjectDTO roomThreeBookedObj2TwoExtraBeds = bookingService.saveBookedObject(savedRoomDTO3, millysBooking.getId(), LocalDate.of(2025, 4, 15), LocalDate.of(2025, 4, 22));
         BookedObjectDTO roomOneBookedObj2OneExtraBed = bookingService.saveBookedObject(savedRoomDTO1, andreasBooking.getId(), LocalDate.of(2025, 5, 12), LocalDate.of(2025, 5, 18));
         BookedObjectDTO roomThreeBookedObjTwoExtraBeds = bookingService.saveBookedObject(savedRoomDTO3, linnsBooking.getId(), LocalDate.of(2025, 6, 1), LocalDate.of(2025, 6, 8));
         BookedObjectDTO roomFourBookedObjNoExtraBeds = bookingService.saveBookedObject(savedRoomDTO4, josefinsBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
 
-        bookingService.addExtraToBookedObject(roomOneBookedObj1OneExtraBed.getId(), extraBed.getId());
+        bookingService.addExtraToBookedObject(roomThreeBookedObj2TwoExtraBeds.getId(), extraBed.getId());
         bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(), extraBed.getId());
         bookingService.addExtraToBookedObject(roomThreeBookedObjTwoExtraBeds.getId(), extraBed.getId());
 
         BookedObjectDTO bookedObjBeforeEdited = bookingService.saveBookedObject(savedRoomDTO6, sixtensBooking.getId(), LocalDate.of(2025, 5, 29), LocalDate.of(2025, 6, 2));
         BookedObjectDTO bookedObjAfterEdited = bookingService.editBookedObject(bookedObjBeforeEdited.getId(), savedRoomDTO1.getId(), LocalDate.of(2025, 9, 25), LocalDate.of(2025, 9, 28));
 
-        return Map.of("BookingId", millysBooking.getId(), "BookingObjectId", roomOneBookedObj2OneExtraBed.getId(),"ExtraTypeId", extraBed.getId());
+        return Map.of("BookingId", millysBooking.getId(), "BookingObjectId", roomThreeBookedObj2TwoExtraBeds.getId(),"ExtraTypeId", extraBed.getId());
     }
 
     private Long setupDataAndReturnBookingId() {

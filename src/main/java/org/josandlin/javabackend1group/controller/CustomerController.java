@@ -60,7 +60,7 @@ public class CustomerController {
         return "redirect:/customers/all";
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public String removeCustomer(@RequestParam Long id, RedirectAttributes redirectAttributes) {
         CustomerDTO customerToDelete = customerService.findCustomerById(id);
         boolean deleted = customerService.deleteCustomer(customerToDelete);
