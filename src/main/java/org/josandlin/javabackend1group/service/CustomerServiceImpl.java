@@ -1,5 +1,6 @@
 package org.josandlin.javabackend1group.service;
 
+import jakarta.validation.Valid;
 import org.josandlin.javabackend1group.dao.BookingDao;
 import org.josandlin.javabackend1group.dao.CustomerDao;
 import org.josandlin.javabackend1group.dto.CustomerDTO;
