@@ -1,6 +1,8 @@
 package org.josandlin.javabackend1group.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 
 import java.time.LocalDate;
@@ -15,17 +17,25 @@ public class BookedObject {
 
     @ManyToOne
     @JoinColumn
+    @Valid
+    @NotNull(message="Booked object must involve a room")
     private Room room;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name="booked_room_id")
+    @Valid
     private List<AddedExtra> extras;
 
     @ManyToOne
     @JoinColumn
+    @Valid
+    @NotNull(message="Booked object must involve a booking")
     private Booking booking;
 
+    @NotNull(message="Booked object must have a start date")
     private LocalDate startDate;
+
+    @NotNull(message="Booked object must have an end date")
     private LocalDate endDate;
 
     public BookedObject(Long id, Room room, List<AddedExtra> extras, Booking booking, LocalDate startDate, LocalDate endDate) {

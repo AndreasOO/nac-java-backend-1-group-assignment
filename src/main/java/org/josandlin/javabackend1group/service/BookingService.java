@@ -1,5 +1,6 @@
 package org.josandlin.javabackend1group.service;
 
+import jakarta.validation.Valid;
 import org.josandlin.javabackend1group.dto.*;
 import org.josandlin.javabackend1group.entity.*;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public interface BookingService {
     List<BookedObjectDTO> getBookedRoomsByBookingId(Long bookingId);
 
     @Transactional
-    BookedObjectDTO saveBookedObject(RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate);
+    BookedObjectDTO saveBookedObject(@Valid RoomDTO room, Long bookingId, LocalDate startDate, LocalDate endDate);
 
     CustomerDTO getCustomerByBookingId(Long id);
 

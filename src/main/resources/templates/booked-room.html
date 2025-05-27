@@ -141,9 +141,7 @@
       </tbody>
     </table>
 
-    <div th:if="${error}">
-      <p th:text="${error}" class="error-message"></p>
-    </div>
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
 
     <a href="#" class="btn btn-dark w-100" data-toggle="modal" data-target="#add-extra-modal">Add extra</a>
     <hr class="w-100 border-0" style="height: 2px; background-color: #dee2e6;">

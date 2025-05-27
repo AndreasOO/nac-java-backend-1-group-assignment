@@ -11,7 +11,7 @@
             <div class="d-flex justify-content-between">
                 <div>
                     <strong>Guest capacity:</strong>
-                    <span th:text="${roomSearch.getQuestCount()}">Guest capacity</span>
+                    <span th:text="${roomSearch.getGuestCount()}">Guest capacity</span>
                 </div>
                 <div>
                     <strong>Rooms available during:</strong>
@@ -56,6 +56,9 @@
             </tr>
             </tbody>
         </table>
+
+        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
         <a th:href="@{/bookings/booking/{bookingId}(bookingId=${roomSearch.getBookingId()})}" class="btn btn-dark w-100">Go to current booking</a>
         <hr class="w-100 border-0" style="height: 2px; background-color: #dee2e6;">
         <a th:href="@{/bookings/all}"  class="btn btn-dark w-100">Go to bookings</a>
