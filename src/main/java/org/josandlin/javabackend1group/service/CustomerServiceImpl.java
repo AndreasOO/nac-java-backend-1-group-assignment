@@ -65,7 +65,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO registerCustomer(CustomerDTO customerDTO) {
-        @Valid
         Customer customer = customerMapper.toEntity(customerDTO);
         Customer savedCustomer = customerDao.save(customer);
         return customerMapper.toDTO(savedCustomer);
