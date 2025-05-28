@@ -9,8 +9,4 @@ import org.springframework.data.repository.query.Param;
 
 public interface AddedExtraDao extends JpaRepository<AddedExtra, Long> {
 
-    @Transactional
-    @Modifying
-    @Query("DELETE FROM AddedExtra ae WHERE ae.id = :id")
-    void deleteById(@Param("id") Long id);
 }

@@ -137,7 +137,8 @@ public class BookingServiceImpl implements BookingService {
         if(!addedExtraDao.existsById(extraId)) {
             return false;
         }
-        addedExtraDao.deleteById(extraId);
+        AddedExtra addedExtra = addedExtraDao.findById(extraId).orElseThrow(() -> new IllegalArgumentException("Added extra not found"));
+        addedExtraDao.delete(addedExtra);
         return true;
     }
 
